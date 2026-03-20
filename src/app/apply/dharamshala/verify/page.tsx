@@ -2,9 +2,14 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
+import { LanguageToggle } from '@/components/language-toggle';
+import type { Locale } from '@/i18n/config';
 import { ArrowLeft, ArrowRight, CheckCircle, AlertCircle, RefreshCw, EyeOff } from 'lucide-react';
 
 export default function DharamshalaVerifyPage() {
+  const t = useTranslations('Public.applicationForm');
+  const locale = useLocale();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
@@ -210,6 +215,9 @@ export default function DharamshalaVerifyPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "var(--bg-page)" }}>
+      <div className="flex justify-end p-4">
+        <LanguageToggle currentLocale={locale as Locale} />
+      </div>
       <header
         className="px-6 py-4 border-b"
         style={{
@@ -225,16 +233,16 @@ export default function DharamshalaVerifyPage() {
                 className="text-lg font-semibold"
                 style={{ color: "var(--text-primary)", fontFamily: "var(--font-serif)" }}
               >
-                Dharamshala Booking
+                {t('dharamshalaBooking')}
               </h1>
-              <p className="text-caption">Step 3 of 4</p>
+              <p className="text-caption">{t('stepOf', { step: 3, total: 4 })}</p>
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="nav-link">Home</Link>
-            <Link href="/apply" className="nav-link">Apply Now</Link>
-            <Link href="/check-status" className="nav-link">Check Status</Link>
-            <Link href="/login" className="nav-link">Login</Link>
+            <Link href="/" className="nav-link">{t('home')}</Link>
+            <Link href="/apply" className="nav-link">{t('applyNow')}</Link>
+            <Link href="/check-status" className="nav-link">{t('checkStatus')}</Link>
+            <Link href="/login" className="nav-link">{t('login')}</Link>
           </nav>
         </div>
       </header>
@@ -251,7 +259,7 @@ export default function DharamshalaVerifyPage() {
                   1
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-                  Select Type
+                  {t('selectType')}
                 </span>
               </div>
               <div className="h-px w-16" style={{ backgroundColor: "var(--border-primary)" }}></div>
@@ -263,7 +271,7 @@ export default function DharamshalaVerifyPage() {
                   2
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-                  Contact Details
+                  {t('contactDetails')}
                 </span>
               </div>
               <div className="h-px w-16" style={{ backgroundColor: "var(--border-primary)" }}></div>
@@ -275,15 +283,15 @@ export default function DharamshalaVerifyPage() {
                   3
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-                  OTP Verification
+                  {t('otpVerification')}
                 </span>
               </div>
             </div>
             <div className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              <span>Step 3 of 4</span>
+              {t('stepOf', { step: 3, total: 4 })}
               {timeLeft > 0 && (
                 <span className="ml-4" style={{ color: "var(--text-primary)" }}>
-                  Expires in: {formatTime(timeLeft)}
+                  {t('verify.expiresIn', { time: formatTime(timeLeft) })}
                 </span>
               )}
             </div>
@@ -295,16 +303,16 @@ export default function DharamshalaVerifyPage() {
         <div className="mx-auto max-w-2xl">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-              Enter OTP Code
+              {t('verify.title')}
             </h2>
             <p className="text-lg mb-8" style={{ color: "var(--text-secondary)" }}>
-              We have sent a 6-digit One-Time Password to your mobile number
+              {t('verify.subtitle')}
             </p>
           </div>
 
           <div className="card p-8 mb-8">
             <h3 className="text-xl font-semibold mb-6" style={{ color: "var(--text-primary)" }}>
-              Enter the 6-digit code
+              {t('verify.enterCode')}
             </h3>
             <div className="flex justify-center gap-3 mb-6">
               {otp.map((digit, index) => (
@@ -342,7 +350,7 @@ export default function DharamshalaVerifyPage() {
 
             <div className="text-center mb-6">
               <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                <strong>Tip:</strong> Enter the 6-digit code sent to your mobile number. The code is valid for 10 minutes.
+                <strong>Tip:</strong> {t('verify.tip')}
               </p>
             </div>
 
@@ -356,7 +364,7 @@ export default function DharamshalaVerifyPage() {
                   <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full"></div>
                 ) : (
                   <>
-                    Verify &amp; Continue
+                    {t('verify.verifyAndContinue')}
                     <ArrowRight className="w-5 h-5" />
                   </>
                 )}
@@ -368,7 +376,7 @@ export default function DharamshalaVerifyPage() {
                 className="btn-outline flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
-                {timeLeft > 0 ? `Resend in ${formatTime(timeLeft)}` : 'Resend OTP'}
+                {timeLeft > 0 ? t('verify.resendIn', { time: formatTime(timeLeft) }) : t('verify.resendOtp')}
               </button>
             </div>
           </div>
@@ -379,7 +387,7 @@ export default function DharamshalaVerifyPage() {
                 <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                 <div>
                   <h4 className="font-semibold mb-2" style={{ color: "var(--color-red-600)" }}>
-                    Verification Failed
+                    {t('verify.verificationFailed')}
                   </h4>
                   <ul className="space-y-1 text-sm">
                     {errors.map((error, index) => (
@@ -395,23 +403,23 @@ export default function DharamshalaVerifyPage() {
 
           <div className="text-center">
             <p className="text-sm mb-3" style={{ color: "var(--text-secondary)" }}>
-              Did not receive the OTP?
+              {t('verify.didNotReceive')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="tel:+91224141236"
                 className="text-amber-600 hover:text-amber-800 font-medium"
               >
-                Call Dharamshala Office: +91 22 2414 1236
+                {t('verify.callDharamshalaOffice')}
               </Link>
               <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                or
+                {t('verify.or')}
               </span>
               <button
                 onClick={() => window.location.href = '/apply/dharamshala/contact'}
                 className="text-amber-600 hover:text-amber-800 font-medium"
               >
-                Try Different Contact Method
+                {t('verify.tryDifferentMethod')}
               </button>
             </div>
           </div>

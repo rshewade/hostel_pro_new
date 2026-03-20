@@ -2,10 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
+import { LanguageToggle } from '@/components/language-toggle';
+import type { Locale } from '@/i18n/config';
 import { ArrowLeft, ArrowRight, Shield, RefreshCw, Phone, Mail, Clock } from 'lucide-react';
 import { Input } from '@/components/forms/Input';
 
 export default function ContactOTPPage() {
+  const t = useTranslations('Public.applicationForm');
+  const locale = useLocale();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [contactMethod, setContactMethod] = useState<'phone' | 'email'>('phone');
@@ -90,6 +95,9 @@ export default function ContactOTPPage() {
 
   return (
     <div className="min-h-screen" style={{ background: "var(--bg-page)" }}>
+      <div className="flex justify-end p-4">
+        <LanguageToggle currentLocale={locale as Locale} />
+      </div>
       {/* Header */}
       <header
         className="px-6 py-4 border-b"
@@ -106,16 +114,16 @@ export default function ContactOTPPage() {
                 className="text-lg font-semibold"
                 style={{ color: "var(--text-primary)", fontFamily: "var(--font-serif)" }}
               >
-                Boys Hostel Application
+                {t('boysHostelApplication')}
               </h1>
-              <p className="text-caption">Step 2 of 4</p>
+              <p className="text-caption">{t('stepOf', { step: 2, total: 4 })}</p>
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="nav-link">Home</Link>
-            <Link href="/apply" className="nav-link">Apply Now</Link>
-            <Link href="/check-status" className="nav-link">Check Status</Link>
-            <Link href="/login" className="nav-link">Login</Link>
+            <Link href="/" className="nav-link">{t('home')}</Link>
+            <Link href="/apply" className="nav-link">{t('applyNow')}</Link>
+            <Link href="/check-status" className="nav-link">{t('checkStatus')}</Link>
+            <Link href="/login" className="nav-link">{t('login')}</Link>
           </nav>
         </div>
       </header>
@@ -133,7 +141,7 @@ export default function ContactOTPPage() {
                   1
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-                  Select Vertical
+                  {t('selectVertical')}
                 </span>
               </div>
               <div className="h-px w-16" style={{ backgroundColor: "var(--border-primary)" }}></div>
@@ -145,7 +153,7 @@ export default function ContactOTPPage() {
                   2
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-                  Contact Details
+                  {t('contactDetails')}
                 </span>
               </div>
               <div className="h-px w-16" style={{ backgroundColor: "var(--border-primary)" }}></div>
@@ -157,7 +165,7 @@ export default function ContactOTPPage() {
                   3
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-                  OTP Verification
+                  {t('otpVerification')}
                 </span>
               </div>
               <div className="h-px w-16" style={{ backgroundColor: "var(--border-primary)" }}></div>
@@ -169,12 +177,12 @@ export default function ContactOTPPage() {
                   4
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-                  Application Form
+                  {t('applicationForm')}
                 </span>
               </div>
             </div>
             <div className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              <span>Step 2 of 4</span>
+              {t('stepOf', { step: 2, total: 4 })}
             </div>
           </div>
         </div>
@@ -185,17 +193,17 @@ export default function ContactOTPPage() {
         <div className="mx-auto max-w-2xl">
           <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-              Verify Your Identity
+              {t('contact.title')}
             </h2>
             <p className="text-lg mb-8" style={{ color: "var(--text-secondary)" }}>
-              We'll send a One-Time Password (OTP) to verify your contact details
+              {t('contact.subtitle')}
             </p>
           </div>
 
           {/* Contact Method Selection */}
           <div className="card p-8 mb-8">
             <h3 className="text-xl font-semibold mb-6" style={{ color: "var(--text-primary)" }}>
-              Choose Contact Method
+              {t('contact.chooseMethod')}
             </h3>
             <div className="grid gap-4 md:grid-cols-2 mb-8">
               <button
@@ -207,9 +215,9 @@ export default function ContactOTPPage() {
                 onClick={() => setContactMethod('phone')}
               >
                 <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: contactMethod === 'phone' ? 'var(--color-blue-600)' : 'var(--color-gray-600)' }} />
-                <h4 className="font-semibold mb-2">Mobile Number</h4>
+                <h4 className="font-semibold mb-2">{t('contact.mobileNumber')}</h4>
                 <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                  Fast and secure OTP verification via SMS
+                  {t('contact.mobileDesc')}
                 </p>
               </button>
               
@@ -222,9 +230,9 @@ export default function ContactOTPPage() {
                 onClick={() => setContactMethod('email')}
               >
                 <Mail className="w-8 h-8 mx-auto mb-3" style={{ color: contactMethod === 'email' ? 'var(--color-blue-600)' : 'var(--color-gray-600)' }} />
-                <h4 className="font-semibold mb-2">Email Address</h4>
+                <h4 className="font-semibold mb-2">{t('contact.emailAddress')}</h4>
                 <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                  Receive OTP via email verification
+                  {t('contact.emailDesc')}
                 </p>
               </button>
             </div>
@@ -234,14 +242,14 @@ export default function ContactOTPPage() {
               <div className="mb-6">
                 <Input
                   type="tel"
-                  label="Mobile Number"
+                  label={t('contact.mobileLabel')}
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="Enter 10-digit mobile number"
+                  placeholder={t('contact.mobilePlaceholder')}
                   size="lg"
                   leftIcon={<Phone className="w-5 h-5" />}
                   error={errors.some(e => e.includes('phone') || e.includes('Phone')) ? errors.find(e => e.includes('phone') || e.includes('Phone')) : undefined}
-                  helperText="We'll send a 6-digit OTP to this number"
+                  helperText={t('contact.mobileHelperText')}
                 />
               </div>
             )}
@@ -250,14 +258,14 @@ export default function ContactOTPPage() {
               <div className="mb-6">
                 <Input
                   type="email"
-                  label="Email Address"
+                  label={t('contact.emailLabel')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address"
+                  placeholder={t('contact.emailPlaceholder')}
                   size="lg"
                   leftIcon={<Mail className="w-5 h-5" />}
                   error={errors.some(e => e.includes('email') || e.includes('Email')) ? errors.find(e => e.includes('email') || e.includes('Email')) : undefined}
-                  helperText="We'll send a 6-digit OTP to this email"
+                  helperText={t('contact.emailHelperText')}
                 />
               </div>
             )}
@@ -268,11 +276,10 @@ export default function ContactOTPPage() {
             <Shield className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
             <div>
               <h4 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
-                Your Security Matters
+                {t('contact.securityTitle')}
               </h4>
               <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                This OTP is valid for 10 minutes and can only be used once. 
-                Never share your OTP with anyone.
+                {t('contact.securityText')}
               </p>
             </div>
           </div>
@@ -281,7 +288,7 @@ export default function ContactOTPPage() {
           {errors.length > 0 && (
             <div className="card p-4 mb-6 border-l-4" style={{ borderLeftColor: "var(--color-red-500)" }}>
               <h4 className="font-semibold mb-2" style={{ color: "var(--color-red-600)" }}>
-                Please Fix The Following:
+                {t('contact.pleaseFixFollowing')}
               </h4>
               <ul className="space-y-1">
                 {errors.map((error, index) => (
@@ -301,14 +308,14 @@ export default function ContactOTPPage() {
               disabled={!isInputValid()}
               className="btn-primary w-full text-lg py-4 flex items-center justify-center gap-2"
             >
-              Send OTP
+              {t('contact.sendOtp')}
               <ArrowRight className="w-5 h-5" />
             </button>
           ) : (
             <div className="space-y-4">
               <div className="card p-4 text-center">
                 <h4 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
-                  OTP Sent Successfully!
+                  {t('contact.otpSentTitle')}
                 </h4>
                 <p className="text-sm mb-4" style={{ color: "var(--text-secondary)" }}>
                   Please check your {contactMethod === 'phone' ? 'SMS messages' : 'email'} for the 6-digit code.
@@ -328,7 +335,7 @@ export default function ContactOTPPage() {
                       className="btn-outline w-full flex items-center justify-center gap-2"
                     >
                       <RefreshCw className="w-4 h-4" />
-                      Resend OTP
+                      {t('contact.resendOtp')}
                     </button>
                     <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                       Didn't receive? Check spam folder or try with different contact method
@@ -340,7 +347,7 @@ export default function ContactOTPPage() {
               {/* Alternate Contact */}
               <div className="text-center">
                 <p className="text-sm mb-3" style={{ color: "var(--text-secondary)" }}>
-                  Having trouble? Contact admissions office directly:
+                  {t('contact.havingTrouble')}
                 </p>
                 <Link
                   href="tel:+912224141234"

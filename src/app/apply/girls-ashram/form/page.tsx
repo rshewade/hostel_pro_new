@@ -4,9 +4,14 @@ import { FormWizard, Input, Select, DatePicker, FileUpload } from '@/components/
 import { Button } from '@/components/ui/Button';
 import { ArrowLeft, Save, FileText, User, GraduationCap, Home, Users, Upload, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
+import { LanguageToggle } from '@/components/language-toggle';
+import type { Locale } from '@/i18n/config';
 import { useState, useEffect } from 'react';
 
 export default function ApplicationFormPage() {
+  const t = useTranslations('Public.applicationForm');
+  const locale = useLocale();
   const [isLoading, setIsLoading] = useState(true);
   const [initialData, setInitialData] = useState<any>({});
 
@@ -32,7 +37,7 @@ export default function ApplicationFormPage() {
   const wizardSteps = [
     {
       id: 'personal-details',
-      title: 'Personal Details',
+      title: t('personalDetails'),
       component: ({
         data,
         onChange,
@@ -49,69 +54,69 @@ export default function ApplicationFormPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                Personal Information
+                {t('personalInfo')}
               </h2>
-              <p style={{ color: 'var(--text-secondary)' }}>Please provide your personal details</p>
+              <p style={{ color: 'var(--text-secondary)' }}>{t('personalInfoSubtitle')}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
-              label="First Name"
+              label={t('firstName')}
               value={data.firstName || ''}
               onChange={(e) => onChange('firstName', e.target.value)}
               error={errors.firstName}
               required
-              placeholder="Enter first name"
+              placeholder={t('firstNamePlaceholder')}
             />
 
             <Input
-              label="Middle Name"
+              label={t('middleName')}
               value={data.middleName || ''}
               onChange={(e) => onChange('middleName', e.target.value)}
-              placeholder="Enter middle name (optional)"
+              placeholder={t('middleNamePlaceholder')}
             />
 
             <Input
-              label="Last Name"
+              label={t('lastName')}
               value={data.lastName || ''}
               onChange={(e) => onChange('lastName', e.target.value)}
               error={errors.lastName}
               required
-              placeholder="Enter last name"
+              placeholder={t('lastNamePlaceholder')}
             />
 
             <DatePicker
-              label="Date of Birth"
+              label={t('dateOfBirth')}
               value={data.dob || ''}
               onChange={(e) => onChange('dob', e.target.value)}
               error={errors.dob}
               required
-              helperText="You must be at least 18 years old"
+              helperText={t('dobHelperText')}
             />
 
             <Select
-              label="Gender"
+              label={t('gender')}
               value={data.gender || ''}
               onChange={(e) => onChange('gender', e.target.value)}
               error={errors.gender}
               required
               options={[
-                { value: '', label: 'Select Gender' },
-                { value: 'male', label: 'Male' },
-                { value: 'female', label: 'Female' },
-                { value: 'other', label: 'Other' },
+                { value: '', label: t('selectGender') },
+                { value: 'male', label: t('male') },
+                { value: 'female', label: t('female') },
+                { value: 'other', label: t('other') },
               ]}
             />
 
             <Select
-              label="Blood Group"
+              label={t('bloodGroup')}
               value={data.bloodGroup || ''}
               onChange={(e) => onChange('bloodGroup', e.target.value)}
               error={errors.bloodGroup}
               required
               options={[
-                { value: '', label: 'Select Blood Group' },
+                { value: '', label: t('selectBloodGroup') },
                 { value: 'A+', label: 'A+' },
                 { value: 'A-', label: 'A-' },
                 { value: 'B+', label: 'B+' },
@@ -126,52 +131,52 @@ export default function ApplicationFormPage() {
 
           <div>
             <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-              Permanent Address
+              {t('permanentAddress')}
             </h3>
             <div className="space-y-4">
               <Input
-                label="Address Line 1"
+                label={t('addressLine1')}
                 value={data.addressLine1 || ''}
                 onChange={(e) => onChange('addressLine1', e.target.value)}
                 error={errors.addressLine1}
                 required
-                placeholder="House/Flat No, Street, Area"
+                placeholder={t('addressLine1Placeholder')}
               />
 
               <Input
-                label="Address Line 2"
+                label={t('addressLine2')}
                 value={data.addressLine2 || ''}
                 onChange={(e) => onChange('addressLine2', e.target.value)}
-                placeholder="Landmark, Locality"
+                placeholder={t('addressLine2Placeholder')}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Input
-                  label="City"
+                  label={t('city')}
                   value={data.city || ''}
                   onChange={(e) => onChange('city', e.target.value)}
                   error={errors.city}
                   required
-                  placeholder="Enter city"
+                  placeholder={t('cityPlaceholder')}
                 />
 
                 <Input
-                  label="State"
+                  label={t('state')}
                   value={data.state || ''}
                   onChange={(e) => onChange('state', e.target.value)}
                   error={errors.state}
                   required
-                  placeholder="Enter state"
+                  placeholder={t('statePlaceholder')}
                 />
 
                 <Input
-                  label="PIN Code"
+                  label={t('pinCode')}
                   type="text"
                   value={data.pinCode || ''}
                   onChange={(e) => onChange('pinCode', e.target.value)}
                   error={errors.pinCode}
                   required
-                  placeholder="6-digit PIN"
+                  placeholder={t('pinCodePlaceholder')}
                   maxLength={6}
                   inputMode="numeric"
                 />
@@ -181,80 +186,80 @@ export default function ApplicationFormPage() {
 
           <div>
             <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-              Parent/Guardian Information
+              {t('parentGuardianInfo')}
             </h3>
             <div className="space-y-4">
               <Input
-                label="Father's Name"
+                label={t('fatherName')}
                 value={data.fatherName || ''}
                 onChange={(e) => onChange('fatherName', e.target.value)}
                 error={errors.fatherName}
                 required
-                placeholder="Enter father's full name"
+                placeholder={t('fatherNamePlaceholder')}
               />
 
               <Input
-                label="Father's Occupation"
+                label={t('fatherOccupation')}
                 value={data.fatherOccupation || ''}
                 onChange={(e) => onChange('fatherOccupation', e.target.value)}
-                placeholder="Enter father's occupation"
+                placeholder={t('fatherOccupationPlaceholder')}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="Father's Mobile Number"
+                  label={t('fatherMobile')}
                   type="tel"
                   value={data.fatherMobile || ''}
                   onChange={(e) => onChange('fatherMobile', e.target.value)}
                   error={errors.fatherMobile}
                   required
-                  placeholder="10-digit mobile number"
+                  placeholder={t('mobileNumberPlaceholder')}
                   maxLength={10}
                   inputMode="tel"
                 />
 
                 <Input
-                  label="Father's Email"
+                  label={t('fatherEmail')}
                   type="email"
                   value={data.fatherEmail || ''}
                   onChange={(e) => onChange('fatherEmail', e.target.value)}
-                  placeholder="Enter email (optional)"
+                  placeholder={t('fatherEmailPlaceholder')}
                 />
               </div>
 
               <Input
-                label="Mother's Name"
+                label={t('motherName')}
                 value={data.motherName || ''}
                 onChange={(e) => onChange('motherName', e.target.value)}
                 error={errors.motherName}
                 required
-                placeholder="Enter mother's full name"
+                placeholder={t('motherNamePlaceholder')}
               />
 
               <Input
-                label="Mother's Occupation"
+                label={t('motherOccupation')}
                 value={data.motherOccupation || ''}
                 onChange={(e) => onChange('motherOccupation', e.target.value)}
-                placeholder="Enter mother's occupation"
+                placeholder={t('motherOccupationPlaceholder')}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="Mother's Mobile Number"
+                  label={t('motherMobile')}
                   type="tel"
                   value={data.motherMobile || ''}
                   onChange={(e) => onChange('motherMobile', e.target.value)}
-                  placeholder="10-digit mobile number (optional)"
+                  placeholder={t('motherMobilePlaceholder')}
                   maxLength={10}
                   inputMode="tel"
                 />
 
                 <Input
-                  label="Mother's Email"
+                  label={t('motherEmail')}
                   type="email"
                   value={data.motherEmail || ''}
                   onChange={(e) => onChange('motherEmail', e.target.value)}
-                  placeholder="Enter email (optional)"
+                  placeholder={t('fatherEmailPlaceholder')}
                 />
               </div>
             </div>
@@ -262,30 +267,30 @@ export default function ApplicationFormPage() {
 
           <div>
             <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-              Local Guardian (if different from parents)
+              {t('localGuardian')}
             </h3>
             <div className="space-y-4">
               <Input
-                label="Guardian Name"
+                label={t('guardianName')}
                 value={data.guardianName || ''}
                 onChange={(e) => onChange('guardianName', e.target.value)}
-                placeholder="Enter local guardian's name (optional)"
+                placeholder={t('guardianNamePlaceholder')}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="Relationship"
+                  label={t('guardianRelationship')}
                   value={data.guardianRelationship || ''}
                   onChange={(e) => onChange('guardianRelationship', e.target.value)}
-                  placeholder="e.g., Uncle, Family Friend"
+                  placeholder={t('guardianRelationshipPlaceholder')}
                 />
 
                 <Input
-                  label="Guardian Mobile"
+                  label={t('guardianMobile')}
                   type="tel"
                   value={data.guardianMobile || ''}
                   onChange={(e) => onChange('guardianMobile', e.target.value)}
-                  placeholder="10-digit mobile number"
+                  placeholder={t('mobileNumberPlaceholder')}
                   maxLength={10}
                   inputMode="tel"
                 />
@@ -295,38 +300,38 @@ export default function ApplicationFormPage() {
 
           <div>
             <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-              Emergency Contact
+              {t('emergencyContact')}
             </h3>
             <div className="space-y-4">
               <Input
-                label="Emergency Contact Person"
+                label={t('emergencyContactPerson')}
                 value={data.emergencyContactPerson || ''}
                 onChange={(e) => onChange('emergencyContactPerson', e.target.value)}
                 error={errors.emergencyContactPerson}
                 required
-                placeholder="Name of emergency contact"
+                placeholder={t('emergencyContactPersonPlaceholder')}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="Emergency Mobile"
+                  label={t('emergencyMobile')}
                   type="tel"
                   value={data.emergencyMobile || ''}
                   onChange={(e) => onChange('emergencyMobile', e.target.value)}
                   error={errors.emergencyMobile}
                   required
-                  placeholder="10-digit mobile number"
+                  placeholder={t('mobileNumberPlaceholder')}
                   maxLength={10}
                   inputMode="tel"
                 />
 
                 <Input
-                  label="Relationship"
+                  label={t('guardianRelationship')}
                   value={data.emergencyRelationship || ''}
                   onChange={(e) => onChange('emergencyRelationship', e.target.value)}
                   error={errors.emergencyRelationship}
                   required
-                  placeholder="e.g., Parent, Sibling"
+                  placeholder={t('emergencyRelationshipPlaceholder')}
                 />
               </div>
             </div>
@@ -361,7 +366,7 @@ export default function ApplicationFormPage() {
     },
     {
       id: 'academic-info',
-      title: 'Academic Information',
+      title: t('academicInfo'),
       description: 'Educational details',
       component: ({ data, onChange, errors }: any) => (
         <div className="space-y-6">
@@ -371,86 +376,86 @@ export default function ApplicationFormPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                Academic Details
+                {t('academicDetails')}
               </h2>
-              <p style={{ color: 'var(--text-secondary)' }}>Please provide your educational background</p>
+              <p style={{ color: 'var(--text-secondary)' }}>{t('academicDetailsSubtitle')}</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <Input
-              label="Current Institution/College"
+              label={t('institution')}
               value={data.institution || ''}
               onChange={(e) => onChange('institution', e.target.value)}
               error={errors.institution}
               required
-              placeholder="Enter institution name"
+              placeholder={t('institutionPlaceholder')}
             />
 
             <Input
-              label="Course/Degree"
+              label={t('course')}
               value={data.course || ''}
               onChange={(e) => onChange('course', e.target.value)}
               error={errors.course}
               required
-              placeholder="e.g., B.Com, B.Sc, B.Tech"
+              placeholder={t('coursePlaceholder')}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Select
-                label="Year/Semester"
+                label={t('yearSemester')}
                 value={data.year || ''}
                 onChange={(e) => onChange('year', e.target.value)}
                 error={errors.year}
                 required
                 options={[
-                  { value: '', label: 'Select Year' },
-                  { value: '1', label: '1st Year' },
-                  { value: '2', label: '2nd Year' },
-                  { value: '3', label: '3rd Year' },
-                  { value: '4', label: '4th Year' },
-                  { value: '5', label: '5th Year' },
+                  { value: '', label: t('selectYear') },
+                  { value: '1', label: t('year1') },
+                  { value: '2', label: t('year2') },
+                  { value: '3', label: t('year3') },
+                  { value: '4', label: t('year4') },
+                  { value: '5', label: t('year5') },
                 ]}
               />
 
               <Input
-                label="Percentage/CGPA"
+                label={t('percentage')}
                 value={data.percentage || ''}
                 onChange={(e) => onChange('percentage', e.target.value)}
                 error={errors.percentage}
                 required
-                placeholder="e.g., 85% or 8.5 CGPA"
+                placeholder={t('percentagePlaceholder')}
                 inputMode="decimal"
               />
             </div>
 
             <Input
-              label="Previous Academic Qualification"
+              label={t('previousQualification')}
               value={data.qualification || ''}
               onChange={(e) => onChange('qualification', e.target.value)}
               error={errors.qualification}
               required
-              placeholder="e.g., 12th (HSC), Diploma, etc."
+              placeholder={t('previousQualificationPlaceholder')}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
-                label="Board/University"
+                label={t('boardUniversity')}
                 value={data.board || ''}
                 onChange={(e) => onChange('board', e.target.value)}
                 error={errors.board}
                 required
-                placeholder="e.g., Maharashtra State Board, Mumbai University"
+                placeholder={t('boardUniversityPlaceholder')}
               />
 
               <Input
-                label="Passing Year"
+                label={t('passingYear')}
                 type="number"
                 value={data.passingYear || ''}
                 onChange={(e) => onChange('passingYear', e.target.value)}
                 error={errors.passingYear}
                 required
-                placeholder="e.g., 2024"
+                placeholder={t('passingYearPlaceholder')}
               />
             </div>
           </div>
@@ -470,7 +475,7 @@ export default function ApplicationFormPage() {
     },
     {
       id: 'hostel-preferences',
-      title: 'Hostel Preferences',
+      title: t('hostelPreferences'),
       description: 'Room and duration preferences',
       component: ({ data, onChange, errors }: any) => (
         <div className="space-y-6">
@@ -480,35 +485,35 @@ export default function ApplicationFormPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                Hostel Preferences
+                {t('hostelPreferences')}
               </h2>
-              <p style={{ color: 'var(--text-secondary)' }}>Specify your room type and stay preferences</p>
+              <p style={{ color: 'var(--text-secondary)' }}>{t('hostelPreferencesSubtitle')}</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <Select
-              label="Vertical"
+              label={t('vertical')}
               value={data.vertical || 'girls-ashram'}
               onChange={(e) => onChange('vertical', e.target.value)}
               disabled
-              helperText="This is pre-selected based on your application choice"
+              helperText={t('verticalHelperText')}
               options={[
-                { value: 'girls-ashram', label: 'Girls Ashram' },
-                { value: 'girls-ashram', label: 'Girls Ashram' },
-                { value: 'dharamshala', label: 'Dharamshala' },
+                { value: 'girls-ashram', label: t('girlsAshram') },
+                { value: 'girls-ashram', label: t('girlsAshram') },
+                { value: 'dharamshala', label: t('dharamshala') },
               ]}
             />
 
             <Select
-              label="Preferred Room Type"
+              label={t('preferredRoomType')}
               value={data.roomType || ''}
               onChange={(e) => onChange('roomType', e.target.value)}
               error={errors.roomType}
               required
-              helperText="Subject to availability"
+              helperText={t('roomTypeHelperText')}
               options={[
-                { value: '', label: 'Select Room Type' },
+                { value: '', label: t('selectRoomType') },
                 { value: '2-sharing', label: '2-Sharing' },
                 { value: '3-sharing', label: '3-Sharing' },
                 { value: '4-sharing', label: '4-Sharing' },
@@ -516,13 +521,13 @@ export default function ApplicationFormPage() {
             />
 
             <Select
-              label="Duration of Stay"
+              label={t('durationOfStay')}
               value={data.duration || ''}
               onChange={(e) => onChange('duration', e.target.value)}
               error={errors.duration}
               required
               options={[
-                { value: '', label: 'Select Duration' },
+                { value: '', label: t('selectDuration') },
                 { value: '6-months', label: '6 Months' },
                 { value: '1-year', label: '1 Year' },
                 { value: '2-years', label: '2 Years' },
@@ -532,22 +537,22 @@ export default function ApplicationFormPage() {
             />
 
             <DatePicker
-              label="Intended Joining Date"
+              label={t('intendedJoiningDate')}
               value={data.joiningDate || ''}
               onChange={(e) => onChange('joiningDate', e.target.value)}
               error={errors.joiningDate}
               required
-              helperText="Expected date of admission"
+              helperText={t('joiningDateHelperText')}
             />
 
             <div>
               <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-                Special Requirements (Optional)
+                {t('specialRequirements')}
               </label>
               <textarea
                 value={data.specialRequirements || ''}
                 onChange={(e) => onChange('specialRequirements', e.target.value)}
-                placeholder="Any specific needs or requirements (e.g., medical conditions, dietary restrictions)"
+                placeholder={t('specialRequirementsPlaceholder')}
                 className="w-full px-4 py-3 border rounded-lg text-base min-h-[100px]"
                 style={{
                   borderColor: 'var(--border-primary)',
@@ -556,7 +561,7 @@ export default function ApplicationFormPage() {
                 }}
               />
               <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
-                Please mention any special needs or health conditions we should be aware of
+                {t('specialRequirementsHelperText')}
               </p>
             </div>
           </div>
@@ -572,7 +577,7 @@ export default function ApplicationFormPage() {
     },
     {
       id: 'references',
-      title: 'References',
+      title: t('references'),
       description: 'Ex-student references',
       component: ({ data, onChange, errors }: any) => (
         <div className="space-y-6">
@@ -582,95 +587,95 @@ export default function ApplicationFormPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                References
+                {t('references')}
               </h2>
-              <p style={{ color: 'var(--text-secondary)' }}>Provide references from ex-students</p>
+              <p style={{ color: 'var(--text-secondary)' }}>{t('referencesSubtitle')}</p>
             </div>
           </div>
 
           <div className="space-y-6">
             <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
               <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                Reference 1
+                {t('reference1')}
               </h3>
               <div className="space-y-4">
                 <Input
-                  label="Ex-Student Name"
+                  label={t('exStudentName')}
                   value={data.ref1Name || ''}
                   onChange={(e) => onChange('ref1Name', e.target.value)}
                   error={errors.ref1Name}
                   required
-                  placeholder="Enter full name of ex-student"
+                  placeholder={t('exStudentNamePlaceholder')}
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="Mobile Number"
+                    label={t('mobileNumber')}
                     type="tel"
                     value={data.ref1Mobile || ''}
                     onChange={(e) => onChange('ref1Mobile', e.target.value)}
                     error={errors.ref1Mobile}
                     required
-                    placeholder="10-digit mobile number"
+                    placeholder={t('mobileNumberPlaceholder')}
                     maxLength={10}
                     inputMode="tel"
                   />
 
                   <Input
-                    label="Year of Stay"
+                    label={t('yearOfStay')}
                     value={data.ref1Year || ''}
                     onChange={(e) => onChange('ref1Year', e.target.value)}
                     error={errors.ref1Year}
                     required
-                    placeholder="e.g., 2020-2023"
+                    placeholder={t('yearOfStayPlaceholder1')}
                   />
                 </div>
 
                 <Input
-                  label="Relationship (Optional)"
+                  label={t('relationshipOptional')}
                   value={data.ref1Relationship || ''}
                   onChange={(e) => onChange('ref1Relationship', e.target.value)}
-                  placeholder="e.g., Family friend, Relative, Neighbor"
+                  placeholder={t('relationshipPlaceholder')}
                 />
               </div>
             </div>
 
             <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
               <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                Reference 2
+                {t('reference2')}
               </h3>
               <div className="space-y-4">
                 <Input
-                  label="Ex-Student Name"
+                  label={t('exStudentName')}
                   value={data.ref2Name || ''}
                   onChange={(e) => onChange('ref2Name', e.target.value)}
-                  placeholder="Enter full name of ex-student"
+                  placeholder={t('exStudentNamePlaceholder')}
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="Mobile Number"
+                    label={t('mobileNumber')}
                     type="tel"
                     value={data.ref2Mobile || ''}
                     onChange={(e) => onChange('ref2Mobile', e.target.value)}
-                    placeholder="10-digit mobile number"
+                    placeholder={t('mobileNumberPlaceholder')}
                     maxLength={10}
                     inputMode="tel"
                   />
 
                   <Input
-                    label="Year of Stay"
+                    label={t('yearOfStay')}
                     value={data.ref2Year || ''}
                     onChange={(e) => onChange('ref2Year', e.target.value)}
-                    placeholder="e.g., 2021-2024"
+                    placeholder={t('yearOfStayPlaceholder2')}
                   />
                 </div>
 
                 <Input
-                  label="Relationship (Optional)"
+                  label={t('relationshipOptional')}
                   value={data.ref2Relationship || ''}
                   onChange={(e) => onChange('ref2Relationship', e.target.value)}
-                  placeholder="e.g., Family friend, Relative, Neighbor"
+                  placeholder={t('relationshipPlaceholder')}
                 />
               </div>
             </div>
@@ -689,7 +694,7 @@ export default function ApplicationFormPage() {
     },
     {
       id: 'documents',
-      title: 'Documents',
+      title: t('documents'),
       description: 'Upload required documents',
       component: ({ data, onChange, errors, saving }: any) => (
         <div className="space-y-6">
@@ -699,40 +704,40 @@ export default function ApplicationFormPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                Document Upload
+                {t('documentUpload')}
               </h2>
-              <p style={{ color: 'var(--text-secondary)' }}>Upload required documents</p>
+              <p style={{ color: 'var(--text-secondary)' }}>{t('documentUploadSubtitle')}</p>
             </div>
           </div>
 
           <div className="card p-6 border-2" style={{ backgroundColor: 'var(--color-blue-50)', borderColor: 'var(--color-blue-200)' }}>
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
               <FileText className="w-5 h-5" />
-              Upload Guidelines
+              {t('uploadGuidelines')}
             </h3>
             <ul className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-semibold">•</span>
-                <span>Accepted formats: PDF, JPG, JPEG</span>
+                <span>{t('acceptedFormats')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-semibold">•</span>
-                <span>Maximum file size: 5 MB per document</span>
+                <span>{t('maxFileSize')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-semibold">•</span>
-                <span>Ensure documents are clear and readable</span>
+                <span>{t('ensureClear')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 font-semibold">•</span>
-                <span>Drag and drop files or click to browse</span>
+                <span>{t('dragAndDrop')}</span>
               </li>
             </ul>
           </div>
 
           <div className="space-y-6">
             <FileUpload
-              label="Recent Passport Size Photo"
+              label={t('recentPhoto')}
               value={data.photoFile || null}
               onChange={(file) => onChange('photoFile', file)}
               error={errors.photoFile}
@@ -743,7 +748,7 @@ export default function ApplicationFormPage() {
             />
 
             <FileUpload
-              label="Birth Certificate"
+              label={t('birthCertificate')}
               value={data.birthCertificate || null}
               onChange={(file) => onChange('birthCertificate', file)}
               error={errors.birthCertificate}
@@ -755,7 +760,7 @@ export default function ApplicationFormPage() {
 
             <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
               <FileUpload
-                label="Educational Marksheet/Certificate"
+                label={t('marksheet')}
                 value={data.marksheet || null}
                 onChange={(file) => onChange('marksheet', file)}
                 error={errors.marksheet}
@@ -768,7 +773,7 @@ export default function ApplicationFormPage() {
 
             <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
               <FileUpload
-                label="Community Recommendation Letter (Optional)"
+                label={t('recommendationLetter')}
                 value={data.recommendationLetter || null}
                 onChange={(file) => onChange('recommendationLetter', file)}
                 accept=".jpg,.jpeg,.pdf"
@@ -789,7 +794,7 @@ export default function ApplicationFormPage() {
     },
     {
       id: 'review',
-      title: 'Review & Submit',
+      title: t('reviewApplication'),
       description: 'Review before submitting',
       component: ({ data }: any) => (
         <div className="space-y-6">
@@ -799,16 +804,16 @@ export default function ApplicationFormPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                Review Your Application
+                {t('reviewApplication')}
               </h2>
-              <p style={{ color: 'var(--text-secondary)' }}>Please review all details before submitting</p>
+              <p style={{ color: 'var(--text-secondary)' }}>{t('reviewSubtitle')}</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
               <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                Personal Details
+                {t('personalDetails')}
               </h3>
               <div className="space-y-2 text-sm">
                 <p><strong>Name:</strong> {data.firstName} {data.middleName} {data.lastName}</p>
@@ -824,7 +829,7 @@ export default function ApplicationFormPage() {
 
             <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
               <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                Academic Information
+                {t('academicInfo')}
               </h3>
               <div className="space-y-2 text-sm">
                 <p><strong>Institution:</strong> {data.institution}</p>
@@ -839,7 +844,7 @@ export default function ApplicationFormPage() {
 
             <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
               <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                Hostel Preferences
+                {t('hostelPreferences')}
               </h3>
               <div className="space-y-2 text-sm">
                 <p><strong>Vertical:</strong> {data.vertical === 'girls-ashram' ? 'Girls Ashram' : data.vertical === 'girls-ashram' ? 'Girls Ashram' : 'Dharamshala'}</p>
@@ -854,7 +859,7 @@ export default function ApplicationFormPage() {
 
             <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
               <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                Reference 1
+                {t('reference1')}
               </h3>
               <div className="space-y-2 text-sm">
                 <p><strong>Name:</strong> {data.ref1Name}</p>
@@ -867,7 +872,7 @@ export default function ApplicationFormPage() {
             {data.ref2Name && (
               <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
                 <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                  Reference 2
+                  {t('reference2')}
                 </h3>
                 <div className="space-y-2 text-sm">
                   <p><strong>Name:</strong> {data.ref2Name}</p>
@@ -880,7 +885,7 @@ export default function ApplicationFormPage() {
 
             <div className="card p-6 border-2" style={{ borderColor: 'var(--border-primary)' }}>
               <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-                Documents
+                {t('documents')}
               </h3>
               <div className="space-y-2 text-sm">
                 <p><strong>Photo:</strong> {data.photoFile?.name || 'Not uploaded'}</p>
@@ -895,11 +900,10 @@ export default function ApplicationFormPage() {
 
           <div className="card p-6 border-2" style={{ backgroundColor: 'var(--color-blue-50)', borderColor: 'var(--color-blue-200)' }}>
             <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-              Declaration
+              {t('declaration')}
             </h3>
             <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-              I hereby declare that all the information provided above is true and correct to the best of my knowledge.
-              I understand that any false information may result in rejection of my application.
+              {t('declarationText')}
             </p>
             <label className="flex items-start gap-3 cursor-pointer">
               <input
@@ -908,7 +912,7 @@ export default function ApplicationFormPage() {
                 required
               />
               <span className="text-sm" style={{ color: 'var(--text-primary)' }}>
-                I agree to the terms and conditions and declare that the information provided is accurate
+                {t('agreeTerms')}
               </span>
             </label>
           </div>
@@ -1027,7 +1031,7 @@ export default function ApplicationFormPage() {
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-page)' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500 mx-auto mb-4"></div>
-          <p style={{ color: 'var(--text-secondary)' }}>Loading application form...</p>
+          <p style={{ color: 'var(--text-secondary)' }}>{t('loadingForm')}</p>
         </div>
       </div>
     );
@@ -1035,6 +1039,9 @@ export default function ApplicationFormPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-page)' }}>
+      <div className="flex justify-end p-4">
+        <LanguageToggle currentLocale={locale as Locale} />
+      </div>
       <header
         className="px-6 py-4 border-b"
         style={{
@@ -1047,16 +1054,16 @@ export default function ApplicationFormPage() {
             <ArrowLeft className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
             <div>
               <h1 className="text-lg font-semibold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}>
-                Girls Ashram Application
+                {t('girlsAshramApplication')}
               </h1>
-              <p className="text-caption">Application Form</p>
+              <p className="text-caption">{t('applicationForm')}</p>
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="nav-link">Home</Link>
-            <Link href="/apply" className="nav-link">Apply Now</Link>
-            <Link href="/check-status" className="nav-link">Check Status</Link>
-            <Link href="/login" className="nav-link">Login</Link>
+            <Link href="/" className="nav-link">{t('home')}</Link>
+            <Link href="/apply" className="nav-link">{t('applyNow')}</Link>
+            <Link href="/check-status" className="nav-link">{t('checkStatus')}</Link>
+            <Link href="/login" className="nav-link">{t('login')}</Link>
           </nav>
         </div>
       </header>
@@ -1068,7 +1075,7 @@ export default function ApplicationFormPage() {
             initialData={initialData}
             onSaveDraft={handleSaveDraft}
             onSubmit={handleSubmit}
-            onSubmitLabel="Submit Application"
+            onSubmitLabel={t('submitApplication')}
           />
         </div>
       </main>

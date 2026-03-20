@@ -2,16 +2,24 @@
 
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
+import { LanguageToggle } from '@/components/language-toggle';
+import type { Locale } from '@/i18n/config';
 import { CheckCircle, FileText, Home, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Suspense } from 'react';
 
 function SuccessContent() {
+  const t = useTranslations('Public.applicationForm');
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const trackingNumber = searchParams.get('trackingNumber') || 'N/A';
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-page)' }}>
+      <div className="flex justify-end p-4">
+        <LanguageToggle currentLocale={locale as Locale} />
+      </div>
       <header
         className="px-6 py-4 border-b"
         style={{
@@ -23,15 +31,15 @@ function SuccessContent() {
           <Link href="/" className="flex items-center gap-3">
             <div>
               <h1 className="text-lg font-semibold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-serif)' }}>
-                Hirachand Gumanji Family
+                {t('success.trustName')}
               </h1>
-              <p className="text-caption">Charitable Trust</p>
+              <p className="text-caption">{t('success.trustSubtitle')}</p>
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="nav-link">Home</Link>
-            <Link href="/apply" className="nav-link">Apply Now</Link>
-            <Link href="/track" className="nav-link">Check Status</Link>
+            <Link href="/" className="nav-link">{t('home')}</Link>
+            <Link href="/apply" className="nav-link">{t('applyNow')}</Link>
+            <Link href="/track" className="nav-link">{t('checkStatus')}</Link>
           </nav>
         </div>
       </header>
@@ -46,11 +54,11 @@ function SuccessContent() {
           </div>
 
           <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
-            Application Submitted Successfully!
+            {t('success.title')}
           </h1>
 
           <p className="text-lg mb-8" style={{ color: 'var(--text-secondary)' }}>
-            Your application for Dharamshala has been received. We will review your application and contact you soon.
+            {t('success.dharamshalaSubtitle')}
           </p>
 
           <div
@@ -63,7 +71,7 @@ function SuccessContent() {
             <div className="flex items-center justify-center gap-3 mb-4">
               <FileText className="w-5 h-5" style={{ color: 'var(--color-blue-600)' }} />
               <span className="font-medium" style={{ color: 'var(--text-primary)' }}>
-                Your Tracking Number
+                {t('success.trackingNumber')}
               </span>
             </div>
             <div
@@ -76,13 +84,13 @@ function SuccessContent() {
               {trackingNumber}
             </div>
             <p className="mt-4 text-sm" style={{ color: 'var(--text-secondary)' }}>
-              Please save this tracking number. You will need it to check your application status.
+              {t('success.saveTracking')}
             </p>
           </div>
 
           <div className="space-y-4">
             <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>
-              What happens next?
+              {t('success.whatHappensNext')}
             </h3>
             <ol className="text-left space-y-3 max-w-md mx-auto">
               <li className="flex items-start gap-3">
@@ -93,7 +101,7 @@ function SuccessContent() {
                   1
                 </span>
                 <span style={{ color: 'var(--text-secondary)' }}>
-                  Our team will review your application within 1-2 business days.
+                  {t('success.dharamshalaStep1')}
                 </span>
               </li>
               <li className="flex items-start gap-3">
@@ -104,7 +112,7 @@ function SuccessContent() {
                   2
                 </span>
                 <span style={{ color: 'var(--text-secondary)' }}>
-                  You will receive an SMS/email notification about your booking confirmation.
+                  {t('success.dharamshalaStep2')}
                 </span>
               </li>
               <li className="flex items-start gap-3">
@@ -115,7 +123,7 @@ function SuccessContent() {
                   3
                 </span>
                 <span style={{ color: 'var(--text-secondary)' }}>
-                  Upon approval, you will receive check-in instructions and payment details.
+                  {t('success.dharamshalaStep3')}
                 </span>
               </li>
             </ol>
@@ -124,14 +132,14 @@ function SuccessContent() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
             <Link href={`/track/${trackingNumber}`}>
               <Button variant="primary">
-                Track Application
+                {t('success.trackApplication')}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
             <Link href="/">
               <Button variant="secondary">
                 <Home className="w-4 h-4 mr-2" />
-                Back to Home
+                {t('success.backToHome')}
               </Button>
             </Link>
           </div>
