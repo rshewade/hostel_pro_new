@@ -81,7 +81,7 @@ BEGIN
     SELECT capacity INTO room_cap FROM rooms WHERE id = OLD.room_id;
     UPDATE rooms SET
       occupied_count = active_count,
-      status = CASE WHEN active_count >= room_cap THEN 'OCCUPIED' ELSE 'AVAILABLE' END
+      status = (CASE WHEN active_count >= room_cap THEN 'OCCUPIED' ELSE 'AVAILABLE' END)::room_status
     WHERE id = OLD.room_id;
   ELSE
     SELECT COUNT(*) INTO active_count FROM room_allocations
@@ -89,7 +89,7 @@ BEGIN
     SELECT capacity INTO room_cap FROM rooms WHERE id = NEW.room_id;
     UPDATE rooms SET
       occupied_count = active_count,
-      status = CASE WHEN active_count >= room_cap THEN 'OCCUPIED' ELSE 'AVAILABLE' END
+      status = (CASE WHEN active_count >= room_cap THEN 'OCCUPIED' ELSE 'AVAILABLE' END)::room_status
     WHERE id = NEW.room_id;
 
     -- If room changed, also update old room
@@ -99,7 +99,7 @@ BEGIN
       SELECT capacity INTO room_cap FROM rooms WHERE id = OLD.room_id;
       UPDATE rooms SET
         occupied_count = active_count,
-        status = CASE WHEN active_count >= room_cap THEN 'OCCUPIED' ELSE 'AVAILABLE' END
+        status = (CASE WHEN active_count >= room_cap THEN 'OCCUPIED' ELSE 'AVAILABLE' END)::room_status
       WHERE id = OLD.room_id;
     END IF;
   END IF;
