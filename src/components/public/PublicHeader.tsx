@@ -64,6 +64,7 @@ export default function PublicHeader() {
               width={48}
               height={48}
               className="h-12 w-auto"
+              style={{ width: 'auto' }}
             />
             <div className="hidden sm:block">
               <h1
