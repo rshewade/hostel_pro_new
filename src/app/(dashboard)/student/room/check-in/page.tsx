@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components';
 
-// Types
 type Allocation = {
   id: string;
   student_id: string;
@@ -60,54 +59,23 @@ export default function CheckInPage() {
   const [roomConditionOk, setRoomConditionOk] = useState(false);
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [additionalNotes, setAdditionalNotes] = useState('');
-  const [studentId, setStudentId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Get student ID from localStorage (stored during login)
-    const userId = localStorage.getItem('userId');
-    const token = localStorage.getItem('authToken');
-
-    if (userId) {
-      setStudentId(userId);
-    } else if (token) {
-      try {
-        // Fallback: try to decode from JWT token
-        if (token.includes('.')) {
-          const payload = token.split('.')[1];
-          const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-          const tokenData = JSON.parse(atob(base64));
-          setStudentId(tokenData.sub);
-        } else {
-          const tokenData = JSON.parse(atob(token));
-          setStudentId(tokenData.userId);
-        }
-      } catch (e) {
-        console.error('Error decoding token:', e);
-        setError('Authentication error. Please login again.');
-      }
-    } else {
-      setError('Please login to complete check-in.');
-    }
+    fetchAllocationData();
   }, []);
-
-  useEffect(() => {
-    if (studentId) {
-      fetchAllocationData();
-    }
-  }, [studentId]);
 
   const fetchAllocationData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch student's allocation
-      const allocationsResponse = await fetch(`/api/allocations?student_id=${studentId}`);
+      // Fetch student's allocation (API uses session to identify user)
+      const allocationsResponse = await fetch('/api/allocations?mine=true');
       const allocationsResult = await allocationsResponse.json();
       const allocationsData = allocationsResult.data || allocationsResult || [];
 
       const studentAllocation = (Array.isArray(allocationsData) ? allocationsData : []).find(
-        (a: any) => (a.student_user_id === studentId || a.student_id === studentId) && a.status === 'ACTIVE'
+        (a: any) => a.status === 'ACTIVE'
       );
 
       if (!studentAllocation) {
@@ -117,7 +85,6 @@ export default function CheckInPage() {
       }
 
       if (studentAllocation.check_in_confirmed) {
-        // Redirect to room page if already checked in
         window.location.href = '/dashboard/student/room';
         return;
       }
@@ -158,7 +125,6 @@ export default function CheckInPage() {
   };
 
   const handleSubmitCheckIn = async () => {
-    // Validation
     const unverifiedItems = inventory.filter((item) => !item.verified);
     if (unverifiedItems.length > 0) {
       setError('Please verify all inventory items before proceeding.');
@@ -179,8 +145,6 @@ export default function CheckInPage() {
     setError(null);
 
     try {
-      // In production, this would call a dedicated check-in API endpoint
-      // For now, we'll update the allocation directly
       const response = await fetch(`/api/allocations/${allocation?.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -198,7 +162,6 @@ export default function CheckInPage() {
         throw new Error('Failed to confirm check-in');
       }
 
-      // Redirect to room page on success
       window.location.href = '/dashboard/student/room?checked_in=true';
     } catch (err) {
       console.error('Error submitting check-in:', err);

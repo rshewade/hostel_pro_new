@@ -35,7 +35,6 @@ export default function StudentDocumentsPage() {
   const [activeTab, setActiveTab] = useState<DocumentCategory | 'ALL'>('ALL');
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [studentId, setStudentId] = useState<string | null>(null);
 
   // Upload modal state
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -45,46 +44,17 @@ export default function StudentDocumentsPage() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Get student ID from localStorage on mount
+  // Fetch documents on mount
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    const token = localStorage.getItem('authToken');
-
-    if (userId) {
-      setStudentId(userId);
-    } else if (token) {
-      try {
-        if (token.includes('.')) {
-          const payload = token.split('.')[1];
-          const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-          const tokenData = JSON.parse(atob(base64));
-          setStudentId(tokenData.sub);
-        } else {
-          const tokenData = JSON.parse(atob(token));
-          setStudentId(tokenData.userId);
-        }
-      } catch (e) {
-        console.error('Error decoding token:', e);
-      }
-    }
+    fetchDocuments();
   }, []);
 
-  // Fetch documents when studentId is available
-  useEffect(() => {
-    if (studentId) {
-      fetchDocuments();
-    }
-  }, [studentId]);
-
   const fetchDocuments = async () => {
-    if (!studentId) return;
-
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/student/documents?studentId=${studentId}`);
+      const response = await fetch('/api/student/documents?mine=true');
       if (response.ok) {
         const data = await response.json();
-        // Handle both array and wrapped response
         const docs = Array.isArray(data) ? data : (data.data || []);
         setDocuments(docs);
       } else {
@@ -101,12 +71,10 @@ export default function StudentDocumentsPage() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         setUploadError('File size must be less than 5MB');
         return;
       }
-      // Validate file type
       const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
       if (!allowedTypes.includes(file.type)) {
         setUploadError('Only PDF, JPG, and PNG files are allowed');
@@ -118,7 +86,7 @@ export default function StudentDocumentsPage() {
   };
 
   const handleUpload = async () => {
-    if (!selectedFile || !selectedDocType || !studentId) {
+    if (!selectedFile || !selectedDocType) {
       setUploadError('Please select a file and document type');
       return;
     }
@@ -129,7 +97,6 @@ export default function StudentDocumentsPage() {
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('student_id', studentId);
       formData.append('document_type', selectedDocType);
 
       const docTypeInfo = DOCUMENT_TYPES.find(d => d.value === selectedDocType);
@@ -143,7 +110,6 @@ export default function StudentDocumentsPage() {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        // Close modal and refresh documents
         setShowUploadModal(false);
         setSelectedFile(null);
         setSelectedDocType('');
@@ -185,7 +151,6 @@ export default function StudentDocumentsPage() {
 
   const handleDownloadDocument = async (doc: Document) => {
     try {
-      // First get the signed URL
       const urlResponse = await fetch(`/api/student/documents/${doc.id}/url`);
       const urlResult = await urlResponse.json();
 
@@ -194,7 +159,6 @@ export default function StudentDocumentsPage() {
         return;
       }
 
-      // Fetch the file and download it
       const response = await fetch(urlResult.url);
       const blob = await response.blob();
       const downloadUrl = window.URL.createObjectURL(blob);

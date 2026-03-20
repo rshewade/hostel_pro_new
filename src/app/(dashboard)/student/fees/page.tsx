@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/data/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -44,45 +43,10 @@ export default function StudentFeesPage() {
     const fetchFees = async () => {
       try {
         setLoading(true);
-        // Get current student ID from localStorage (stored during login)
-        const token = localStorage.getItem('authToken');
-        let studentId = localStorage.getItem('userId');
-
-        if (!token) {
-          setError('Please login to view fees');
-          setLoading(false);
-          return;
-        }
-
-        // Fallback: try to decode from token if userId not in localStorage
-        if (!studentId) {
-          try {
-            if (token.includes('.')) {
-              const payload = token.split('.')[1];
-              const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-              const tokenData = JSON.parse(atob(base64));
-              studentId = tokenData.sub;
-            } else {
-              const tokenData = JSON.parse(atob(token));
-              studentId = tokenData.userId;
-            }
-          } catch (e) {
-            console.error('Error decoding token:', e);
-            setError('Authentication error. Please login again.');
-            setLoading(false);
-            return;
-          }
-        }
-
-        if (!studentId) {
-          setError('Please login to view fees');
-          setLoading(false);
-          return;
-        }
 
         // Fetch profile for receipt data
         try {
-          const profileRes = await fetch(`/api/users/profile?user_id=${studentId}`);
+          const profileRes = await fetch('/api/users/profile');
           if (profileRes.ok) {
             const profileResult = await profileRes.json();
             const userData = profileResult.data || profileResult;
@@ -101,14 +65,13 @@ export default function StudentFeesPage() {
           // Non-critical - receipt will show blank fields
         }
 
-        const response = await fetch(`/api/fees?student_id=${studentId}`);
+        const response = await fetch('/api/fees?mine=true');
 
         if (!response.ok) {
           throw new Error('Failed to fetch fees');
         }
 
         const result = await response.json();
-        // API returns { success: true, data: { data: [...], summary: {...} } }
         const feesData = result.data?.data || result.data || [];
 
         const transformedFees: FeeItem[] = (Array.isArray(feesData) ? feesData : []).map((fee: any) => ({
@@ -125,7 +88,7 @@ export default function StudentFeesPage() {
 
         // Also fetch payment history
         try {
-          const paymentsResponse = await fetch(`/api/payments?student_id=${studentId}`);
+          const paymentsResponse = await fetch('/api/payments?mine=true');
           if (paymentsResponse.ok) {
             const paymentsResult = await paymentsResponse.json();
             const paymentsData = paymentsResult.data?.data || paymentsResult.data || [];
@@ -133,7 +96,6 @@ export default function StudentFeesPage() {
           }
         } catch (paymentErr) {
           console.error('Error fetching payments:', paymentErr);
-          // Don't fail the whole page if payments fail
         }
 
         setError(null);

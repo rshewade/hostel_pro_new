@@ -99,28 +99,7 @@ export default function ParentDashboard() {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        let sessionToken = urlParams.get('sessionToken');
-
-        if (!sessionToken) {
-          sessionToken = localStorage.getItem('parentSessionToken');
-        }
-
-        if (!sessionToken) {
-          setError('Session expired. Please login again.');
-          setLoading(false);
-          return;
-        }
-
-        localStorage.setItem('parentSessionToken', sessionToken);
-
-        if (urlParams.has('sessionToken')) {
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.delete('sessionToken');
-          window.history.replaceState({}, '', newUrl.pathname);
-        }
-
-        const response = await fetch(`/api/parent/student?sessionToken=${encodeURIComponent(sessionToken)}`);
+        const response = await fetch('/api/parent/student');
         const result = await response.json();
 
         if (response.ok && result.success) {
@@ -150,17 +129,13 @@ export default function ParentDashboard() {
     const fetchAdditionalData = async () => {
       if (allStudents.length === 0) return;
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const sessionToken = urlParams.get('sessionToken') || localStorage.getItem('parentSessionToken');
-      if (!sessionToken) return;
-
       // Get the currently selected student's ID
       const currentStudent = allStudents[selectedStudentIndex];
       if (!currentStudent) return;
 
       try {
         // Fetch fees for the selected student
-        const feesResponse = await fetch(`/api/parent/fees?sessionToken=${encodeURIComponent(sessionToken)}&studentId=${encodeURIComponent(currentStudent.id)}`);
+        const feesResponse = await fetch(`/api/parent/fees?studentId=${encodeURIComponent(currentStudent.id)}`);
         const feesResult = await feesResponse.json();
         if (feesResult.success && feesResult.data) {
           if (feesResult.data.summary) {
@@ -170,7 +145,7 @@ export default function ParentDashboard() {
         }
 
         // Fetch leave requests for the selected student
-        const leaveResponse = await fetch(`/api/parent/leave?sessionToken=${encodeURIComponent(sessionToken)}&studentId=${encodeURIComponent(currentStudent.id)}`);
+        const leaveResponse = await fetch(`/api/parent/leave?studentId=${encodeURIComponent(currentStudent.id)}`);
         const leaveResult = await leaveResponse.json();
         if (leaveResult.success && leaveResult.data) {
           setLeaveRequests(leaveResult.data.items || []);
@@ -230,10 +205,10 @@ export default function ParentDashboard() {
               <h3 className="text-lg font-semibold text-red-900 mb-2">Unable to Load Data</h3>
               <p className="text-red-700 mb-4">{error}</p>
               <button
-                onClick={() => window.location.href = '/login/parent'}
+                onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
               >
-                Return to Login
+                Retry
               </button>
             </div>
           )}

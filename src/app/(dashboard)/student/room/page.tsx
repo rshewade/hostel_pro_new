@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components';
 
-// Types
 type Allocation = {
   id: string;
   student_id: string;
@@ -38,55 +37,23 @@ export default function StudentRoomPage() {
   const [roommates, setRoommates] = useState<Roommate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [studentId, setStudentId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Get student ID from localStorage (stored during login)
-    const userId = localStorage.getItem('userId');
-    const token = localStorage.getItem('authToken');
-
-    if (userId) {
-      setStudentId(userId);
-    } else if (token) {
-      try {
-        // Fallback: try to decode from JWT token
-        if (token.includes('.')) {
-          const payload = token.split('.')[1];
-          const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-          const tokenData = JSON.parse(atob(base64));
-          setStudentId(tokenData.sub);
-        } else {
-          const tokenData = JSON.parse(atob(token));
-          setStudentId(tokenData.userId);
-        }
-      } catch (e) {
-        console.error('Error decoding token:', e);
-        setError('Authentication error. Please login again.');
-      }
-    } else {
-      setError('Please login to view room details.');
-    }
+    fetchAllocationData();
   }, []);
-
-  useEffect(() => {
-    if (studentId) {
-      fetchAllocationData();
-    }
-  }, [studentId]);
 
   const fetchAllocationData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch student's allocation
-      const allocationsResponse = await fetch(`/api/allocations?student_id=${studentId}`);
+      // Fetch student's allocation (API uses session to identify user)
+      const allocationsResponse = await fetch('/api/allocations?mine=true');
       const allocationsResult = await allocationsResponse.json();
-      // API returns { success: true, data: [...] }
       const allocationsData = allocationsResult.data || allocationsResult || [];
 
       const studentAllocation = (Array.isArray(allocationsData) ? allocationsData : []).find(
-        (a: any) => (a.student_user_id === studentId || a.student_id === studentId) && a.status === 'ACTIVE'
+        (a: any) => a.status === 'ACTIVE'
       );
 
       if (!studentAllocation) {
@@ -112,12 +79,14 @@ export default function StudentRoomPage() {
         (a: any) => a.room_id === studentAllocation.room_id && a.status === 'ACTIVE'
       );
 
+      const studentId = studentAllocation.student_user_id || studentAllocation.student_id;
+
       const roommatesData = await Promise.all(
         allRoomAllocations
           .filter((a: any) => (a.student_user_id || a.student_id) !== studentId)
-          .map(async (allocation: any, index: number) => {
+          .map(async (alloc: any, index: number) => {
             try {
-              const oderId = allocation.student_user_id || allocation.student_id;
+              const oderId = alloc.student_user_id || alloc.student_id;
               const response = await fetch(`/api/users/profile?user_id=${oderId}`);
               if (response.ok) {
                 const data = await response.json();
@@ -126,18 +95,18 @@ export default function StudentRoomPage() {
                   id: oderId,
                   full_name: userData.full_name || userData.profile?.full_name || 'Student',
                   bed_number: index + 2,
-                  check_in_confirmed: allocation.check_in_confirmed || false,
+                  check_in_confirmed: alloc.check_in_confirmed || false,
                 };
               }
             } catch (err) {
               console.error('Error fetching roommate:', err);
             }
-            const oderId2 = allocation.student_user_id || allocation.student_id;
+            const oderId2 = alloc.student_user_id || alloc.student_id;
             return {
               id: oderId2,
               full_name: 'Student',
               bed_number: index + 2,
-              check_in_confirmed: allocation.check_in_confirmed || false,
+              check_in_confirmed: alloc.check_in_confirmed || false,
             };
           })
       );
@@ -152,7 +121,6 @@ export default function StudentRoomPage() {
   };
 
   const handleCheckInClick = () => {
-    // Navigate to check-in confirmation page (to be implemented)
     window.location.href = '/dashboard/student/room/check-in';
   };
 

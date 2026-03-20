@@ -43,15 +43,9 @@ export default function ParentLeaveView() {
       try {
         setIsLoading(true);
         setError(null);
-        const sessionToken = localStorage.getItem('parentSessionToken');
-        if (!sessionToken) {
-          setError('Please login to view leave requests.');
-          setIsLoading(false);
-          return;
-        }
 
         // Fetch student info
-        const studentRes = await fetch(`/api/parent/student?sessionToken=${encodeURIComponent(sessionToken)}`);
+        const studentRes = await fetch('/api/parent/student');
         if (studentRes.ok) {
           const studentResult = await studentRes.json();
           const student = Array.isArray(studentResult.data) ? studentResult.data[0] : studentResult.data;
@@ -66,7 +60,7 @@ export default function ParentLeaveView() {
         }
 
         // Fetch leave requests
-        const leaveRes = await fetch(`/api/parent/leave?sessionToken=${encodeURIComponent(sessionToken)}`);
+        const leaveRes = await fetch('/api/parent/leave');
         if (leaveRes.ok) {
           const leaveResult = await leaveRes.json();
           const items = leaveResult.data?.items || [];
@@ -156,9 +150,6 @@ export default function ParentLeaveView() {
           <div className="flex items-center gap-4">
             <Link href="/dashboard/parent" className="text-sm" style={{ color: 'var(--text-link)' }}>
               Back to Dashboard
-            </Link>
-            <Link href="/login/parent" className="text-sm" style={{ color: 'var(--text-link)' }}>
-              Logout
             </Link>
           </div>
         </div>

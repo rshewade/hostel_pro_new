@@ -6,164 +6,135 @@ import { Button } from '@/components';
 import { ComingSoonPlaceholder } from '@/components/future/ComingSoonPlaceholder';
 import { DPDPComplianceBanner } from '@/components/audit/DPDPComplianceBanner';
 
-interface StudentProfile {
-  id: string;
-  full_name: string;
-  vertical: string;
-  room_number?: string;
-  joining_date?: string;
-  check_in_confirmed?: boolean;
+interface DashboardData {
+  profile: {
+    full_name: string;
+    vertical: string;
+  } | null;
+  allocation: {
+    status: string;
+    check_in_confirmed: boolean;
+    allocated_at: string;
+    room_number: string | null;
+  } | null;
+  fees: {
+    pendingAmount: number;
+    nextDueDate: string | null;
+  };
+  renewal: {
+    daysRemaining: number | null;
+    dueDate: string | null;
+  };
 }
 
 export default function StudentDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<StudentProfile | null>(null);
-  const [vertical, setVertical] = useState('Boys Hostel');
-  const [status, setStatus] = useState('CHECKED_IN');
-  const [roomNumber, setRoomNumber] = useState<string | null>(null);
-  const [joiningDate, setJoiningDate] = useState<string | null>(null);
-  const [academicYear, setAcademicYear] = useState<string>('');
-  const [currentPeriod, setCurrentPeriod] = useState<string>('');
-  const [renewalDaysRemaining, setRenewalDaysRemaining] = useState<number | null>(null);
-  const [renewalDueDate, setRenewalDueDate] = useState<string | null>(null);
-  const [feeDueDate, setFeeDueDate] = useState<string | null>(null);
-  const [pendingFeeAmount, setPendingFeeAmount] = useState<number>(0);
+  const [data, setData] = useState<DashboardData>({
+    profile: null,
+    allocation: null,
+    fees: { pendingAmount: 0, nextDueDate: null },
+    renewal: { daysRemaining: null, dueDate: null },
+  });
 
   useEffect(() => {
-    const fetchProfileData = async () => {
+    const fetchDashboardData = async () => {
       try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-          router.push('/login');
-          return;
-        }
+        // Fetch profile
+        const profileRes = await fetch('/api/users/profile');
+        const profileData = profileRes.ok ? await profileRes.json() : null;
+        const profile = profileData?.data || profileData;
 
-        // Handle both JWT tokens (Supabase) and legacy base64 tokens
-        let userId: string;
-        try {
-          if (token.includes('.')) {
-            // JWT token format: header.payload.signature
-            const payload = token.split('.')[1];
-            // JWT uses base64url encoding, convert to standard base64
-            const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-            const tokenData = JSON.parse(atob(base64));
-            // Supabase JWT has 'sub' as user ID, but we store our userId separately
-            userId = localStorage.getItem('userId') || tokenData.sub;
-          } else {
-            // Legacy base64 encoded JSON token
-            const tokenData = JSON.parse(atob(token));
-            userId = tokenData.userId;
+        // Fetch allocations
+        const allocRes = await fetch('/api/allocations?mine=true');
+        const allocResult = allocRes.ok ? await allocRes.json() : { data: [] };
+        const allocations = allocResult.data || allocResult || [];
+        const activeAlloc = (Array.isArray(allocations) ? allocations : []).find(
+          (a: any) => a.status === 'ACTIVE'
+        );
+
+        let roomNumber: string | null = null;
+        if (activeAlloc) {
+          const roomsRes = await fetch('/api/rooms');
+          if (roomsRes.ok) {
+            const roomsResult = await roomsRes.json();
+            const roomsList = roomsResult.data || roomsResult || [];
+            const room = (Array.isArray(roomsList) ? roomsList : []).find(
+              (r: any) => r.id === activeAlloc.room_id
+            );
+            roomNumber = room?.room_number || null;
           }
-        } catch (e) {
-          console.error('Failed to decode token:', e);
-          router.push('/login');
-          return;
         }
 
-        if (!userId) {
-          router.push('/login');
-          return;
-        }
+        // Fetch fees
+        const feesRes = await fetch('/api/fees?mine=true');
+        const feesResult = feesRes.ok ? await feesRes.json() : { data: {} };
+        const feesData = feesResult.data?.data || feesResult.data || [];
+        const summary = feesResult.data?.summary || feesResult.summary || {};
+        const pendingAmount = (summary.total_pending || 0) + (summary.total_overdue || 0);
+        const now = new Date();
+        const pendingFees = (Array.isArray(feesData) ? feesData : [])
+          .filter((f: any) => f.status === 'PENDING' && new Date(f.due_date) > now)
+          .sort((a: any, b: any) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
+        const nextDueDate = pendingFees.length > 0 ? pendingFees[0].due_date : null;
 
-        // Fetch user profile
-        const profileResponse = await fetch(`/api/users/profile?user_id=${userId}`);
-        if (profileResponse.ok) {
-          const profileResult = await profileResponse.json();
-          const userData = profileResult.data || profileResult;
-          setProfile(userData);
+        // Fetch renewals
+        const renewalsRes = await fetch('/api/renewals');
+        const renewalsResult = renewalsRes.ok ? await renewalsRes.json() : { data: [] };
+        const renewalsData = renewalsResult.data || renewalsResult || [];
+        const studentRenewal = (Array.isArray(renewalsData) ? renewalsData : []).find(
+          (r: any) => r.student_id === profile?.id
+        );
 
-          // Set vertical display name
-          const verticalMap: Record<string, string> = {
-            'BOYS': 'Boys Hostel',
-            'GIRLS': 'Girls Ashram',
-            'DHARAMSHALA': 'Dharamshala',
-          };
-          setVertical(verticalMap[userData.vertical] || userData.vertical || 'Boys Hostel');
-        }
-
-        // Fetch room allocation
-        const allocationsResponse = await fetch(`/api/allocations?student_id=${userId}`);
-        if (allocationsResponse.ok) {
-          const allocationsResult = await allocationsResponse.json();
-          const allocationsData = allocationsResult.data || allocationsResult || [];
-          const activeAllocation = (Array.isArray(allocationsData) ? allocationsData : []).find(
-            (a: any) => (a.student_user_id === userId || a.student_id === userId) && a.status === 'ACTIVE'
-          );
-
-          if (activeAllocation) {
-            setStatus(activeAllocation.check_in_confirmed ? 'CHECKED_IN' : 'ALLOCATED');
-            setJoiningDate(activeAllocation.allocated_at);
-
-            // Fetch room details
-            const roomsResponse = await fetch('/api/rooms');
-            if (roomsResponse.ok) {
-              const roomsResult = await roomsResponse.json();
-              const roomsList = roomsResult.data || roomsResult || [];
-              const room = (Array.isArray(roomsList) ? roomsList : []).find(
-                (r: any) => r.id === activeAllocation.room_id
-              );
-              if (room) {
-                setRoomNumber(room.room_number);
+        setData({
+          profile: profile ? { full_name: profile.full_name, vertical: profile.vertical } : null,
+          allocation: activeAlloc
+            ? {
+                status: activeAlloc.check_in_confirmed ? 'CHECKED_IN' : 'ALLOCATED',
+                check_in_confirmed: activeAlloc.check_in_confirmed,
+                allocated_at: activeAlloc.allocated_at,
+                room_number: roomNumber,
               }
-            }
-          } else {
-            setStatus('NOT_ALLOCATED');
-          }
-        }
-
-        // Fetch renewal data (academic year, period, days remaining)
-        const renewalsResponse = await fetch(`/api/renewals`);
-        if (renewalsResponse.ok) {
-          const renewalsResult = await renewalsResponse.json();
-          const renewalsData = renewalsResult.data || renewalsResult || [];
-          const studentRenewal = (Array.isArray(renewalsData) ? renewalsData : []).find(
-            (r: any) => r.student_id === userId
-          );
-          if (studentRenewal) {
-            setRenewalDaysRemaining(studentRenewal.days_remaining);
-            setRenewalDueDate(studentRenewal.renewal_due_date);
-          }
-        }
-
-        // Fetch fee data for notifications
-        const feesResponse = await fetch(`/api/fees?student_id=${userId}`);
-        if (feesResponse.ok) {
-          const feesResult = await feesResponse.json();
-          const feesData = feesResult.data?.data || feesResult.data || [];
-          const summary = feesResult.data?.summary || feesResult.summary || {};
-          const pendingTotal = (summary.total_pending || 0) + (summary.total_overdue || 0);
-          setPendingFeeAmount(pendingTotal);
-
-          // Find nearest upcoming due date
-          const now = new Date();
-          const pendingFees = (Array.isArray(feesData) ? feesData : [])
-            .filter((f: any) => f.status === 'PENDING' && new Date(f.due_date) > now)
-            .sort((a: any, b: any) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
-          if (pendingFees.length > 0) {
-            setFeeDueDate(pendingFees[0].due_date);
-          }
-        }
-
-        // Derive academic year and period from allocation date
-        const allocationDate = joiningDate ? new Date(joiningDate) : new Date();
-        const year = allocationDate.getFullYear();
-        const month = allocationDate.getMonth(); // 0-indexed
-        // Academic year runs June to May
-        const ayStart = month >= 5 ? year : year - 1;
-        setAcademicYear(`${ayStart}-${String(ayStart + 1).slice(2)}`);
-        // Period: June-Nov = Semester 1, Dec-May = Semester 2
-        const currentMonth = new Date().getMonth();
-        setCurrentPeriod(currentMonth >= 5 && currentMonth <= 10 ? 'SEMESTER 1' : 'SEMESTER 2');
+            : null,
+          fees: { pendingAmount, nextDueDate },
+          renewal: {
+            daysRemaining: studentRenewal?.days_remaining ?? null,
+            dueDate: studentRenewal?.renewal_due_date ?? null,
+          },
+        });
       } catch (err) {
-        console.error('Error fetching profile data:', err);
+        console.error('Error fetching dashboard data:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProfileData();
-  }, [router]);
+    fetchDashboardData();
+  }, []);
+
+  const verticalMap: Record<string, string> = {
+    BOYS: 'Boys Hostel',
+    GIRLS: 'Girls Ashram',
+    DHARAMSHALA: 'Dharamshala',
+  };
+
+  const vertical = verticalMap[data.profile?.vertical || ''] || data.profile?.vertical || 'Boys Hostel';
+  const status = data.allocation?.status || 'NOT_ALLOCATED';
+  const roomNumber = data.allocation?.room_number || null;
+  const joiningDate = data.allocation?.allocated_at || null;
+  const renewalDaysRemaining = data.renewal.daysRemaining;
+  const renewalDueDate = data.renewal.dueDate;
+  const pendingFeeAmount = data.fees.pendingAmount;
+  const feeDueDate = data.fees.nextDueDate;
+
+  // Derive academic year and period
+  const allocationDate = joiningDate ? new Date(joiningDate) : new Date();
+  const year = allocationDate.getFullYear();
+  const month = allocationDate.getMonth();
+  const ayStart = month >= 5 ? year : year - 1;
+  const academicYear = `${ayStart}-${String(ayStart + 1).slice(2)}`;
+  const currentMonth = new Date().getMonth();
+  const currentPeriod = currentMonth >= 5 && currentMonth <= 10 ? 'SEMESTER 1' : 'SEMESTER 2';
 
   const getStatusDisplay = () => {
     switch (status) {
@@ -199,10 +170,10 @@ export default function StudentDashboard() {
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h2 className="text-heading-2 mb-2" style={{ color: 'var(--text-primary)' }}>
-                  Welcome, {profile?.full_name || 'Student'}!
+                  Welcome, {data.profile?.full_name || 'Student'}!
                 </h2>
                 <p className="text-body" style={{ color: 'var(--text-secondary)' }}>
-                  You are logged in as <strong>{profile?.full_name || 'Student'}</strong> at <strong>{vertical}</strong>
+                  You are logged in as <strong>{data.profile?.full_name || 'Student'}</strong> at <strong>{vertical}</strong>
                 </p>
                 <p className="text-body-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
                   Academic Year: <strong>{academicYear || 'N/A'}</strong> | Current Period: <strong>{currentPeriod || 'N/A'}</strong>

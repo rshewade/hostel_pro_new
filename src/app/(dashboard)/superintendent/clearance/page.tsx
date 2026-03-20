@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components';
 import {
   ExitDashboard,
@@ -13,7 +11,6 @@ import {
 import { ArrowLeft, Download, AlertCircle } from 'lucide-react';
 
 export default function SuperintendentClearancePage() {
-  const router = useRouter();
   const [exitRequests, setExitRequests] = useState<ExitRequestSummary[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<ExitRequestSummary | null>(null);
   const [loading, setLoading] = useState(true);

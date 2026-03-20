@@ -34,7 +34,6 @@ interface LeaveRule {
 export default function LeaveManagementPage() {
   const [selectedType, setSelectedType] = useState<LeaveType | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [studentId, setStudentId] = useState<string | null>(null);
   const [leaveHistory, setLeaveHistory] = useState<LeaveRequest[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [leaveRules, setLeaveRules] = useState<LeaveRule[]>([]);
@@ -70,48 +69,18 @@ export default function LeaveManagementPage() {
     fetchLeaveRules();
   }, []);
 
-  // Get student ID from localStorage on mount
+  // Fetch leave history on mount
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
-    const token = localStorage.getItem('authToken');
-
-    if (userId) {
-      setStudentId(userId);
-    } else if (token) {
-      try {
-        // Handle both JWT tokens (Supabase) and legacy base64 tokens
-        if (token.includes('.')) {
-          const payload = token.split('.')[1];
-          const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-          const tokenData = JSON.parse(atob(base64));
-          setStudentId(tokenData.sub);
-        } else {
-          const tokenData = JSON.parse(atob(token));
-          setStudentId(tokenData.userId);
-        }
-      } catch (e) {
-        console.error('Error decoding token:', e);
-      }
-    }
+    fetchLeaveHistory();
   }, []);
 
-  // Fetch leave history when studentId is available
-  useEffect(() => {
-    if (studentId) {
-      fetchLeaveHistory();
-    }
-  }, [studentId]);
-
   const fetchLeaveHistory = async () => {
-    if (!studentId) return;
-
     try {
       setHistoryLoading(true);
-      const response = await fetch(`/api/leaves?student_id=${studentId}`);
+      const response = await fetch('/api/leaves?mine=true');
       if (response.ok) {
         const result = await response.json();
         const data = result.data || result || [];
-        // Transform API data to match LeaveRequest interface
         const transformedData: LeaveRequest[] = (Array.isArray(data) ? data : []).map((leave: any) => ({
           id: leave.id,
           type: leave.leaveType || 'short',
@@ -134,7 +103,7 @@ export default function LeaveManagementPage() {
       setHistoryLoading(false);
     }
   };
-  
+
   const [formData, setFormData] = useState({
     fromDate: '',
     toDate: '',
@@ -144,7 +113,7 @@ export default function LeaveManagementPage() {
     destination: '',
     contactNumber: ''
   });
-  
+
   const [formErrors, setFormErrors] = useState({
     fromDate: '',
     toDate: '',
@@ -194,45 +163,40 @@ export default function LeaveManagementPage() {
 
   const validateForm = () => {
     const errors = { ...formErrors };
-    
+
     if (!formData.fromDate) {
       errors.fromDate = 'From date is required';
     }
-    
+
     if (!formData.toDate) {
       errors.toDate = 'To date is required';
     }
-    
+
     if (formData.fromDate && formData.toDate && new Date(formData.fromDate) > new Date(formData.toDate)) {
       errors.toDate = 'To date must be after from date';
     }
-    
+
     if (!formData.reason.trim()) {
       errors.reason = 'Reason is required';
     }
-    
+
     if (formData.reason.trim().length < 10) {
       errors.reason = 'Reason must be at least 10 characters';
     }
-    
+
     if (selectedType === 'multi-day' && !formData.destination?.trim()) {
       errors.toDate = 'Destination is required for multi-day leave';
     }
-    
+
     if (selectedType === 'night-out' && !formData.toTime) {
       errors.toDate = 'Return time is required for night-out';
     }
-    
+
     setFormErrors(errors);
     return Object.values(errors).every(error => error === '');
   };
 
   const handleSubmit = async () => {
-    if (!studentId) {
-      alert('Unable to identify student. Please login again.');
-      return;
-    }
-
     if (validateForm()) {
       try {
         const leaveTypeMap: Record<LeaveType, string> = {
@@ -245,7 +209,6 @@ export default function LeaveManagementPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            student_id: studentId,
             type: leaveTypeMap[selectedType!],
             start_time: `${formData.fromDate}T${formData.fromTime || '09:00'}:00Z`,
             end_time: `${formData.toDate}T${formData.toTime || '18:00'}:00Z`,
@@ -259,7 +222,6 @@ export default function LeaveManagementPage() {
           alert('Leave request submitted successfully!');
           setShowForm(false);
           setSelectedType(null);
-          // Refresh leave history to show the new request
           fetchLeaveHistory();
         } else {
           const errorData = await response.json().catch(() => ({}));
