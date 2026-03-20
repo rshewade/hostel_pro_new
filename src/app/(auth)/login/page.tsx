@@ -1,127 +1,208 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { authClient } from '@/lib/auth/client';
-import { LanguageToggle } from '@/components/language-toggle';
-import type { Locale } from '@/i18n/config';
+import { Button, Input } from '@/components';
+
+type LoginFormData = {
+  username: string;
+  password: string;
+};
 
 export default function LoginPage() {
-  const t = useTranslations('Common');
   const router = useRouter();
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
-  const [step, setStep] = useState<'phone' | 'otp'>('phone');
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState<LoginFormData>({
+    username: '',
+    password: '',
+  });
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSendOtp(e: React.FormEvent) {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
+    setError(null);
     setLoading(true);
-    try {
-      await authClient.phoneNumber.sendOtp({ phoneNumber: phone });
-      setStep('otp');
-    } catch {
-      setError('Failed to send OTP. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }
 
-  async function handleVerifyOtp(e: React.FormEvent) {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
     try {
-      await authClient.phoneNumber.verify({ phoneNumber: phone, code: otp });
-      router.push('/dashboard/student');
-    } catch {
-      setError('Invalid OTP. Please try again.');
+      // Simulate API call - replace with actual API endpoint
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const responseBody = await response.json();
+
+      if (response.ok) {
+        const { data } = responseBody;
+
+        // Store auth token in localStorage for API calls
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('userRole', data.role);
+          localStorage.setItem('userId', data.userId);
+        }
+
+        // Check if first-time login
+        if (data.requiresPasswordChange) {
+          router.push(`/login/first-time-setup?token=${data.token}`);
+        } else {
+          // Role-based redirection
+          const redirectPath = getRoleRedirectPath(data.role);
+          router.push(redirectPath);
+        }
+      } else {
+        setError(responseBody.error || 'Invalid credentials or account not found');
+      }
+    } catch (err) {
+      setError('Unable to connect. Please try again later.');
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  const getRoleRedirectPath = (role: string): string => {
+    switch (role.toUpperCase()) {
+      case 'STUDENT':
+        return '/dashboard/student';
+      case 'SUPERINTENDENT':
+        return '/dashboard/superintendent';
+      case 'TRUSTEE':
+        return '/dashboard/trustee';
+      case 'ACCOUNTS':
+        return '/dashboard/accounts';
+      case 'PARENT':
+        return '/dashboard/parent';
+      default:
+        return '/';
+    }
+  };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50">
-      <div className="absolute right-6 top-6">
-        <LanguageToggle currentLocale={'en' as Locale} />
-      </div>
-
-      <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-lg">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-blue-700" data-testid="login-title">
-            {t('appName')}
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-page)' }}>
+      <div className="w-full max-w-md mx-auto p-6">
+        {/* Header with branding */}
+        <div className="text-center mb-8">
+          <img
+            src="/logo.png"
+            alt="Seth Hirachand Gumanji Jain Hostel"
+            className="h-16 w-auto mx-auto mb-4"
+          />
+          <h1
+            className="text-heading-1 mb-2"
+            style={{ fontFamily: 'var(--font-serif)', color: 'var(--text-primary)' }}
+          >
+            Welcome Back
           </h1>
-          <p className="mt-2 text-gray-500">{t('tagline')}</p>
+          <p className="text-body" style={{ color: 'var(--text-secondary)' }}>
+            Sign in to access your dashboard
+          </p>
         </div>
 
-        {step === 'phone' ? (
-          <form onSubmit={handleSendOtp} className="space-y-4">
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                Phone Number
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 98765 43210"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                data-testid="phone-input"
-                required
-              />
-            </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 disabled:opacity-50"
-              data-testid="send-otp"
-            >
-              {loading ? 'Sending...' : 'Send OTP'}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} className="space-y-4">
-            <div>
-              <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
-                Enter OTP
-              </label>
-              <input
-                id="otp"
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder="123456"
-                maxLength={6}
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-3 text-center text-2xl tracking-widest focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                data-testid="otp-input"
-                required
-              />
-              <p className="mt-2 text-sm text-gray-500">OTP sent to {phone}</p>
-            </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 disabled:opacity-50"
-              data-testid="verify-otp"
-            >
-              {loading ? 'Verifying...' : 'Verify OTP'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep('phone')}
-              className="w-full text-sm text-blue-600 hover:underline"
-            >
-              Change phone number
-            </button>
-          </form>
+        {/* Role Selection Indicator */}
+        <div className="mb-6 p-4 rounded-lg" style={{ background: 'var(--surface-secondary)' }}>
+          <p className="text-body-sm text-center" style={{ color: 'var(--text-secondary)' }}>
+            <strong>Note:</strong> Login is available for Students, Superintendents, Trustees, Accounts, and Parents.
+            Please use the credentials shared with you.
+          </p>
+        </div>
+
+        {/* Error Banner */}
+        {error && (
+          <div className="mb-4 p-4 rounded-md bg-red-50 border-l-4" style={{ borderLeftColor: 'var(--color-red-500)' }}>
+            <p className="text-body-sm" style={{ color: 'var(--color-red-700)' }}>
+              {error}
+            </p>
+          </div>
         )}
+
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Username/Email/Mobile Field */}
+          <Input
+            type="text"
+            label="Username, Email, or Mobile Number"
+            placeholder="Enter your username, email, or mobile"
+            value={formData.username}
+            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+            required
+            autoFocus
+            autoComplete="username"
+          />
+
+          {/* Password Field */}
+          <Input
+            type="password"
+            label="Password"
+            placeholder="Enter your password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            required
+            autoComplete="current-password"
+          />
+
+          {/* Forgot Password Link */}
+          <div className="text-center">
+            <Link
+              href="/login/forgot-password"
+              className="text-sm hover:underline"
+              style={{ color: 'var(--text-link)' }}
+            >
+              Forgot Password?
+            </Link>
+          </div>
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            variant="primary"
+            size="md"
+            fullWidth
+            loading={loading}
+            disabled={loading}
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+          </Button>
+
+        {/* Parent/Guardian Login Link */}
+        <div className="text-center pt-4 border-t" style={{ borderColor: 'var(--border-primary)' }}>
+          <p className="text-body-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+            Are you a parent/guardian?
+          </p>
+          <Link
+            href="/login/parent"
+            className="text-sm font-medium hover:underline"
+            style={{ color: 'var(--text-link)' }}
+          >
+            Use OTP-based Parent Login →
+          </Link>
+        </div>
+        </form>
+
+        {/* Back to Home */}
+        <div className="text-center mt-6">
+          <Link
+            href="/"
+            className="text-body-sm"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            ← Back to Home
+          </Link>
+        </div>
+
+        {/* Institutional Rules Notice */}
+        <div className="mt-8 p-4 rounded-lg border" style={{ borderColor: 'var(--border-primary)' }}>
+          <h3 className="text-heading-4 mb-2" style={{ color: 'var(--text-primary)' }}>
+            Institutional Usage Rules
+          </h3>
+          <ul className="space-y-2 text-body-sm" style={{ color: 'var(--text-secondary)' }}>
+            <li>• This system is for authorized use only</li>
+            <li>• All login attempts are logged for security purposes</li>
+            <li>• Immediate report of unauthorized access is required</li>
+            <li>• Password must be kept confidential and not shared</li>
+          </ul>
+        </div>
       </div>
     </div>
   );

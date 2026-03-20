@@ -25,6 +25,7 @@
     "@better-auth/drizzle-adapter": "1.5.5",
     "archiver": "^7.0.1",
     "better-auth": "^1.2.0",
+    "clsx": "2.1.1",
     "drizzle-orm": "^0.44.0",
     "lucide-react": "^0.500.0",
     "mime-types": "3.0.2",

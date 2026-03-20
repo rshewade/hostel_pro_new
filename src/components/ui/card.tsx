@@ -1,29 +1,19 @@
-import { type ReactNode } from 'react';
+// Re-export Card from data/ for backward compatibility
+export { Card } from '@/components/data/Card';
 
-export function Card({
-  children,
-  className = '',
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`rounded-xl border border-gray-200 bg-white p-6 shadow-sm ${className}`}>
-      {children}
-    </div>
-  );
-}
+// Additional card sub-components for dashboard pages
+import { type ReactNode } from 'react';
 
 export function CardHeader({ children, className = '' }: { children: ReactNode; className?: string }) {
   return <div className={`mb-4 ${className}`}>{children}</div>;
 }
 
 export function CardTitle({ children }: { children: ReactNode }) {
-  return <h3 className="text-lg font-semibold text-gray-900">{children}</h3>;
+  return <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{children}</h3>;
 }
 
 export function CardDescription({ children }: { children: ReactNode }) {
-  return <p className="mt-1 text-sm text-gray-500">{children}</p>;
+  return <p className="mt-1 text-sm" style={{ color: 'var(--text-secondary)' }}>{children}</p>;
 }
 
 export function CardContent({ children, className = '' }: { children: ReactNode; className?: string }) {
