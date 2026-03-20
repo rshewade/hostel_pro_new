@@ -1,0 +1,25 @@
+# =============================================================================
+# Hostel Pro — Production Docker Compose
+# Override: docker compose -f docker-compose.yml -f docker-compose.prod.yml up
+# =============================================================================
+
+services:
+  db:
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+
+  app:
+    restart: always
+    environment:
+      NODE_ENV: production
+      SMS_MODE: live
+      RAZORPAY_MODE: live
+      NOTIFICATION_MODE: live
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-resend}
+      WHATSAPP_MODE: live
+
+volumes:
+  pgdata_prod:

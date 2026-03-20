@@ -1,0 +1,50 @@
+# =============================================================================
+# Hostel Pro — Development Docker Compose
+# =============================================================================
+
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: hostel_pro
+      POSTGRES_USER: db_user1
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-Raju987.}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U db_user1 -d hostel_pro"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://db_user1:${DB_PASSWORD:-Raju987.}@db:5432/hostel_pro
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: http://localhost:3000
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      HASH_SALT: ${HASH_SALT}
+      SIGNED_URL_SECRET: ${SIGNED_URL_SECRET}
+      CRON_SECRET: ${CRON_SECRET}
+      UPLOAD_DIR: /app/uploads
+      SMS_MODE: mock
+      RAZORPAY_MODE: mock
+      NOTIFICATION_MODE: mock
+      EMAIL_PROVIDER: console
+      WHATSAPP_MODE: mock
+    env_file:
+      - .env
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  uploads:
