@@ -2,92 +2,51 @@ import Link from "next/link";
 import PublicLayout from "@/components/public/PublicLayout";
 import PageHero from "@/components/public/PageHero";
 import { Building2, Users, Home, CheckCircle, ArrowRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 type AdmissionId = "boys-hostel" | "girls-hostel" | "dharamshala";
 
-interface AdmissionData {
-  title: string;
-  subtitle: string;
+interface AdmissionConfig {
+  key: "boysHostel" | "girlsHostel" | "dharamshala";
   icon: typeof Building2;
   themeColor: string;
   themeBg: string;
   themeBorder: string;
   applyLink: string;
-  ctaLabel: string;
-  steps: string[];
-  documents: string[];
+  stepCount: number;
+  docCount: number;
 }
 
-const admissionsData: Record<AdmissionId, AdmissionData> = {
+const admissionsConfig: Record<AdmissionId, AdmissionConfig> = {
   "boys-hostel": {
-    title: "Boys' Hostel Admissions",
-    subtitle: "Seth Hirachand Gumanji Jain Hostel",
+    key: "boysHostel",
     icon: Building2,
     themeColor: "var(--color-navy-700)",
     themeBg: "var(--color-navy-50, #eff3f8)",
     themeBorder: "var(--color-navy-200, #b0c4de)",
     applyLink: "/apply/boys-hostel/contact",
-    ctaLabel: "Apply for Boys' Hostel",
-    steps: [
-      "Check eligibility criteria and age requirements",
-      "Create an account or login with your mobile number",
-      "Fill in the application form with personal and academic details",
-      "Upload all required documents in the specified formats",
-      "Submit your application and track its status online",
-    ],
-    documents: [
-      "Birth Certificate",
-      "Caste Certificate",
-      "College Admission Letter",
-      "Academic Records / Marksheets",
-      "Passport-size Photographs",
-      "Jain Sangh Recommendation Letter",
-    ],
+    stepCount: 5,
+    docCount: 6,
   },
   "girls-hostel": {
-    title: "Girls' Hostel Admissions",
-    subtitle: "R. R. Shravika Ashram",
+    key: "girlsHostel",
     icon: Users,
     themeColor: "#9f1239",
     themeBg: "#fff1f2",
     themeBorder: "#fecdd3",
     applyLink: "/apply/girls-ashram/contact",
-    ctaLabel: "Apply for Girls' Hostel",
-    steps: [
-      "Check eligibility criteria and age requirements",
-      "Create an account or login with your mobile number",
-      "Fill in the application form with personal and academic details",
-      "Upload all required documents in the specified formats",
-      "Submit your application and track its status online",
-    ],
-    documents: [
-      "Birth Certificate",
-      "Caste Certificate",
-      "College Admission Letter",
-      "Academic Records / Marksheets",
-      "Passport-size Photographs",
-      "Jain Sangh Recommendation Letter",
-    ],
+    stepCount: 5,
+    docCount: 6,
   },
   dharamshala: {
-    title: "Dharamshala Booking",
-    subtitle: "Hirabaug",
+    key: "dharamshala",
     icon: Home,
     themeColor: "#92400e",
     themeBg: "#fffbeb",
     themeBorder: "#fde68a",
     applyLink: "/apply/dharamshala/contact",
-    ctaLabel: "Book Dharamshala",
-    steps: [
-      "Check room availability for your desired dates",
-      "Fill in the booking form with a valid government ID",
-      "Make the payment online or at the office",
-      "Receive your booking confirmation via SMS and email",
-    ],
-    documents: [
-      "Valid Government ID (Aadhaar / Passport / Driving License)",
-      "Hospital or medical documents (if visiting for medical transit)",
-    ],
+    stepCount: 4,
+    docCount: 2,
   },
 };
 
@@ -103,9 +62,10 @@ export default async function AdmissionsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const data = admissionsData[id as AdmissionId];
+  const config = admissionsConfig[id as AdmissionId];
+  const t = await getTranslations("Public.admissions");
 
-  if (!data) {
+  if (!config) {
     return (
       <PublicLayout>
         <div
@@ -123,19 +83,29 @@ export default async function AdmissionsPage({
               color: "var(--text-primary)",
             }}
           >
-            Page Not Found
+            {t("notFound")}
           </h1>
-          <p>The admissions page you are looking for does not exist.</p>
+          <p>{t("notFoundDesc")}</p>
         </div>
       </PublicLayout>
     );
   }
 
-  const IconComponent = data.icon;
+  const { key, themeColor, themeBg, themeBorder, applyLink, stepCount, docCount } = config;
+  const IconComponent = config.icon;
+  const isDharamshala = id === "dharamshala";
+
+  const steps = Array.from({ length: stepCount }, (_, i) =>
+    t(`${key}.step${i + 1}`)
+  );
+
+  const documents = Array.from({ length: docCount }, (_, i) =>
+    t(`${key}.doc${i + 1}`)
+  );
 
   return (
     <PublicLayout>
-      <PageHero title={data.title} subtitle={data.subtitle}>
+      <PageHero title={t(`${key}.title`)} subtitle={t(`${key}.subtitle`)}>
         <div
           style={{
             display: "inline-flex",
@@ -184,9 +154,9 @@ export default async function AdmissionsPage({
                 fontFamily: "var(--font-serif)",
               }}
             >
-              {id === "dharamshala"
-                ? "Booking Process"
-                : "Application Process"}
+              {isDharamshala
+                ? t("bookingProcess")
+                : t("applicationProcess")}
             </h2>
             <p
               style={{
@@ -195,9 +165,9 @@ export default async function AdmissionsPage({
                 fontSize: "0.95rem",
               }}
             >
-              {id === "dharamshala"
-                ? "Follow these steps to book your stay"
-                : "Follow these steps to apply for admission"}
+              {isDharamshala
+                ? t("bookingProcessDesc")
+                : t("applicationProcessDesc")}
             </p>
 
             <ol
@@ -210,7 +180,7 @@ export default async function AdmissionsPage({
                 gap: "1rem",
               }}
             >
-              {data.steps.map((step, index) => (
+              {steps.map((step, index) => (
                 <li
                   key={index}
                   style={{
@@ -225,14 +195,14 @@ export default async function AdmissionsPage({
                       width: "2rem",
                       height: "2rem",
                       borderRadius: "50%",
-                      backgroundColor: data.themeBg,
-                      color: data.themeColor,
+                      backgroundColor: themeBg,
+                      color: themeColor,
                       fontWeight: 700,
                       fontSize: "0.875rem",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      border: `1px solid ${data.themeBorder}`,
+                      border: `1px solid ${themeBorder}`,
                     }}
                   >
                     {index + 1}
@@ -270,7 +240,7 @@ export default async function AdmissionsPage({
                 fontFamily: "var(--font-serif)",
               }}
             >
-              Required Documents
+              {t("requiredDocuments")}
             </h2>
             <p
               style={{
@@ -279,7 +249,7 @@ export default async function AdmissionsPage({
                 fontSize: "0.95rem",
               }}
             >
-              Please keep the following documents ready
+              {t("requiredDocumentsDesc")}
             </p>
 
             <ul
@@ -292,7 +262,7 @@ export default async function AdmissionsPage({
                 gap: "1rem",
               }}
             >
-              {data.documents.map((doc, index) => (
+              {documents.map((doc, index) => (
                 <li
                   key={index}
                   style={{
@@ -303,7 +273,7 @@ export default async function AdmissionsPage({
                 >
                   <CheckCircle
                     size={20}
-                    color={data.themeColor}
+                    color={themeColor}
                     style={{ flexShrink: 0, marginTop: "0.125rem" }}
                   />
                   <span
@@ -355,8 +325,7 @@ export default async function AdmissionsPage({
                 fontFamily: "var(--font-serif)",
               }}
             >
-              Ready to{" "}
-              {id === "dharamshala" ? "book your stay" : "begin your journey"}?
+              {isDharamshala ? t("readyToBook") : t("readyToBegin")}
             </h2>
             <p
               style={{
@@ -365,12 +334,12 @@ export default async function AdmissionsPage({
                 maxWidth: "32rem",
               }}
             >
-              {id === "dharamshala"
-                ? "Check availability and reserve your room at Hirabaug Dharamshala today."
-                : "Start your application now and take the first step towards securing your place."}
+              {isDharamshala
+                ? t("readyToBookDesc")
+                : t("readyToBeginDesc")}
             </p>
             <Link
-              href={data.applyLink}
+              href={applyLink}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -386,7 +355,7 @@ export default async function AdmissionsPage({
                 transition: "opacity 0.2s",
               }}
             >
-              {data.ctaLabel}
+              {t(`${key}.ctaLabel`)}
               <ArrowRight size={18} />
             </Link>
           </div>
