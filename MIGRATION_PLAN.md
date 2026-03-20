@@ -41,13 +41,18 @@ DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, ENCRYPTION_KEY, HASH_SALT,
 RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, RAZORPAY_WEBHOOK_SECRET,
 TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER,
 MSG91_AUTH_KEY, MSG91_TEMPLATE_ID, UPLOAD_DIR=./uploads, SIGNED_URL_SECRET, CRON_SECRET,
-SMS_MODE=mock, RAZORPAY_MODE=mock
+SMS_MODE=mock, RAZORPAY_MODE=mock, NOTIFICATION_MODE=mock,
+EMAIL_PROVIDER=console, EMAIL_FROM=noreply@hostelpro.local,
+RESEND_API_KEY, SENDGRID_API_KEY, WHATSAPP_MODE=mock
 ```
 
 **Mock mode env vars** (allow development without 3rd party keys):
 - `SMS_MODE=mock|live` — When `mock`, OTP is always `123456`, no SMS sent. Default: `mock`
 - `RAZORPAY_MODE=mock|live` — When `mock`, uses fake order/payment IDs. Default: `mock`
-- When `mock`, the corresponding 3rd party keys (`TWILIO_*`, `MSG91_*`, `RAZORPAY_*`) are not required
+- `NOTIFICATION_MODE=mock|live` — When `mock`, all notifications log to console. Default: `mock`
+- `EMAIL_PROVIDER=console|resend|sendgrid|ses` — Email delivery backend. `console` logs only. Default: `console`
+- `WHATSAPP_MODE=mock|live` — When `mock`, WhatsApp messages log to console. Default: `mock`
+- When `mock`, the corresponding 3rd party keys (`TWILIO_*`, `MSG91_*`, `RAZORPAY_*`, `RESEND_*`, `SENDGRID_*`) are not required
 
 **Verify:** `bun install` succeeds, `bun run dev` starts Next.js, `import postgres from 'postgres'` works, `import { createCipheriv } from 'crypto'` works.
 
@@ -71,7 +76,8 @@ Files to create under `src/lib/db/schema/`:
 | `devices.ts` | device_sessions |
 | `compliance.ts` | consent_logs, applications_archive, audit_reports |
 | `gateway.ts` | gateway_payments, reconciliation_logs |
-| `config.ts` | leave_types, blackout_dates, notification_rules |
+| `notifications.ts` | notifications, notification_rules |
+| `config.ts` | leave_types, blackout_dates |
 | `index.ts` | Re-export all |
 | `relations.ts` | Drizzle relations |
 
@@ -165,6 +171,13 @@ Source: `/home/ubuntu/projects/hostel_old/repo/backend/src/auth/auth.service.ts`
 | `device-sessions.service.ts` | `src/lib/services/device-sessions.ts` | Drizzle queries |
 | `receipt.service.ts` | `src/lib/services/receipt.ts` | Keep PDF generation |
 | `reconciliation.service.ts` | `src/lib/services/reconciliation.ts` | Drizzle queries |
+| *(new)* | `src/lib/services/notifications.ts` | **New** — notification dispatch service |
+| *(new)* | `src/lib/notifications/index.ts` | **New** — channel providers (SMS, Email, WhatsApp, In-App) |
+| *(new)* | `src/lib/notifications/channels/sms.ts` | **New** — SMS channel (Twilio/MSG91 + mock) |
+| *(new)* | `src/lib/notifications/channels/email.ts` | **New** — Email channel (Resend/SendGrid/SES + console mock) |
+| *(new)* | `src/lib/notifications/channels/whatsapp.ts` | **New** — WhatsApp channel (Twilio WhatsApp + mock) |
+| *(new)* | `src/lib/notifications/channels/in-app.ts` | **New** — In-app notifications (DB insert) |
+| *(new)* | `src/lib/notifications/template.ts` | **New** — Template renderer with `{{variable}}` substitution |
 
 **Pattern changes:**
 - `@Injectable()` classes → plain exported functions/classes
@@ -211,6 +224,123 @@ function getPaymentGateway(): PaymentGateway {
 **Switch to live:** Set `RAZORPAY_MODE=live` + provide `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` in `.env`
 
 **Tests:** All payment tests use mock mode by default — zero external dependencies
+
+### Notification Service Strategy (`NOTIFICATION_MODE=mock`)
+
+**The old project had notification infrastructure (DB schema, rules, templates) but never implemented actual delivery.** We build it properly with the same mock/live pattern.
+
+#### Architecture
+
+```
+src/lib/notifications/
+├── index.ts              ← Main dispatch: notify(event, context) → routes to channels
+├── template.ts           ← Renders {{variable}} templates from notification_rules table
+└── channels/
+    ├── sms.ts            ← SMS_MODE=mock|live (reuses Twilio/MSG91 from auth)
+    ├── email.ts          ← EMAIL_PROVIDER=console|resend|sendgrid|ses
+    ├── whatsapp.ts       ← WHATSAPP_MODE=mock|live (Twilio WhatsApp API)
+    └── in-app.ts         ← Always live — inserts into notifications table
+
+src/lib/services/
+└── notifications.ts      ← Business logic: which events trigger which channels
+```
+
+#### How it works
+
+```typescript
+// src/lib/notifications/index.ts
+interface NotificationChannel {
+  send(to: string, message: string, metadata?: Record<string, unknown>): Promise<void>;
+}
+
+// Dispatches to all enabled channels based on notification_rules
+async function notify(event: NotificationEvent, context: Record<string, string>) {
+  const rules = await getActiveRules(event);
+  for (const rule of rules) {
+    const message = renderTemplate(rule.template, context);
+    if (rule.channels.sms) await getSmsChannel().send(phone, message);
+    if (rule.channels.email) await getEmailChannel().send(email, message);
+    if (rule.channels.whatsapp) await getWhatsAppChannel().send(phone, message);
+    // In-app always fires
+    await getInAppChannel().send(userId, message, { event, rule });
+  }
+}
+```
+
+#### Notification Events (from old DB schema)
+
+| Event | Triggered By | Recipients | Channels |
+|-------|-------------|-----------|----------|
+| `LEAVE_APPLICATION` | Student submits leave | Parent | SMS, WhatsApp, In-App |
+| `LEAVE_APPROVAL` | Superintendent approves | Parent, Student | SMS, WhatsApp, Email, In-App |
+| `LEAVE_REJECTION` | Superintendent rejects | Parent, Student | SMS, WhatsApp, Email, In-App |
+| `EMERGENCY` | Superintendent flags | Parent | SMS, WhatsApp (immediate) |
+| `ARRIVAL` | Student checks in | Parent | SMS, In-App |
+| `DEPARTURE` | Student checks out | Parent | SMS, In-App |
+| `PAYMENT_RECEIVED` | Payment confirmed | Student, Parent | Email, SMS, In-App |
+| `PAYMENT_DUE` | Fee approaching deadline | Student, Parent | Email, SMS, In-App |
+| `ROOM_ALLOCATED` | Room assigned | Student | Email, In-App |
+| `APPLICATION_STATUS` | Status changes | Student | Email, SMS, In-App |
+| `AUDIT_REPORT` | Monthly report generated | Trustees | Email, In-App |
+
+#### Channel implementations
+
+**SMS (`sms.ts`):**
+- `SMS_MODE=mock`: logs `[MOCK SMS] To: +91xxx Message: ...` to console
+- `SMS_MODE=live`: uses Twilio (primary) or MSG91 (fallback) — same providers as OTP auth
+
+**Email (`email.ts`):**
+- `EMAIL_PROVIDER=console`: logs `[MOCK EMAIL] To: x@y.com Subject: ... Body: ...` to console
+- `EMAIL_PROVIDER=resend`: uses Resend API
+- `EMAIL_PROVIDER=sendgrid`: uses SendGrid API
+- `EMAIL_PROVIDER=ses`: uses AWS SES
+- All share same interface: `send(to, subject, html, text)`
+
+**WhatsApp (`whatsapp.ts`):**
+- `WHATSAPP_MODE=mock`: logs `[MOCK WHATSAPP] To: +91xxx Message: ...` to console
+- `WHATSAPP_MODE=live`: uses Twilio WhatsApp API (same Twilio credentials as SMS)
+
+**In-App (`in-app.ts`):**
+- Always live — inserts into `notifications` table in database
+- No mock needed — it's just a DB insert
+- Frontend reads from `GET /api/notifications` endpoint
+- Bell icon shows unread count
+
+#### Database tables (Phase 1 schema)
+
+```
+notifications table:
+  id, user_id, event_type, title, message, channel,
+  read (boolean), read_at, metadata (jsonb),
+  created_at, updated_at
+
+notification_rules table (from old schema):
+  id, event_type, timing, channels (jsonb),
+  verticals (jsonb), template, is_active,
+  created_at, updated_at
+```
+
+#### Templates
+
+Templates use `{{variable}}` substitution from the `notification_rules.template` column:
+```
+"Your child {{student_name}} has applied for leave from {{start_date}} to {{end_date}}."
+"Payment of ₹{{amount}} received. Receipt: {{receipt_number}}"
+"Room {{room_number}} has been allocated to {{student_name}}."
+```
+
+#### API Routes (Phase 5)
+
+- `GET /api/notifications` — List user's notifications (paginated)
+- `PATCH /api/notifications/[id]/read` — Mark as read
+- `PATCH /api/notifications/read-all` — Mark all as read
+- `GET /api/notifications/unread-count` — For bell icon badge
+- `GET /api/config/notification-rules` — List rules (admin)
+- `POST /api/config/notification-rules` — Create rule (admin)
+- `PUT /api/config/notification-rules` — Update rule (admin)
+- `DELETE /api/config/notification-rules` — Delete rule (admin)
+
+**Tests:** All notification tests use mock mode — zero external dependencies. Test that events trigger correct channels, templates render correctly, in-app notifications persist.
 
 Source: `/home/ubuntu/projects/hostel_old/repo/backend/src/` (all service files)
 
@@ -544,10 +674,11 @@ Business logic around queries stays identical. Only `supabase.from().select().eq
 
 ## Estimated Scope
 
-- ~14 schema files (Drizzle — new)
+- ~15 schema files (Drizzle — new, includes notifications)
 - ~12 type files (copied from old project)
-- ~20 service files (15 adapted from old, 5 new)
-- ~40 API route files (new, using old controllers as reference)
+- ~22 service files (15 adapted from old, 7 new including notifications)
+- ~7 notification files (dispatcher, template renderer, 4 channel providers, service)
+- ~45 API route files (new, using old controllers as reference, includes notification routes)
 - ~280 frontend files (copied + updated imports)
 - ~5 auth files (Better Auth — new)
 - ~3 storage files (local FS — new)

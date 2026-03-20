@@ -51,7 +51,11 @@ hostel_pro/
 │   │   │   ├── index.ts              ← Drizzle client
 │   │   │   └── schema/               ← 14 schema files
 │   │   ├── auth/                     ← Better Auth setup
-│   │   ├── services/                 ← ~20 service modules
+│   │   ├── services/                 ← ~22 service modules
+│   │   ├── notifications/            ← Notification dispatch + channel providers
+│   │   │   ├── index.ts              ← notify(event, context) dispatcher
+│   │   │   ├── template.ts           ← {{variable}} template renderer
+│   │   │   └── channels/             ← sms.ts, email.ts, whatsapp.ts, in-app.ts
 │   │   ├── storage/                  ← Local FS + signed URLs
 │   │   └── errors.ts                 ← Custom error classes
 │   ├── types/                        ← TypeScript type definitions
@@ -140,12 +144,16 @@ Development works without any 3rd party API keys using mock implementations.
 | Service | Env Var | Default | Mock Behavior |
 |---------|---------|---------|--------------|
 | SMS (Twilio/MSG91) | `SMS_MODE=mock\|live` | `mock` | OTP always `123456`, logs to console, no SMS sent |
-| Razorpay (payments) | `RAZORPAY_MODE=mock\|live` | `mock` | Fake order/payment IDs, signature always valid, realistic responses |
+| Razorpay (payments) | `RAZORPAY_MODE=mock\|live` | `mock` | Fake order/payment IDs, signature always valid |
+| Notifications | `NOTIFICATION_MODE=mock\|live` | `mock` | All notifications log to console |
+| Email | `EMAIL_PROVIDER=console\|resend\|sendgrid\|ses` | `console` | Logs email subject/body to console |
+| WhatsApp | `WHATSAPP_MODE=mock\|live` | `mock` | Logs WhatsApp messages to console |
 
 - **Mock is default** — all dev, testing, and CI runs use mock mode
 - **Same interface** — mock and live implementations share identical APIs; code doesn't know the difference
 - **Switch to live** — set `*_MODE=live` + provide real keys in `.env`
 - **Tests always use mock** — zero external dependencies, deterministic results
+- **In-app notifications always live** — they're just DB inserts, no external service needed
 
 ## Database
 
