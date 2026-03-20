@@ -40,8 +40,14 @@ Env vars:
 DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, ENCRYPTION_KEY, HASH_SALT,
 RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, RAZORPAY_WEBHOOK_SECRET,
 TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER,
-MSG91_AUTH_KEY, MSG91_TEMPLATE_ID, UPLOAD_DIR=./uploads, SIGNED_URL_SECRET, CRON_SECRET
+MSG91_AUTH_KEY, MSG91_TEMPLATE_ID, UPLOAD_DIR=./uploads, SIGNED_URL_SECRET, CRON_SECRET,
+SMS_MODE=mock, RAZORPAY_MODE=mock
 ```
+
+**Mock mode env vars** (allow development without 3rd party keys):
+- `SMS_MODE=mock|live` — When `mock`, OTP is always `123456`, no SMS sent. Default: `mock`
+- `RAZORPAY_MODE=mock|live` — When `mock`, uses fake order/payment IDs. Default: `mock`
+- When `mock`, the corresponding 3rd party keys (`TWILIO_*`, `MSG91_*`, `RAZORPAY_*`) are not required
 
 **Verify:** `bun install` succeeds, `bun run dev` starts Next.js, `import postgres from 'postgres'` works, `import { createCipheriv } from 'crypto'` works.
 
@@ -90,7 +96,7 @@ Source: `/home/ubuntu/projects/hostel_old/repo/backend/migrations/000_create_dat
 Files to create:
 - `src/lib/auth/index.ts` — Better Auth server config (Drizzle adapter, phone plugin, session config)
 - `src/lib/auth/client.ts` — Better Auth React client hooks
-- `src/lib/auth/otp-provider.ts` — SMS sender (Twilio/MSG91)
+- `src/lib/auth/otp-provider.ts` — SMS provider interface + live (Twilio/MSG91) and mock implementations
 - `src/lib/auth/rbac.ts` — Role-based access control (replaces Supabase RLS)
 - `src/app/api/auth/[...all]/route.ts` — Better Auth catch-all handler
 - `src/middleware.ts` — Session checking middleware
@@ -103,9 +109,37 @@ Files to create:
 
 **RLS replacement:** All access control becomes middleware + service-layer `requireRole()` checks.
 
+### SMS Mock Strategy (`SMS_MODE=mock`)
+
+The OTP provider uses a common interface with swappable implementations:
+
+```typescript
+// src/lib/auth/otp-provider.ts
+interface SmsProvider {
+  sendOtp(phone: string, otp: string): Promise<void>;
+}
+
+// Chosen by SMS_MODE env var
+function getSmsProvider(): SmsProvider {
+  if (process.env.SMS_MODE === 'live') {
+    return new TwilioProvider();  // or MSG91Provider
+  }
+  return new MockSmsProvider();
+}
+```
+
+**Mock behavior:**
+- `sendOtp()` — logs to console, does NOT send real SMS
+- OTP verification always accepts `123456` as valid code
+- All auth flows (login, verify, session) work identically
+- Tests use mock mode by default — no Twilio/MSG91 keys needed
+- Console output: `[MOCK SMS] OTP 123456 sent to +919876543210`
+
+**Switch to live:** Set `SMS_MODE=live` + provide `TWILIO_*` or `MSG91_*` keys in `.env`
+
 Source: `/home/ubuntu/projects/hostel_old/repo/backend/src/auth/auth.service.ts`, `jwt.strategy.ts`, `roles.guard.ts`
 
-**Verify:** OTP send/verify works, password login works, sessions persist, role-based guards block unauthorized access.
+**Verify:** OTP send/verify works in mock mode, password login works, sessions persist, role-based guards block unauthorized access.
 
 ---
 
@@ -118,7 +152,7 @@ Source: `/home/ubuntu/projects/hostel_old/repo/backend/src/auth/auth.service.ts`
 | `users.service.ts` | `src/lib/services/users.ts` | `supabase.from()` → Drizzle queries |
 | `applications.service.ts` | `src/lib/services/applications.ts` | Same |
 | `payments.service.ts` | `src/lib/services/payments.ts` | Same |
-| `razorpay.service.ts` | `src/lib/services/razorpay.ts` | Keep `crypto.createHmac` |
+| `razorpay.service.ts` | `src/lib/services/razorpay.ts` | Interface + mock/live swap via `RAZORPAY_MODE` |
 | `documents.service.ts` | `src/lib/services/documents.ts` | **Major rewrite** — local FS |
 | `document-processor.service.ts` | `src/lib/services/document-processor.ts` | Storage calls change |
 | `bulk-download.service.ts` | `src/lib/services/bulk-download.ts` | Local file ops |
@@ -145,6 +179,38 @@ Also create:
   - Services throw these errors; API routes catch and transform to JSON `{ error: { code, message, status, details? } }`
 - `src/lib/logger.ts` — Simple logger utility
 - `src/lib/api/error-handler.ts` — Shared API error response helper that catches AppError/ZodError and returns standardized JSON
+
+### Razorpay Mock Strategy (`RAZORPAY_MODE=mock`)
+
+The Razorpay service uses a common interface with swappable implementations:
+
+```typescript
+// src/lib/services/razorpay.ts
+interface PaymentGateway {
+  createOrder(amount: number, currency: string, receipt: string): Promise<Order>;
+  verifyPayment(orderId: string, paymentId: string, signature: string): boolean;
+  fetchPayment(paymentId: string): Promise<Payment>;
+}
+
+function getPaymentGateway(): PaymentGateway {
+  if (process.env.RAZORPAY_MODE === 'live') {
+    return new RazorpayLive();  // uses real Razorpay SDK
+  }
+  return new RazorpayMock();
+}
+```
+
+**Mock behavior:**
+- `createOrder()` — returns fake order ID (`order_mock_<timestamp>`)
+- `verifyPayment()` — always returns `true` (signature check passes)
+- `fetchPayment()` — returns realistic payment object with status `captured`
+- Webhook simulation: mock generates valid-looking webhook payloads
+- Receipt generation works identically (uses mock payment data)
+- Console output: `[MOCK RAZORPAY] Order order_mock_1234 created for ₹5000`
+
+**Switch to live:** Set `RAZORPAY_MODE=live` + provide `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` in `.env`
+
+**Tests:** All payment tests use mock mode by default — zero external dependencies
 
 Source: `/home/ubuntu/projects/hostel_old/repo/backend/src/` (all service files)
 

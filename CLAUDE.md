@@ -133,6 +133,20 @@ bun run test:all                      # All layers sequentially
 bun run test:coverage                 # Unit tests with coverage report
 ```
 
+## Mock Modes (3rd Party Services)
+
+Development works without any 3rd party API keys using mock implementations.
+
+| Service | Env Var | Default | Mock Behavior |
+|---------|---------|---------|--------------|
+| SMS (Twilio/MSG91) | `SMS_MODE=mock\|live` | `mock` | OTP always `123456`, logs to console, no SMS sent |
+| Razorpay (payments) | `RAZORPAY_MODE=mock\|live` | `mock` | Fake order/payment IDs, signature always valid, realistic responses |
+
+- **Mock is default** — all dev, testing, and CI runs use mock mode
+- **Same interface** — mock and live implementations share identical APIs; code doesn't know the difference
+- **Switch to live** — set `*_MODE=live` + provide real keys in `.env`
+- **Tests always use mock** — zero external dependencies, deterministic results
+
 ## Database
 
 ### Main Database
