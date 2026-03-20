@@ -1,4 +1,22 @@
 {
   "appName": "Hostel Pro",
-  "tagline": "Student Accommodation Management System"
+  "tagline": "Student Accommodation Management System",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "search": "Search",
+  "filter": "Filter",
+  "loading": "Loading...",
+  "noResults": "No results found",
+  "submit": "Submit",
+  "back": "Back",
+  "next": "Next",
+  "close": "Close",
+  "confirm": "Confirm",
+  "actions": "Actions",
+  "viewDetails": "View Details",
+  "status": "Status",
+  "createdAt": "Created",
+  "updatedAt": "Updated"
 }
