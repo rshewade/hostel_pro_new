@@ -261,3 +261,4 @@ messages/
 10. **Keep components focused** — one component per file, clear single responsibility
 11. **No hardcoded strings** — all user-facing text goes through `next-intl` `t()` calls
 12. **Write English first** — `messages/en/` is the source of truth, `messages/hi/` follows
+13. **Phase completion gate** — before moving to next phase, run: typecheck → lint → unit tests → build. All must pass. Also capture visual baselines. Then commit, push, and `/notify` the result. See `CLAUDE.md > Phase Completion Gate`.

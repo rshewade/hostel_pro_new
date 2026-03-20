@@ -190,3 +190,4 @@ UPLOAD_DIR=./uploads, SIGNED_URL_SECRET, CRON_SECRET
 6. **Backup before destructive operations** — always dump before schema changes
 7. **Validate env vars at startup** — fail fast if required vars are missing
 8. **Use `.env.example`** as the source of truth for required variables
+9. **Phase completion gate** — after completing Phase 9, run: `docker compose build` + `docker compose up` + health check. Then commit, push, and `/notify`. See `CLAUDE.md > Phase Completion Gate`.

@@ -296,6 +296,38 @@ Phase 8 (Testing) — all agents active:
 7. Repeat until verification passes
 ```
 
+### Phase Completion Gate
+
+**Every phase must pass this checklist before moving on. No exceptions.**
+
+```
+1. Type check        →  bun run typecheck  (or bunx tsc --noEmit)
+2. Lint              →  bun run lint       (if configured)
+3. Unit tests        →  bun run test:unit
+4. Integration tests →  bun run test:integration
+5. Build             →  bun run build
+6. If all pass:
+   a. git add + commit with phase summary
+   b. git push to origin/main
+   c. /notify "✅ Phase N — Name completed and pushed"
+7. If any step fails:
+   a. Fix the errors
+   b. Re-run from step 1
+   c. /notify "❌ Phase N build failed: <error summary>"
+   d. Do NOT push or move to next phase until clean
+```
+
+**Phase-specific additions:**
+- **Phase 6+**: Also run `/visual-test` baselines before pushing
+- **Phase 6A**: Also verify translation key parity (`en/` vs `hi/`)
+- **Phase 8**: Full E2E suite must pass (`bun run test:e2e`)
+- **Phase 9**: `docker compose build` must succeed
+
+**Commit convention:** One commit per phase minimum, message format:
+```
+Phase N: <summary of what was built>
+```
+
 ### Escalation Rules
 
 - **Agent blocked?** → Message `architect` for design guidance

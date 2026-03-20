@@ -210,3 +210,4 @@ export async function GET(req: NextRequest) {
 7. **No NestJS patterns**: no decorators, no DI, no modules — plain functions/classes
 8. **Test database operations** after creating schemas: `bunx drizzle-kit push` then verify
 9. **No phase merges without tests** — every service and route must have tests before moving on
+10. **Phase completion gate** — before moving to next phase, run: typecheck → lint → unit tests → integration tests → build. All must pass. Then commit, push, and `/notify` the result. See `CLAUDE.md > Phase Completion Gate` for full checklist.
