@@ -1,6 +1,7 @@
 import { Building, Users, Heart, GraduationCap } from "lucide-react";
 import PageHero from "@/components/public/PageHero";
 import PublicLayout from "@/components/public/PublicLayout";
+import { getTranslations } from "next-intl/server";
 
 const heritageCards = [
   {
@@ -46,10 +47,12 @@ const managementMembers = [
   },
 ];
 
-export default function TrusteesPage() {
+export default async function TrusteesPage() {
+  const t = await getTranslations("public.trustees");
+
   return (
     <PublicLayout>
-      <PageHero title="Board of Trustees" />
+      <PageHero title={t("title")} />
 
       {/* Jhaveri Family Heritage */}
       <section
@@ -64,14 +67,13 @@ export default function TrusteesPage() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            The Jhaveri Family Heritage
+            {t("heritageTitle")}
           </h2>
           <p
             className="text-center mb-12 max-w-2xl mx-auto"
             style={{ color: "var(--text-secondary)" }}
           >
-            A legacy of service, faith, and dedication spanning over a century
-            and a half.
+            {t("heritageSubtitle")}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {heritageCards.map((card) => (
@@ -126,14 +128,13 @@ export default function TrusteesPage() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            Key Management
+            {t("keyManagement")}
           </h2>
           <p
             className="text-center mb-12 max-w-2xl mx-auto"
             style={{ color: "var(--text-secondary)" }}
           >
-            The dedicated leaders who guide the Trust with wisdom and
-            commitment.
+            {t("keyManagementSubtitle")}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {managementMembers.map((member) => (
@@ -195,20 +196,13 @@ export default function TrusteesPage() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            A Living Legacy
+            {t("livingLegacy")}
           </h2>
           <p
             className="text-lg leading-relaxed"
             style={{ color: "var(--text-secondary)" }}
           >
-            The Seth Hirachand Gumanji Jain Trust stands as a testament to the
-            enduring power of faith, service, and community. From its origins in
-            the small town of Bhindar to its present-day impact in Mumbai, the
-            Trust continues to honor its founders&apos; vision by empowering
-            students, supporting pilgrims, and preserving the rich cultural
-            heritage of the Jain community. As it embraces digital
-            transformation, the Trust remains steadfast in its commitment to the
-            values that have guided it for over 170 years.
+            {t("livingLegacyText")}
           </p>
         </div>
       </section>

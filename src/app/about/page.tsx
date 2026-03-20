@@ -2,94 +2,85 @@ import Image from "next/image";
 import { BookOpen, Shield, Heart } from "lucide-react";
 import PageHero from "@/components/public/PageHero";
 import PublicLayout from "@/components/public/PublicLayout";
+import { getTranslations } from "next-intl/server";
 
-const objectives = [
-  {
-    icon: <BookOpen className="w-8 h-8" />,
-    title: "Empowerment",
-    description:
-      "Providing quality education and accommodation to Jain students, enabling them to pursue academic excellence while staying rooted in their cultural values.",
-  },
-  {
-    icon: <Shield className="w-8 h-8" />,
-    title: "Spiritual Integrity",
-    description:
-      "Upholding the principles of Jain philosophy by creating an environment that nurtures spiritual growth, ethical conduct, and disciplined living.",
-  },
-  {
-    icon: <Heart className="w-8 h-8" />,
-    title: "Service",
-    description:
-      "Extending selfless service to the Jain community and society at large through charitable initiatives, community welfare programs, and humanitarian support.",
-  },
-];
+export default async function AboutPage() {
+  const t = await getTranslations("Public.about");
 
-const timelineEvents = [
-  {
-    year: "1852",
-    title: "Foundation Laid",
-    description:
-      "The seeds of the Trust were planted by the visionary Jhaveri family of Bhindar, Rajasthan, who recognized the need for community welfare in Mumbai.",
-  },
-  {
-    year: "1900",
-    title: "Formalization of the Trust",
-    description:
-      "The Trust was formally established under the guidance of Seth Hirachand Gumanji, bringing together resources for the betterment of the Jain community.",
-  },
-  {
-    year: "1914",
-    title: "Boys Hostel Established",
-    description:
-      "The flagship Boys Hostel was inaugurated on Lamington Road, Mumbai, providing affordable accommodation for Jain students pursuing higher education.",
-  },
-  {
-    year: "1940",
-    title: "Girls Ashram Founded",
-    description:
-      "Recognizing the importance of women's education, the Girls Ashram was established, offering a safe and nurturing environment for female students.",
-  },
-  {
-    year: "1972",
-    title: "Dharamshala Inaugurated",
-    description:
-      "The Dharamshala was opened to serve Jain pilgrims and travelers, providing comfortable lodging for those visiting Mumbai for religious and personal purposes.",
-  },
-  {
-    year: "Present",
-    title: "Digital Transformation",
-    description:
-      "Embracing modern technology to streamline hostel management, admissions, and communication while preserving the Trust's core values and heritage.",
-  },
-];
+  const objectives = [
+    {
+      icon: <BookOpen className="w-8 h-8" />,
+      title: t("empowerment"),
+      description: t("empowermentDesc"),
+    },
+    {
+      icon: <Shield className="w-8 h-8" />,
+      title: t("spiritualIntegrity"),
+      description: t("spiritualIntegrityDesc"),
+    },
+    {
+      icon: <Heart className="w-8 h-8" />,
+      title: t("service"),
+      description: t("serviceDesc"),
+    },
+  ];
 
-const facilities = [
-  {
-    title: "Boys Hostel",
-    description:
-      "Well-maintained hostel facilities for male students with modern amenities, study rooms, and a supportive community atmosphere.",
-    image: "/hostel-building.png",
-  },
-  {
-    title: "Girls Ashram",
-    description:
-      "A secure and nurturing residential facility for female students, equipped with all necessary amenities for comfortable living and focused study.",
-    image: "/hostel-room.png",
-  },
-  {
-    title: "Dharamshala",
-    description:
-      "Comfortable guest accommodations for Jain pilgrims and travelers, located conveniently in Mumbai with easy access to temples and transport.",
-    image: "/hostel-temple.png",
-  },
-];
+  const timelineEvents = [
+    {
+      year: "1852",
+      title: t("timeline1852Title"),
+      description: t("timeline1852Desc"),
+    },
+    {
+      year: "1900",
+      title: t("timeline1900Title"),
+      description: t("timeline1900Desc"),
+    },
+    {
+      year: "1914",
+      title: t("timeline1914Title"),
+      description: t("timeline1914Desc"),
+    },
+    {
+      year: "1940",
+      title: t("timeline1940Title"),
+      description: t("timeline1940Desc"),
+    },
+    {
+      year: "1972",
+      title: t("timeline1972Title"),
+      description: t("timeline1972Desc"),
+    },
+    {
+      year: "Present",
+      title: t("timelinePresentTitle"),
+      description: t("timelinePresentDesc"),
+    },
+  ];
 
-export default function AboutPage() {
+  const facilities = [
+    {
+      title: t("boysHostel"),
+      description: t("boysHostelDesc"),
+      image: "/hostel-building.png",
+    },
+    {
+      title: t("girlsAshram"),
+      description: t("girlsAshramDesc"),
+      image: "/hostel-room.png",
+    },
+    {
+      title: t("dharamshala"),
+      description: t("dharamshalaDesc"),
+      image: "/hostel-temple.png",
+    },
+  ];
+
   return (
     <PublicLayout>
       <PageHero
-        title="Seth Hirachand Gumanji Jain Trust, Mumbai"
-        subtitle="Preserving Heritage, Empowering Future Generations"
+        title={t("title")}
+        subtitle={t("subtitle")}
       />
 
       {/* Mission Statement */}
@@ -105,7 +96,7 @@ export default function AboutPage() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            Our Mission
+            {t("mission")}
           </h2>
           <blockquote
             className="text-lg italic leading-relaxed"
@@ -116,11 +107,7 @@ export default function AboutPage() {
               textAlign: "left",
             }}
           >
-            &ldquo;To serve the Jain community by providing quality education,
-            secure accommodation, and spiritual nourishment to students and
-            travelers, while preserving our rich cultural heritage and fostering
-            values of compassion, non-violence, and selfless service for the
-            betterment of society.&rdquo;
+            &ldquo;{t("missionText")}&rdquo;
           </blockquote>
         </div>
       </section>
@@ -138,7 +125,7 @@ export default function AboutPage() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            Core Objectives
+            {t("coreObjectives")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {objectives.map((obj) => (
@@ -190,34 +177,15 @@ export default function AboutPage() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            About Us
+            {t("aboutUs")}
           </h2>
           <div
             className="space-y-6 text-base leading-relaxed"
             style={{ color: "var(--text-secondary)" }}
           >
-            <p>
-              The Seth Hirachand Gumanji Jain Trust, Mumbai, is a distinguished
-              charitable institution dedicated to the welfare and upliftment of
-              the Jain community. Founded over a century ago by the illustrious
-              Jhaveri family of Bhindar, Rajasthan, the Trust has been a beacon
-              of hope and service for generations.
-            </p>
-            <p>
-              The Trust manages three key institutions: a Boys Hostel, a Girls
-              Ashram, and a Dharamshala, all located in the heart of Mumbai.
-              These facilities provide affordable and quality accommodation to
-              Jain students pursuing higher education and to pilgrims visiting
-              the city.
-            </p>
-            <p>
-              With a deep commitment to preserving Jain values of
-              non-violence, truth, and compassion, the Trust has continuously
-              adapted to modern needs while maintaining its cultural roots. The
-              institution operates under the guidance of a dedicated Board of
-              Trustees who ensure transparency, accountability, and adherence to
-              the founding principles.
-            </p>
+            <p>{t("aboutPara1")}</p>
+            <p>{t("aboutPara2")}</p>
+            <p>{t("aboutPara3")}</p>
           </div>
         </div>
       </section>
@@ -235,7 +203,7 @@ export default function AboutPage() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            Our History
+            {t("history")}
           </h2>
           <div className="relative">
             {/* Timeline line */}
@@ -311,7 +279,7 @@ export default function AboutPage() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            Institutions &amp; Facilities
+            {t("institutionsFacilities")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {facilities.map((facility) => (

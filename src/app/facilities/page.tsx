@@ -4,14 +4,9 @@ import { useState } from "react";
 import { Building2, Home, Users } from "lucide-react";
 import PublicLayout from "@/components/public/PublicLayout";
 import PageHero from "@/components/public/PageHero";
+import { useTranslations } from "next-intl";
 
 type TabKey = "boys" | "girls" | "dharamshala";
-
-const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
-  { key: "boys", label: "Boys' Hostel", icon: <Building2 size={18} /> },
-  { key: "girls", label: "Girls' Hostel", icon: <Home size={18} /> },
-  { key: "dharamshala", label: "Dharamshala", icon: <Users size={18} /> },
-];
 
 const rules: Record<TabKey, string[]> = {
   boys: [
@@ -46,12 +41,19 @@ const rules: Record<TabKey, string[]> = {
 
 export default function FacilitiesPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("boys");
+  const t = useTranslations("Public.facilities");
+
+  const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+    { key: "boys", label: t("boysHostel"), icon: <Building2 size={18} /> },
+    { key: "girls", label: t("girlsHostel"), icon: <Home size={18} /> },
+    { key: "dharamshala", label: t("dharamshala"), icon: <Users size={18} /> },
+  ];
 
   return (
     <PublicLayout>
       <PageHero
-        title="Facilities & Rules"
-        subtitle="Guidelines and regulations for our institutions"
+        title={t("title")}
+        subtitle={t("subtitle")}
       />
 
       <section className="px-4 py-16" style={{ background: "var(--bg-page)" }}>
@@ -103,8 +105,8 @@ export default function FacilitiesPage() {
                 fontFamily: "var(--font-serif)",
               }}
             >
-              {tabs.find((t) => t.key === activeTab)?.label} Rules &amp;
-              Regulations
+              {tabs.find((tab) => tab.key === activeTab)?.label}{" "}
+              {t("rulesAndRegulations")}
             </h2>
 
             <ol className="flex flex-col gap-4">

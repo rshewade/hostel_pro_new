@@ -4,36 +4,39 @@ import { useState, FormEvent } from "react";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import PageHero from "@/components/public/PageHero";
 import PublicLayout from "@/components/public/PublicLayout";
-
-const contactInfo = [
-  {
-    icon: <MapPin className="w-6 h-6" />,
-    title: "Address",
-    lines: [
-      "148, Lamington Road,",
-      "Mumbai Central,",
-      "Mumbai - 400 008,",
-      "Maharashtra, India",
-    ],
-  },
-  {
-    icon: <Phone className="w-6 h-6" />,
-    title: "Phone",
-    lines: ["+91 22 2414 1234", "+91 22 2414 5678"],
-  },
-  {
-    icon: <Mail className="w-6 h-6" />,
-    title: "Email",
-    lines: ["info@shgjaintrust.org", "admissions@shgjaintrust.org"],
-  },
-  {
-    icon: <Clock className="w-6 h-6" />,
-    title: "Office Hours",
-    lines: ["Monday - Saturday", "10:00 AM - 6:00 PM", "Sunday: Closed"],
-  },
-];
+import { useTranslations } from "next-intl";
 
 export default function ContactPage() {
+  const t = useTranslations("Public.contact");
+
+  const contactInfo = [
+    {
+      icon: <MapPin className="w-6 h-6" />,
+      title: t("address"),
+      lines: [
+        t("addressLine1"),
+        t("addressLine2"),
+        t("addressLine3"),
+        t("addressLine4"),
+      ],
+    },
+    {
+      icon: <Phone className="w-6 h-6" />,
+      title: t("phone"),
+      lines: ["+91 22 2414 1234", "+91 22 2414 5678"],
+    },
+    {
+      icon: <Mail className="w-6 h-6" />,
+      title: t("email"),
+      lines: ["info@shgjaintrust.org", "admissions@shgjaintrust.org"],
+    },
+    {
+      icon: <Clock className="w-6 h-6" />,
+      title: t("officeHours"),
+      lines: [t("mondayToSaturday"), t("timings"), t("sundayClosed")],
+    },
+  ];
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -50,7 +53,7 @@ export default function ContactPage() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     // Form submission logic would go here
-    alert("Thank you for your message. We will get back to you shortly.");
+    alert(t("thankYou"));
     setFormData({ name: "", email: "", phone: "", message: "" });
   };
 
@@ -75,7 +78,7 @@ export default function ContactPage() {
 
   return (
     <PublicLayout>
-      <PageHero title="Contact Us" />
+      <PageHero title={t("title")} />
 
       {/* Contact Info Grid */}
       <section
@@ -166,12 +169,12 @@ export default function ContactPage() {
                   fontFamily: "var(--font-serif)",
                 }}
               >
-                Send us a Message
+                {t("sendMessage")}
               </h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label htmlFor="name" style={labelStyle}>
-                    Full Name
+                    {t("fullName")}
                   </label>
                   <input
                     type="text"
@@ -179,14 +182,14 @@ export default function ContactPage() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Enter your full name"
+                    placeholder={t("fullNamePlaceholder")}
                     required
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label htmlFor="email" style={labelStyle}>
-                    Email Address
+                    {t("emailAddress")}
                   </label>
                   <input
                     type="email"
@@ -194,14 +197,14 @@ export default function ContactPage() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Enter your email address"
+                    placeholder={t("emailPlaceholder")}
                     required
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label htmlFor="phone" style={labelStyle}>
-                    Phone Number
+                    {t("phoneNumber")}
                   </label>
                   <input
                     type="tel"
@@ -209,20 +212,20 @@ export default function ContactPage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="Enter your phone number"
+                    placeholder={t("phonePlaceholder")}
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label htmlFor="message" style={labelStyle}>
-                    Message
+                    {t("message")}
                   </label>
                   <textarea
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Type your message here..."
+                    placeholder={t("messagePlaceholder")}
                     rows={5}
                     required
                     style={{ ...inputStyle, resize: "vertical" as const }}
@@ -236,7 +239,7 @@ export default function ContactPage() {
                     color: "var(--text-inverse)",
                   }}
                 >
-                  Send Message
+                  {t("sendButton")}
                 </button>
               </form>
             </div>

@@ -6,8 +6,11 @@ import Image from 'next/image';
 import { Input } from '../../components/forms/Input';
 import { Button } from '../../components/ui/Button';
 import { cn } from '../../components/utils';
+import { useTranslations } from 'next-intl';
 
 export default function TrackingPage() {
+  const t = useTranslations('public.track');
+
   const [trackingId, setTrackingId] = useState('');
   const [mobile, setMobile] = useState('');
   const [step, setStep] = useState<'input' | 'otp' | 'loading'>('input');
@@ -19,7 +22,7 @@ export default function TrackingPage() {
   const handleTrackingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!trackingId.trim() || !mobile.trim()) {
-      setError('Please enter both tracking ID and mobile number');
+      setError(t('errorBothRequired'));
       return;
     }
 
@@ -31,7 +34,7 @@ export default function TrackingPage() {
       const result = await response.json();
 
       if (!response.ok || !result.data) {
-        setError('Application not found with this tracking ID');
+        setError(t('errorNotFound'));
         setStep('input');
         return;
       }
@@ -39,9 +42,9 @@ export default function TrackingPage() {
       const appData = result.data.data || result.data;
       const normalizedMobile = mobile.replace(/^\+?91/, '').trim();
       const appMobileNormalized = (appData.applicant_mobile || '').replace(/^\+?91/, '').trim();
-      
+
       if (appMobileNormalized !== normalizedMobile) {
-        setError('Mobile number does not match the application');
+        setError(t('errorMobileMismatch'));
         setStep('input');
         return;
       }
@@ -63,7 +66,7 @@ export default function TrackingPage() {
       });
 
       const otpData = await otpResponse.json();
-      
+
       if (otpData.token) {
         setOtpToken(otpData.token);
       }
@@ -81,7 +84,7 @@ export default function TrackingPage() {
       }, 1000);
 
     } catch (err) {
-      setError('Failed to verify application. Please try again.');
+      setError(t('errorVerifyFailed'));
       setStep('input');
     }
   };
@@ -89,7 +92,7 @@ export default function TrackingPage() {
   const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!otp.trim() || otp.length !== 6) {
-      setError('Please enter a valid 6-digit OTP');
+      setError(t('errorInvalidOtp'));
       return;
     }
 
@@ -106,11 +109,11 @@ export default function TrackingPage() {
       if (response.ok) {
         window.location.href = `/track/${trackingId}`;
       } else {
-        setError('Invalid OTP. Please try again.');
+        setError(t('errorOtpFailed'));
         setStep('otp');
       }
     } catch (err) {
-      setError('Failed to verify OTP. Please try again.');
+      setError(t('errorOtpFailed'));
       setStep('otp');
     }
   };
@@ -127,7 +130,7 @@ export default function TrackingPage() {
       setResendTimer(60);
       setError('');
     } catch (err) {
-      setError('Failed to resend OTP. Please try again.');
+      setError(t('errorResendFailed'));
     }
   };
 
@@ -150,7 +153,7 @@ export default function TrackingPage() {
             </div>
           </div>
           <Link href="/" className="text-sm text-blue-600 hover:underline">
-            ← Back to Home
+            {t('backToHome')}
           </Link>
         </div>
       </header>
@@ -160,33 +163,33 @@ export default function TrackingPage() {
         <div className="mx-auto max-w-md">
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2">Track Your Application</h2>
-              <p className="text-gray-600">Enter your tracking ID and mobile number to view your application status</p>
+              <h2 className="text-2xl font-bold mb-2">{t('title')}</h2>
+              <p className="text-gray-600">{t('subtitle')}</p>
             </div>
 
             {step === 'input' && (
               <form onSubmit={handleTrackingSubmit} className="space-y-6">
                 <Input
                   id="trackingId"
-                  label="Tracking ID"
+                  label={t('trackingId')}
                   type="text"
-                  placeholder="e.g., BH2024001"
+                  placeholder={t('trackingIdPlaceholder')}
                   value={trackingId}
                   onChange={(e) => setTrackingId(e.target.value.toUpperCase())}
                   required
-                  helperText="Enter the tracking number from your application confirmation"
+                  helperText={t('trackingIdHelper')}
                   autoFocus
                 />
 
                 <Input
                   id="mobile"
-                  label="Mobile Number"
+                  label={t('mobileNumber')}
                   type="tel"
-                  placeholder="+91XXXXXXXXXX"
+                  placeholder={t('mobilePlaceholder')}
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
                   required
-                  helperText="Enter the mobile number used during application"
+                  helperText={t('mobileHelper')}
                 />
 
                 {error && (
@@ -196,7 +199,7 @@ export default function TrackingPage() {
                 )}
 
                 <Button type="submit" className="w-full">
-                  Continue
+                  {t('continue')}
                 </Button>
               </form>
             )}
@@ -205,7 +208,7 @@ export default function TrackingPage() {
               <form onSubmit={handleOtpSubmit} className="space-y-6">
                 <Input
                   id="otp"
-                  label="Enter OTP"
+                  label={t('enterOtp')}
                   type="text"
                   inputMode="numeric"
                   placeholder="000000"
@@ -213,7 +216,7 @@ export default function TrackingPage() {
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   maxLength={6}
                   required
-                  helperText={`OTP sent to ${mobile}`}
+                  helperText={t('otpSentTo', { mobile })}
                 />
 
                 {error && (
@@ -223,7 +226,7 @@ export default function TrackingPage() {
                 )}
 
                 <Button type="submit" className="w-full">
-                  Verify OTP
+                  {t('verifyOtp')}
                 </Button>
 
                 <div className="text-center">
@@ -236,7 +239,7 @@ export default function TrackingPage() {
                       resendTimer > 0 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:underline'
                     )}
                   >
-                    {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : 'Resend OTP'}
+                    {resendTimer > 0 ? t('resendOtpIn', { seconds: resendTimer }) : t('resendOtp')}
                   </button>
                 </div>
               </form>
@@ -245,7 +248,7 @@ export default function TrackingPage() {
             {step === 'loading' && (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="mt-4 text-gray-600">Processing...</p>
+                <p className="mt-4 text-gray-600">{t('processing')}</p>
               </div>
             )}
           </div>
@@ -257,10 +260,9 @@ export default function TrackingPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-900 mb-1">Secure Tracking</h4>
+                  <h4 className="text-sm font-medium text-gray-900 mb-1">{t('secureTracking')}</h4>
                   <p className="text-sm text-gray-600">
-                    Your tracking ID and mobile number are used only to verify your identity and retrieve your application status.
-                    All data transmission is encrypted and complies with DPDP Act, 2023.
+                    {t('secureTrackingDesc')}
                   </p>
                 </div>
               </div>
@@ -268,7 +270,7 @@ export default function TrackingPage() {
 
             <div className="text-center">
               <p className="text-sm text-gray-500">
-                Need help? Contact our admissions team at{' '}
+                {t('needHelp')}{' '}
                 <a href="tel:+912224141234" className="text-blue-600 hover:underline">+91 22 2414 1234</a>
               </p>
             </div>

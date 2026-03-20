@@ -1,46 +1,25 @@
 import { Heart, GraduationCap, Building, Utensils, Home, Gift, Phone } from "lucide-react";
 import PublicLayout from "@/components/public/PublicLayout";
 import PageHero from "@/components/public/PageHero";
+import { getTranslations } from "next-intl/server";
 
-const donationPurposes = [
-  {
-    title: "Education Fund",
-    description: "Support scholarships and academic programs for deserving students.",
-    icon: GraduationCap,
-  },
-  {
-    title: "Infrastructure",
-    description: "Help maintain and improve hostel buildings and facilities.",
-    icon: Building,
-  },
-  {
-    title: "Bhojanshala",
-    description: "Contribute towards providing nutritious meals for all residents.",
-    icon: Utensils,
-  },
-  {
-    title: "Medical Assistance",
-    description: "Fund medical aid and health checkups for hostel residents.",
-    icon: Heart,
-  },
-  {
-    title: "Dharamshala Maintenance",
-    description: "Support the upkeep of Dharamshala for pilgrims and visitors.",
-    icon: Home,
-  },
-  {
-    title: "General Donation",
-    description: "Contribute to the overall welfare and growth of the institution.",
-    icon: Gift,
-  },
-];
+const donationPurposeKeys = [
+  { titleKey: "educationFund", descKey: "educationFundDesc", icon: GraduationCap },
+  { titleKey: "infrastructure", descKey: "infrastructureDesc", icon: Building },
+  { titleKey: "bhojanshala", descKey: "bhojanshalaDesc", icon: Utensils },
+  { titleKey: "medicalAssistance", descKey: "medicalAssistanceDesc", icon: Heart },
+  { titleKey: "dharamshalaMaintenance", descKey: "dharamshalaMaintenanceDesc", icon: Home },
+  { titleKey: "generalDonation", descKey: "generalDonationDesc", icon: Gift },
+] as const;
 
-export default function DonationsPage() {
+export default async function DonationsPage() {
+  const t = await getTranslations("public.donations");
+
   return (
     <PublicLayout>
       <PageHero
-        title="Support Our Mission"
-        subtitle="Your generosity helps us provide quality accommodation and education"
+        title={t("title")}
+        subtitle={t("subtitle")}
       >
         <Heart
           className="w-10 h-10 mx-auto mb-4"
@@ -62,7 +41,7 @@ export default function DonationsPage() {
             }}
           >
             <p className="text-sm md:text-base font-medium">
-              All donations are eligible for tax benefits under Section 80G of the Income Tax Act.
+              {t("taxBenefit")}
             </p>
           </div>
 
@@ -74,15 +53,15 @@ export default function DonationsPage() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            Choose a Cause to Support
+            {t("chooseCause")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {donationPurposes.map((purpose) => {
+            {donationPurposeKeys.map((purpose) => {
               const Icon = purpose.icon;
               return (
                 <div
-                  key={purpose.title}
+                  key={purpose.titleKey}
                   className="rounded-lg p-6 text-center transition-shadow duration-200 hover:shadow-md"
                   style={{
                     backgroundColor: "var(--surface-primary)",
@@ -102,13 +81,13 @@ export default function DonationsPage() {
                     className="text-lg font-semibold mb-2"
                     style={{ color: "var(--text-primary)" }}
                   >
-                    {purpose.title}
+                    {t(purpose.titleKey)}
                   </h3>
                   <p
                     className="text-sm leading-relaxed"
                     style={{ color: "var(--text-secondary)" }}
                   >
-                    {purpose.description}
+                    {t(purpose.descKey)}
                   </p>
                 </div>
               );
@@ -130,20 +109,20 @@ export default function DonationsPage() {
                 fontFamily: "var(--font-serif)",
               }}
             >
-              Make a Donation
+              {t("makeDonation")}
             </h2>
 
             <div className="space-y-4 mb-6">
               <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
-                <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>Bank Name</span>
+                <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>{t("bankName")}</span>
                 <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>State Bank of India</span>
               </div>
               <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
-                <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>Branch</span>
+                <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>{t("branch")}</span>
                 <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Dadar East</span>
               </div>
               <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--border-primary)" }}>
-                <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>IFSC Code</span>
+                <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>{t("ifscCode")}</span>
                 <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>SBIN0001234</span>
               </div>
             </div>
@@ -153,7 +132,7 @@ export default function DonationsPage() {
                 className="text-sm mb-4"
                 style={{ color: "var(--text-secondary)" }}
               >
-                For assistance or to confirm your donation, contact us:
+                {t("donationAssistance")}
               </p>
               <a
                 href="tel:+919876543210"

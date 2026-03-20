@@ -1,6 +1,7 @@
 import { Calendar } from "lucide-react";
 import PublicLayout from "@/components/public/PublicLayout";
 import PageHero from "@/components/public/PageHero";
+import { getTranslations } from "next-intl/server";
 
 const newsItems = [
   {
@@ -50,12 +51,14 @@ const newsItems = [
   },
 ];
 
-export default function NewsPage() {
+export default async function NewsPage() {
+  const t = await getTranslations("Public.news");
+
   return (
     <PublicLayout>
       <PageHero
-        title="News & Announcements"
-        subtitle="Stay updated with the latest happenings at our institutions"
+        title={t("title")}
+        subtitle={t("subtitle")}
       />
 
       <section

@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { ArrowRight, Shield, Users, Clock } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-export default function ApplyPage() {
+export default async function ApplyPage() {
+  const t = await getTranslations("public.apply");
+
   return (
     <div className="min-h-screen" style={{ background: "var(--bg-page)" }}>
       {/* Header */}
@@ -55,7 +58,7 @@ export default function ApplyPage() {
                   1
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-                  Select Vertical
+                  {t("selectVertical")}
                 </span>
               </div>
               <div className="h-px w-16" style={{ backgroundColor: "var(--border-primary)" }}></div>
@@ -67,7 +70,7 @@ export default function ApplyPage() {
                   2
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-                  Contact Details
+                  {t("contactDetails")}
                 </span>
               </div>
               <div className="h-px w-16" style={{ backgroundColor: "var(--border-primary)" }}></div>
@@ -79,7 +82,7 @@ export default function ApplyPage() {
                   3
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-                  OTP Verification
+                  {t("otpVerification")}
                 </span>
               </div>
               <div className="h-px w-16" style={{ backgroundColor: "var(--border-primary)" }}></div>
@@ -91,12 +94,12 @@ export default function ApplyPage() {
                   4
                 </div>
                 <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-                  Application Form
+                  {t("applicationForm")}
                 </span>
               </div>
             </div>
             <div className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              <span>Step 1 of 4</span>
+              <span>{t("stepOf", { current: 1, total: 4 })}</span>
             </div>
           </div>
         </div>
@@ -109,17 +112,16 @@ export default function ApplyPage() {
             <Shield className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-lg font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
-                Data Protection & Privacy
+                {t("dataProtection")}
               </h3>
               <p className="text-sm mb-3" style={{ color: "var(--text-secondary)" }}>
-                Your personal information is protected under the Digital Personal Data Protection (DPDP) Act. 
-                By proceeding with your application, you consent to our data usage policies for admission processing.
+                {t("dataProtectionDesc")}
               </p>
               <Link
                 href="/privacy-policy"
                 className="text-blue-600 hover:text-blue-800 text-sm font-medium underline"
               >
-                Read our complete Privacy Policy →
+                {t("readPrivacyPolicy")} →
               </Link>
             </div>
           </div>
@@ -131,10 +133,10 @@ export default function ApplyPage() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-              Choose Your Accommodation Type
+              {t("title")}
             </h2>
             <p className="text-lg mb-8" style={{ color: "var(--text-secondary)" }}>
-              Select the hostel type you wish to apply for. Each option has specific requirements and facilities.
+              {t("subtitle")}
             </p>
           </div>
 
@@ -151,11 +153,10 @@ export default function ApplyPage() {
                     <Users className="w-10 h-10" style={{ color: "var(--color-blue-600)" }} />
                   </div>
                   <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-                    Boys Hostel
+                    {t("boysHostel")}
                   </h3>
                   <p className="mb-6 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                    Modern accommodation for male students with focus on academic excellence, 
-                    character building, and spiritual growth in a safe, disciplined environment.
+                    {t("boysHostelDesc")}
                   </p>
                   <ul className="space-y-3 text-left mb-6">
                     <li className="flex items-center gap-2">
@@ -176,7 +177,7 @@ export default function ApplyPage() {
                     </li>
                   </ul>
                   <button className="btn-primary w-full mt-auto">
-                    Apply to Boys Hostel
+                    {t("applyBoysHostel")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </button>
                 </div>
@@ -194,11 +195,10 @@ export default function ApplyPage() {
                     <Users className="w-10 h-10" style={{ color: "var(--color-purple-600)" }} />
                   </div>
                   <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-                    Girls Ashram
+                    {t("girlsAshram")}
                   </h3>
                   <p className="mb-6 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                    Safe and nurturing environment for female students with enhanced security, 
-                    dedicated study areas, and focus on holistic development.
+                    {t("girlsAshramDesc")}
                   </p>
                   <ul className="space-y-3 text-left mb-6">
                     <li className="flex items-center gap-2">
@@ -219,7 +219,7 @@ export default function ApplyPage() {
                     </li>
                   </ul>
                   <button className="btn-primary w-full mt-auto">
-                    Apply to Girls Ashram
+                    {t("applyGirlsAshram")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </button>
                 </div>
@@ -237,11 +237,10 @@ export default function ApplyPage() {
                     <Shield className="w-10 h-10" style={{ color: "var(--color-amber-600)" }} />
                   </div>
                   <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-                    Dharamshala
+                    {t("dharamshala")}
                   </h3>
                   <p className="mb-6 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                    Spiritual retreat and temporary accommodation for pilgrims and visitors 
-                    seeking peaceful stay with simple amenities and community facilities.
+                    {t("dharamshalaDesc")}
                   </p>
                   <ul className="space-y-3 text-left mb-6">
                     <li className="flex items-center gap-2">
@@ -262,7 +261,7 @@ export default function ApplyPage() {
                     </li>
                   </ul>
                   <button className="btn-primary w-full mt-auto">
-                    Book Dharamshala
+                    {t("bookDharamshala")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </button>
                 </div>
@@ -274,18 +273,17 @@ export default function ApplyPage() {
           <div className="card p-8 bg-blue-50 border border-blue-200">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
               <Clock className="w-5 h-5 text-blue-600" />
-              Important Information
+              {t("importantInfo")}
             </h3>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <span className="text-blue-600 font-semibold">•</span>
                 <div>
                   <h4 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>
-                    No Account Required Yet
+                    {t("noAccountRequired")}
                   </h4>
                   <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                    You don't need to create an account to apply. An account will be created 
-                    automatically only after final approval of your application.
+                    {t("noAccountRequiredDesc")}
                   </p>
                 </div>
               </div>
@@ -293,11 +291,10 @@ export default function ApplyPage() {
                 <span className="text-blue-600 font-semibold">•</span>
                 <div>
                   <h4 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>
-                    Track Your Application
+                    {t("trackApplication")}
                   </h4>
                   <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                    After submission, you'll receive a tracking number via SMS/Email to monitor 
-                    your application status throughout the admission process.
+                    {t("trackApplicationDesc")}
                   </p>
                 </div>
               </div>
@@ -305,11 +302,10 @@ export default function ApplyPage() {
                 <span className="text-blue-600 font-semibold">•</span>
                 <div>
                   <h4 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>
-                    Document Preparation
+                    {t("documentPreparation")}
                   </h4>
                   <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                    Keep your documents ready: Birth Certificate, Educational Records, 
-                    Community Recommendation, and Recent Photographs.
+                    {t("documentPreparationDesc")}
                   </p>
                 </div>
               </div>

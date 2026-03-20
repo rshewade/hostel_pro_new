@@ -1,21 +1,24 @@
 import Image from "next/image";
 import PublicLayout from "@/components/public/PublicLayout";
 import PageHero from "@/components/public/PageHero";
+import { getTranslations } from "next-intl/server";
 
-const galleryImages = [
-  { src: "/hostel-gate.png", alt: "Historic Main Gate" },
-  { src: "/hostel-building.png", alt: "Heritage Building" },
-  { src: "/hostel-temple.png", alt: "Temple View" },
-  { src: "/hostel-room.png", alt: "Traditional Interior" },
-  { src: "/hostel-playground.jpg", alt: "Sports Ground" },
-];
+export default async function GalleryPage() {
+  const t = await getTranslations("Public.gallery");
 
-export default function GalleryPage() {
+  const galleryImages = [
+    { src: "/hostel-gate.png", alt: t("mainGate") },
+    { src: "/hostel-building.png", alt: t("heritageBuilding") },
+    { src: "/hostel-temple.png", alt: t("templeView") },
+    { src: "/hostel-room.png", alt: t("traditionalInterior") },
+    { src: "/hostel-playground.jpg", alt: t("sportsGround") },
+  ];
+
   return (
     <PublicLayout>
       <PageHero
-        title="Photo Gallery"
-        subtitle="Glimpses of our institutions and events"
+        title={t("title")}
+        subtitle={t("subtitle")}
       />
 
       <section
