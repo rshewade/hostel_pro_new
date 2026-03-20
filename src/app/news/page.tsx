@@ -3,56 +3,51 @@ import PublicLayout from "@/components/public/PublicLayout";
 import PageHero from "@/components/public/PageHero";
 import { getTranslations } from "next-intl/server";
 
-const newsItems = [
-  {
-    title: "Admissions Open for 2025-26",
-    description:
-      "Applications are now being accepted for the upcoming academic year. Apply online through our streamlined admission process for Boys Hostel, Girls Ashram, and Dharamshala.",
-    date: "15 Dec 2024",
-    category: "Admissions",
-    badgeColor: "#2563eb",
-    badgeBg: "#dbeafe",
-  },
-  {
-    title: "Annual Paryushan Mahaparva Celebration",
-    description:
-      "The hostel community came together to celebrate Paryushan Mahaparva with devotion and enthusiasm. Events included special prayers, lectures, and community gatherings.",
-    date: "08 Sep 2024",
-    category: "Events",
-    badgeColor: "#d97706",
-    badgeBg: "#fef3c7",
-  },
-  {
-    title: "Alumni Meet 2024 - A Grand Success",
-    description:
-      "Over 200 alumni gathered for the annual reunion, sharing memories and experiences. The event featured cultural programs, felicitations, and mentorship sessions for current residents.",
-    date: "20 Nov 2024",
-    category: "Alumni",
-    badgeColor: "#e11d48",
-    badgeBg: "#ffe4e6",
-  },
-  {
-    title: "New Library Wing Inaugurated",
-    description:
-      "A state-of-the-art library wing has been inaugurated with over 5,000 new books, digital resources, and dedicated study spaces for residents.",
-    date: "05 Oct 2024",
-    category: "Infrastructure",
-    badgeColor: "#16a34a",
-    badgeBg: "#dcfce7",
-  },
-  {
-    title: "Scholarship Program Expanded",
-    description:
-      "The trust has expanded its scholarship program to support more deserving students. New categories include merit-based, need-based, and sports scholarships.",
-    date: "15 Aug 2024",
-    category: "Scholarships",
-    badgeColor: "#9333ea",
-    badgeBg: "#f3e8ff",
-  },
-];
-
 export default async function NewsPage() {
   const t = await getTranslations("Public.news");
+
+  const newsItems = [
+    {
+      title: t("item1Title"),
+      description: t("item1Desc"),
+      date: t("item1Date"),
+      category: t("item1Category"),
+      badgeColor: "#2563eb",
+      badgeBg: "#dbeafe",
+    },
+    {
+      title: t("item2Title"),
+      description: t("item2Desc"),
+      date: t("item2Date"),
+      category: t("item2Category"),
+      badgeColor: "#d97706",
+      badgeBg: "#fef3c7",
+    },
+    {
+      title: t("item3Title"),
+      description: t("item3Desc"),
+      date: t("item3Date"),
+      category: t("item3Category"),
+      badgeColor: "#e11d48",
+      badgeBg: "#ffe4e6",
+    },
+    {
+      title: t("item4Title"),
+      description: t("item4Desc"),
+      date: t("item4Date"),
+      category: t("item4Category"),
+      badgeColor: "#16a34a",
+      badgeBg: "#dcfce7",
+    },
+    {
+      title: t("item5Title"),
+      description: t("item5Desc"),
+      date: t("item5Date"),
+      category: t("item5Category"),
+      badgeColor: "#9333ea",
+      badgeBg: "#f3e8ff",
+    },
+  ];
 
   return (
     <PublicLayout>

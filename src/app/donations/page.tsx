@@ -13,7 +13,7 @@ const donationPurposeKeys = [
 ] as const;
 
 export default async function DonationsPage() {
-  const t = await getTranslations("public.donations");
+  const t = await getTranslations("Public.donations");
 
   return (
     <PublicLayout>

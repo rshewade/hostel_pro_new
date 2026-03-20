@@ -1,3 +1,4 @@
+// @vitest-environment node
 /**
  * Unit tests for document API routes:
  *   GET  /api/documents                   — list documents (multi-role)
@@ -146,7 +147,7 @@ const fakeDocumentList = {
 
 describe('GET /api/documents', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
     mockListDocuments.mockResolvedValue(fakeDocumentList);
   });
 
@@ -285,7 +286,7 @@ describe('GET /api/documents', () => {
 
 describe('POST /api/documents/upload', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
     mockGenerateStoragePath.mockReturnValue('auth-user-1/general/1234567890_doc.pdf');
     mockUpload.mockResolvedValue(undefined);
     mockUploadDocumentService.mockResolvedValue(fakeDocument);
@@ -446,7 +447,7 @@ describe('POST /api/documents/upload', () => {
 
 describe('GET /api/documents/[id]/url', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
     mockGetDocumentById.mockResolvedValue(fakeDocument);
     mockGenerateSignedUrl.mockReturnValue({
       url: '/api/storage/path/to/doc.pdf?token=abc&expires=9999999999',
@@ -515,7 +516,7 @@ describe('GET /api/documents/[id]/url', () => {
 
 describe('GET /api/student/documents', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
     mockListDocuments.mockResolvedValue(fakeDocumentList);
   });
 
@@ -609,7 +610,7 @@ describe('GET /api/student/documents', () => {
 
 describe('POST /api/student/documents', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
     mockGenerateStoragePath.mockReturnValue('student-auth-id/general/ts_doc.pdf');
     mockUpload.mockResolvedValue(undefined);
     mockUploadDocumentService.mockResolvedValue(fakeDocument);

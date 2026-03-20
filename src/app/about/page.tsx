@@ -52,7 +52,7 @@ export default async function AboutPage() {
       description: t("timeline1972Desc"),
     },
     {
-      year: "Present",
+      year: t("timelinePresentYear"),
       title: t("timelinePresentTitle"),
       description: t("timelinePresentDesc"),
     },

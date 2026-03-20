@@ -3,52 +3,46 @@ import PageHero from "@/components/public/PageHero";
 import PublicLayout from "@/components/public/PublicLayout";
 import { getTranslations } from "next-intl/server";
 
-const heritageCards = [
-  {
-    icon: <Building className="w-8 h-8" />,
-    title: "Origins in Bhindar",
-    description:
-      "The Jhaveri family traces its roots to the historic town of Bhindar in Rajasthan, a region renowned for its rich Jain heritage and tradition of philanthropy. From these humble beginnings, the family established itself as a pillar of the community.",
-  },
-  {
-    icon: <Users className="w-8 h-8" />,
-    title: "Founding Figures",
-    description:
-      "The early patriarchs of the Jhaveri family laid the groundwork for what would become one of Mumbai's most respected charitable trusts. Their vision of community service and educational empowerment continues to guide the Trust's mission.",
-  },
-  {
-    icon: <Heart className="w-8 h-8" />,
-    title: "The Trust's Namesake",
-    description:
-      "Seth Hirachand Gumanji, whose name the Trust proudly bears, was a visionary leader who dedicated his life and resources to the welfare of the Jain community. His legacy of generosity and compassion remains the cornerstone of the institution.",
-  },
-  {
-    icon: <GraduationCap className="w-8 h-8" />,
-    title: "Generational Leadership",
-    description:
-      "Across multiple generations, the Jhaveri family has maintained an unwavering commitment to the Trust's founding principles. Each generation has built upon the work of its predecessors, expanding the reach and impact of the Trust's charitable activities.",
-  },
-];
-
-const managementMembers = [
-  {
-    name: "Seema Javeri",
-    role: "Executive Director",
-    initials: "SJ",
-    description:
-      "Seema Javeri has been leading the Trust's operations with dedication and vision for over a decade. Under her stewardship, the Trust has modernized its facilities, streamlined admissions processes, and strengthened its commitment to student welfare while preserving the institution's core values.",
-  },
-  {
-    name: "Asit Jhaveri",
-    role: "Trustee",
-    initials: "AJ",
-    description:
-      "Asit Jhaveri brings a wealth of experience in governance and community development to the Board of Trustees. His strategic guidance has been instrumental in the Trust's growth, particularly in expanding educational programs and ensuring financial sustainability for future generations.",
-  },
-];
-
 export default async function TrusteesPage() {
-  const t = await getTranslations("public.trustees");
+  const t = await getTranslations("Public.trustees");
+
+  const heritageCards = [
+    {
+      icon: <Building className="w-8 h-8" />,
+      title: t("heritage1Title"),
+      description: t("heritage1Desc"),
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: t("heritage2Title"),
+      description: t("heritage2Desc"),
+    },
+    {
+      icon: <Heart className="w-8 h-8" />,
+      title: t("heritage3Title"),
+      description: t("heritage3Desc"),
+    },
+    {
+      icon: <GraduationCap className="w-8 h-8" />,
+      title: t("heritage4Title"),
+      description: t("heritage4Desc"),
+    },
+  ];
+
+  const managementMembers = [
+    {
+      name: t("member1Name"),
+      role: t("member1Role"),
+      initials: t("member1Initials"),
+      description: t("member1Desc"),
+    },
+    {
+      name: t("member2Name"),
+      role: t("member2Role"),
+      initials: t("member2Initials"),
+      description: t("member2Desc"),
+    },
+  ];
 
   return (
     <PublicLayout>

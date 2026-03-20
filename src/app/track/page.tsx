@@ -9,7 +9,7 @@ import { cn } from '../../components/utils';
 import { useTranslations } from 'next-intl';
 
 export default function TrackingPage() {
-  const t = useTranslations('public.track');
+  const t = useTranslations('Public.track');
 
   const [trackingId, setTrackingId] = useState('');
   const [mobile, setMobile] = useState('');

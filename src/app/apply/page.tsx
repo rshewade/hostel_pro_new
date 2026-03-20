@@ -3,7 +3,7 @@ import { ArrowRight, Shield, Users, Clock } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 export default async function ApplyPage() {
-  const t = await getTranslations("public.apply");
+  const t = await getTranslations("Public.apply");
 
   return (
     <div className="min-h-screen" style={{ background: "var(--bg-page)" }}>

@@ -23,12 +23,12 @@ export default function ContactPage() {
     {
       icon: <Phone className="w-6 h-6" />,
       title: t("phone"),
-      lines: ["+91 22 2414 1234", "+91 22 2414 5678"],
+      lines: [t("phoneLine1"), t("phoneLine2")],
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: t("email"),
-      lines: ["info@shgjaintrust.org", "admissions@shgjaintrust.org"],
+      lines: [t("emailLine1"), t("emailLine2")],
     },
     {
       icon: <Clock className="w-6 h-6" />,

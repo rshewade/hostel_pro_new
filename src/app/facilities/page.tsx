@@ -8,40 +8,40 @@ import { useTranslations } from "next-intl";
 
 type TabKey = "boys" | "girls" | "dharamshala";
 
-const rules: Record<TabKey, string[]> = {
-  boys: [
-    "All residents must maintain strict discipline and decorum within the hostel premises at all times.",
-    "Entry to the hostel after 9:00 PM is not permitted without prior written permission from the superintendent.",
-    "Consumption of alcohol, tobacco, or any intoxicating substances is strictly prohibited and will result in immediate expulsion.",
-    "Visitors are allowed only in the designated visitor area during visiting hours (4:00 PM to 7:00 PM on weekends).",
-    "Residents are responsible for maintaining cleanliness of their rooms and common areas as per the assigned duty roster.",
-    "Use of personal electrical appliances such as heaters, cookers, or irons is not permitted in the rooms without approval.",
-    "All residents are expected to attend the morning prayer assembly held daily at 6:30 AM in the prayer hall.",
-    "Any damage to hostel property will be charged to the resident responsible, and repeated offences may lead to disciplinary action.",
-  ],
-  girls: [
-    "Entry to the ashram after 8:00 PM is not permitted. Late entry requires prior written consent from the warden.",
-    "Male visitors are not allowed beyond the reception area. All meetings must take place in the designated visitor room.",
-    "Overnight stays outside the ashram require written consent from a parent or guardian, submitted to the warden at least 24 hours in advance.",
-    "Residents must inform the warden before leaving the ashram premises, stating the destination and expected time of return.",
-    "A modest dress code must be followed within the ashram premises as per the guidelines issued by the management.",
-    "Mobile phone usage is restricted during study hours (7:00 PM to 9:30 PM) and during prayer sessions.",
-    "All residents are expected to participate in cultural and religious events organised by the ashram and the trust.",
-  ],
-  dharamshala: [
-    "Check-in time is 12:00 PM and check-out time is 11:00 AM. Early check-in or late check-out is subject to availability.",
-    "Valid government-issued photo ID proof is mandatory for all guests at the time of check-in.",
-    "Maximum duration of stay is 7 days. Extensions may be granted in exceptional circumstances with approval from the trust office.",
-    "Non-vegetarian food, alcohol, and tobacco products are strictly prohibited within the dharamshala premises.",
-    "Silence must be maintained during prayer hours (6:00 AM to 7:00 AM and 7:00 PM to 8:00 PM).",
-    "Cancellations must be made at least 24 hours before the check-in date to receive a full refund of the advance payment.",
-    "Vehicle parking is available on a first-come, first-served basis. The management is not responsible for any loss or damage to vehicles.",
-  ],
-};
-
 export default function FacilitiesPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("boys");
   const t = useTranslations("Public.facilities");
+
+  const rules: Record<TabKey, string[]> = {
+    boys: [
+      t("boysRule1"),
+      t("boysRule2"),
+      t("boysRule3"),
+      t("boysRule4"),
+      t("boysRule5"),
+      t("boysRule6"),
+      t("boysRule7"),
+      t("boysRule8"),
+    ],
+    girls: [
+      t("girlsRule1"),
+      t("girlsRule2"),
+      t("girlsRule3"),
+      t("girlsRule4"),
+      t("girlsRule5"),
+      t("girlsRule6"),
+      t("girlsRule7"),
+    ],
+    dharamshala: [
+      t("dharamshalaRule1"),
+      t("dharamshalaRule2"),
+      t("dharamshalaRule3"),
+      t("dharamshalaRule4"),
+      t("dharamshalaRule5"),
+      t("dharamshalaRule6"),
+      t("dharamshalaRule7"),
+    ],
+  };
 
   const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
     { key: "boys", label: t("boysHostel"), icon: <Building2 size={18} /> },

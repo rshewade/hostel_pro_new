@@ -9,7 +9,7 @@ import { Shield, Lock, Eye, Database, User, Clock, FileText, ChevronDown, Chevro
 import { useTranslations } from 'next-intl';
 
 const DPDPPolicyPage: React.FC = () => {
-  const t = useTranslations('public.dpdpPolicy');
+  const t = useTranslations('Public.dpdpPolicy');
 
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     collection: true,
@@ -32,86 +32,37 @@ const DPDPPolicyPage: React.FC = () => {
       id: 'collection',
       title: t('dataCollection'),
       icon: <FileText className="w-5 h-5" />,
-      content: `We collect the following personal information for hostel management purposes:
-
-• Personal Identification: Full name, date of birth, gender, photograph
-• Contact Information: Residential address, phone number, email address
-• Academic Records: Institution name, course/year, enrollment number
-• Financial Information: Bank account details, payment history, fee receipts
-• Medical Information: Health conditions, allergies, emergency contacts (voluntary)
-• Biometric Data: Fingerprint/face recognition for attendance (optional, with explicit consent)`,
+      content: t('dataCollectionContent'),
     },
     {
       id: 'usage',
       title: t('dataUsage'),
       icon: <Eye className="w-5 h-5" />,
-      content: `Your data is used exclusively for the following purposes:
-
-• Hostel Admission and Management: Processing applications, room allocation, and stay management
-• Academic Coordination: Communication with educational institutions
-• Fee Processing: Payment collection, receipt generation, and financial records
-• Safety and Security: Emergency contacts, visitor management, and attendance tracking
-• Compliance: Meeting legal and regulatory requirements
-• Communication: Sending important notices about hostel matters
-
-We do not use your data for any purpose beyond these stated objectives without your explicit consent.`,
+      content: t('dataUsageContent'),
     },
     {
       id: 'sharing',
       title: t('dataSharing'),
       icon: <User className="w-5 h-5" />,
-      content: `Your personal data may be shared with the following entities under strict conditions:
-
-• Institutional Authorities: Hostel administration and management committees
-• Parents/Guardians: For communication and fee matters (with student consent)
-• Government Agencies: As required by law (e.g., police, local administration)
-• Service Providers: Mess contractors, security services, maintenance providers
-• Educational Institutions: For academic coordination and verification
-
-We ensure all third parties adhere to data protection standards through contractual agreements.`,
+      content: t('dataSharingContent'),
     },
     {
       id: 'retention',
       title: t('dataRetention'),
       icon: <Database className="w-5 h-5" />,
-      content: `We retain your personal data for the following periods:
-
-• Active Stay: Throughout your period of stay at the hostel
-• Alumni Records: 1 year after exit for institutional records
-• Financial Records: 7 years as per legal and tax requirements
-• Application Records: 1 year after rejection or withdrawal
-• Consent Records: Permanent (withdrawals noted) for audit purposes
-
-After retention periods, your data is securely deleted or anonymized.`,
+      content: t('dataRetentionContent'),
     },
     {
       id: 'rights',
       title: t('yourRights'),
       icon: <Lock className="w-5 h-5" />,
-      content: `Under the Data Protection and Privacy Principles (DPDP) Act, you have the following rights:
-
-• Right to Access: Request a copy of all personal data we hold about you
-• Right to Rectification: Request correction of inaccurate or incomplete data
-• Right to Erasure: Request deletion of your personal data (subject to legal requirements)
-• Right to Data Portability: Request your data in a structured, commonly used format
-• Right to Withdraw Consent: Withdraw any consent given, with notice that it may affect services
-• Right to Lodge Complaints: File complaints with the Data Protection Board
-
-To exercise these rights, contact the Data Protection Officer.`,
+      content: t('yourRightsContent'),
     },
     {
       id: 'contact',
       title: t('contactComplaints'),
       icon: <Shield className="w-5 h-5" />,
-      content: `Data Protection Officer Contact:
-
-Email: dpo@hostelmanagement.in
-Phone: +91-XXX-XXXX-XXXX
-Address: [Institution Address]
-
-For complaints, you may also contact:
-Data Protection Board of India
-Website: https://dpbi.gov.in`,
+      content: t('contactComplaintsContent'),
     },
   ];
 
