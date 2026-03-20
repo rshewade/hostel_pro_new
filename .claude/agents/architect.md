@@ -74,7 +74,7 @@ Skill definition: `.claude/skills/verify-migration/SKILL.md`
 - **Payments**: Razorpay
 
 ### Migration Source
-Old codebase at `~/projects/hostel_old/repo/`:
+Old codebase at `/home/ubuntu/projects/hostel_old/repo/`:
 - NestJS backend (~18 services, ~40 controllers)
 - Next.js 16 frontend (~280 components)
 - 11 Supabase SQL migrations (~3910 lines)
@@ -126,11 +126,41 @@ src/
 - Sanitize all user input
 - No secrets in code — always `process.env`
 
+## Old Codebase Reference
+
+**Absolute path**: `/home/ubuntu/projects/hostel_old/repo/`
+
+```
+/home/ubuntu/projects/hostel_old/repo/
+├── backend/
+│   ├── src/              ← NestJS services, controllers, modules
+│   │   ├── auth/         ← Auth service, JWT strategy, roles guard
+│   │   ├── applications/ ← Applications service + types
+│   │   ├── payments/     ← Payments, Razorpay, receipts, reconciliation
+│   │   ├── documents/    ← Document processing, bulk download
+│   │   ├── rooms/        ← Room allocation
+│   │   ├── leaves/       ← Leave management
+│   │   ├── users/        ← User service
+│   │   ├── compliance/   ← Crypto, consent, data retention
+│   │   ├── devices/      ← Device session tracking
+│   │   └── audit/        ← Audit logging
+│   └── migrations/       ← 11 SQL files (~3910 lines)
+└── frontend/
+    └── src/              ← Next.js 16 pages + ~280 components
+```
+
+### Rules for handling old code
+1. **If old code has a bug** → fix it in the new code (don't perpetuate bugs)
+2. **If old code is missing a feature** → add only if it's in the migration plan; otherwise flag to user
+3. **If old code has a security issue** → fix immediately and flag in review
+4. **All old public methods must have new equivalents** — use `/verify-migration` function parity check
+5. **Never copy NestJS patterns** — strip all decorators, DI, modules during migration
+
 ## Workflow
 
 When asked to review or design:
 
-1. **Read the relevant source files** — both old (`~/projects/hostel_old/repo/`) and new
+1. **Read the relevant source files** — both old (`/home/ubuntu/projects/hostel_old/repo/`) and new
 2. **Check the migration plan** for phase context and dependencies
 3. **Evaluate against conventions** listed above
 4. **Provide clear, actionable feedback** — specific file paths, line numbers, code examples

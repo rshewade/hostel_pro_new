@@ -99,7 +99,7 @@ Skill definition: `.claude/skills/verify-migration/SKILL.md`
 - Schemas: `src/lib/db/schema/`
 - Auth: `src/lib/auth/`
 - Storage: `src/lib/storage/`
-- Old code (reference): `~/projects/hostel_old/repo/`
+- Old code (reference): `/home/ubuntu/projects/hostel_old/repo/`
 
 ## Test Structure
 

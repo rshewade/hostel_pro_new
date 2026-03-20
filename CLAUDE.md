@@ -167,6 +167,64 @@ bun run test:coverage                 # Unit tests with coverage report
 | `qa-tester` | Sonnet | Vitest tests, migration verification, coverage |
 | `visual-tester` | Sonnet | Playwright visual testing, baselines, regression |
 
+## Agent Workflow
+
+### Phase → Agent Mapping
+
+| Phase | Lead Agent | Support | Deliverables |
+|-------|-----------|---------|-------------|
+| 0 — Setup | `architect` | `devops` | Config files, project scaffold |
+| 1 — Schema | `backend-dev` | `architect` (review) | Drizzle schemas, triggers, `/testdb create` |
+| 2 — Auth | `backend-dev` | `qa-tester` | Better Auth, OTP, RBAC middleware |
+| 3 — Services | `backend-dev` | `qa-tester` | ~20 service modules + unit/integration tests |
+| 4 — Storage | `backend-dev` | `devops` | Local FS, signed URLs |
+| 5 — API Routes | `backend-dev` | `qa-tester` | ~40 route handlers + API tests |
+| 6 — Frontend | `frontend-dev` | `visual-tester` | ~280 components + visual baselines |
+| 6A — i18n | `frontend-dev` | `qa-tester` | 18 translation files, language toggle |
+| 7 — Crypto | `backend-dev` | `architect` (review) | Encryption utils, compliance |
+| 8 — Testing | `qa-tester` | All devs | E2E tests, coverage gaps, full suite pass |
+| 9 — Docker | `devops` | `architect` (review) | Dockerfile, docker-compose, deployment |
+
+### How to Invoke Agents
+
+Agents are subprocesses with specific tools and context. Invoke via the Agent tool:
+
+```
+Use architect to review the Phase 1 schema design
+Use backend-dev to migrate the users service
+Use frontend-dev to migrate the ApplicationCard component
+Use qa-tester to verify the applications service migration
+Use visual-tester to capture baselines for the dashboard pages
+Use devops to set up the test database
+```
+
+### Workflow Per Service/Route Migration
+
+```
+1. backend-dev: reads old code → writes new service + tests
+2. qa-tester: runs /verify-migration <service> → reports pass/fail
+3. architect: reviews code if complex or cross-cutting
+4. Repeat until /verify-migration passes
+5. Move to next service
+```
+
+### Workflow Per Frontend Component Migration
+
+```
+1. frontend-dev: reads old component → migrates + adds i18n keys + writes test
+2. visual-tester: runs /visual-test responsive <page> → captures baselines
+3. qa-tester: runs /verify-migration <Component> → reports pass/fail
+4. Repeat until verification passes
+```
+
+### Escalation Rules
+
+- **Agent blocked?** → Escalate to `architect` for design guidance
+- **Schema question?** → `architect` decides, `backend-dev` implements
+- **Old code has a bug?** → Fix it in new code (don't perpetuate bugs)
+- **Old code missing a feature?** → Add it if it's in the migration plan, otherwise flag to user
+- **Test DB out of sync?** → Run `/testdb recreate`
+
 ## Testing Strategy
 
 4-layer pyramid defined in `TESTING_STRATEGY.md`:
@@ -195,7 +253,7 @@ Phase 0 (Setup) → Phase 1 (Schema) → Phase 2 (Auth)
 ```
 
 ### Old codebase reference
-`~/projects/hostel_old/repo/` — NestJS backend + Next.js 16 frontend + Supabase
+`/home/ubuntu/projects/hostel_old/repo/` — NestJS backend + Next.js 16 frontend + Supabase
 
 ### Migration pattern
 ```
@@ -208,11 +266,142 @@ ConfigService.get()         →  process.env.*
 @Cron() decorators          →  API endpoint + external cron
 ```
 
+## Error Handling
+
+### Error Classes (`src/lib/errors.ts`)
+
+```typescript
+class AppError extends Error        { status: number; code: string }
+class NotFoundError extends AppError { status = 404; code = 'NOT_FOUND' }
+class ForbiddenError extends AppError { status = 403; code = 'FORBIDDEN' }
+class UnauthorizedError extends AppError { status = 401; code = 'UNAUTHORIZED' }
+class ValidationError extends AppError { status = 400; code = 'VALIDATION_ERROR' }
+class ConflictError extends AppError { status = 409; code = 'CONFLICT' }
+class RateLimitError extends AppError { status = 429; code = 'RATE_LIMITED' }
+```
+
+### API Error Response Format
+
+All API routes return errors in this shape:
+```json
+{
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "User not found",
+    "status": 404
+  }
+}
+```
+
+For validation errors, include field-level details:
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid input",
+    "status": 400,
+    "details": [
+      { "field": "phone", "message": "Invalid phone number format" },
+      { "field": "fullName", "message": "Required" }
+    ]
+  }
+}
+```
+
+### Error Handling in API Routes
+
+```typescript
+// Pattern for every route handler
+export async function POST(req: NextRequest) {
+  try {
+    const session = await requireAuth(req);
+    requireRole(session, ['superintendent']);
+    const body = createApplicationSchema.parse(await req.json());
+    const result = await createApplication(body);
+    return NextResponse.json(result, { status: 201 });
+  } catch (err) {
+    if (err instanceof ZodError) {
+      return NextResponse.json({
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid input', status: 400, details: err.errors }
+      }, { status: 400 });
+    }
+    if (err instanceof AppError) {
+      return NextResponse.json({
+        error: { code: err.code, message: err.message, status: err.status }
+      }, { status: err.status });
+    }
+    logger.error('Unhandled error', err);
+    return NextResponse.json({
+      error: { code: 'INTERNAL_ERROR', message: 'Something went wrong', status: 500 }
+    }, { status: 500 });
+  }
+}
+```
+
+### Rules
+- **Services throw** typed errors — never return `{ error }` objects
+- **API routes catch** and transform to JSON response
+- **Never leak stack traces** or internal details to the client
+- **Log all 5xx errors** with full context (request, user, stack trace)
+- **Frontend displays** `error.message` to the user, uses `error.code` for conditional UI
+
 ## Security
 
+### Rules
 - Never expose secrets in code — always `process.env`
 - HMAC-verify all signed URLs
 - Validate file types/sizes before storage
-- Rate-limit auth endpoints
+- Rate-limit auth endpoints (max 5 OTP requests per phone per 10 min)
 - All routes must have auth + RBAC checks
 - Sanitize all user input
+- No raw SQL except in `drizzle/custom/triggers.sql`
+- Never log sensitive data (passwords, tokens, OTPs, personal documents)
+
+### Per-Phase Security Checklist
+
+| Phase | Security Check |
+|-------|---------------|
+| 1 — Schema | No plaintext password fields; sensitive columns marked for encryption |
+| 2 — Auth | OTP rate limiting; session expiry configured; RBAC covers all roles; no token leaks in responses |
+| 3 — Services | All encryption uses AES-256-GCM; HMAC uses SHA-256; no hardcoded keys; crypto.ts reviewed by architect |
+| 4 — Storage | File type validation (allowlist, not blocklist); file size limits; path traversal prevention; signed URLs expire |
+| 5 — API Routes | Every route has `requireAuth` + `requireRole`; input validated with Zod; no SQL injection via raw queries |
+| 6 — Frontend | No secrets in client code; no `dangerouslySetInnerHTML` with user data; CSP headers set |
+| 6A — i18n | Translation values don't contain executable code; user input never used as translation keys |
+| 7 — Crypto | All encryption tests pass; key rotation strategy documented; no deprecated algorithms |
+| 8 — Testing | Auth bypass tests (missing token, expired session, wrong role); injection tests |
+| 9 — Docker | No secrets in Dockerfile/compose; non-root user in container; health checks enabled |
+
+### Security Review Gate
+The `architect` agent must review the following files before each phase is marked complete:
+- Phase 2: `src/lib/auth/` — all auth files
+- Phase 3: `src/lib/services/crypto.ts` — encryption
+- Phase 4: `src/lib/storage/signed-urls.ts` — URL signing
+- Phase 5: `src/middleware.ts` — request interception
+
+## Rollback Strategy
+
+### Per-Phase Rollback
+
+| Phase | Risk | Rollback Method |
+|-------|------|----------------|
+| 0 — Setup | Low | `git reset` — no data involved |
+| 1 — Schema | Medium | `DROP` tables + re-push; or restore from `/pg dump-schema` taken before push |
+| 2 — Auth | Medium | Delete Better Auth tables; no user data at this stage |
+| 3 — Services | Low | `git revert` — services are pure code, no side effects |
+| 4 — Storage | Low | `git revert` — uploads directory is empty at this stage |
+| 5 — API Routes | Low | `git revert` — routes are pure code |
+| 6 — Frontend | Low | `git revert` — components are pure code |
+| 6A — i18n | Low | `git revert` — translation files are static JSON |
+| 7 — Crypto | Medium | `git revert` — but verify no data was encrypted with new keys |
+| 8 — Testing | None | Tests don't modify anything |
+| 9 — Docker | Low | Revert Dockerfile/compose; old containers still available |
+
+### Before Any Risky Operation
+1. **Database**: Run `/pg dump-schema` before schema changes
+2. **Data**: Run `pg_dump` before any data migration
+3. **Git**: Commit before starting each phase — one commit per phase minimum
+4. **Test DB**: `/testdb recreate` if test DB gets corrupted
+
+### Point of No Return
+Once **real user data** is loaded (post-deployment), rollback becomes significantly harder. Until then, every phase is fully reversible via git + database recreation.

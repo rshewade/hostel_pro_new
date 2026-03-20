@@ -2,7 +2,7 @@
 
 ## Context
 
-The existing hostel management system (`~/projects/hostel_old/repo/`) is a monorepo with a NestJS backend + Next.js 16 frontend, using Supabase for database, auth, and file storage. The goal is to modernize the stack by:
+The existing hostel management system (`/home/ubuntu/projects/hostel_old/repo/`) is a monorepo with a NestJS backend + Next.js 16 frontend, using Supabase for database, auth, and file storage. The goal is to modernize the stack by:
 - Switching runtime from **Node.js → Bun**
 - Switching database access from **Supabase JS client → Drizzle ORM + direct PostgreSQL**
 - Switching auth from **Supabase Auth → Better Auth**
@@ -79,7 +79,7 @@ Files to create under `src/lib/db/schema/`:
 
 **Verify:** `bunx drizzle-kit generate` + `bunx drizzle-kit push` creates all tables. `bunx drizzle-kit studio` shows correct structure.
 
-Source: `~/projects/hostel_old/repo/backend/migrations/000_create_database_schema.sql` through `010_seed_students_table.sql`
+Source: `/home/ubuntu/projects/hostel_old/repo/backend/migrations/000_create_database_schema.sql` through `010_seed_students_table.sql`
 
 ---
 
@@ -103,7 +103,7 @@ Files to create:
 
 **RLS replacement:** All access control becomes middleware + service-layer `requireRole()` checks.
 
-Source: `~/projects/hostel_old/repo/backend/src/auth/auth.service.ts`, `jwt.strategy.ts`, `roles.guard.ts`
+Source: `/home/ubuntu/projects/hostel_old/repo/backend/src/auth/auth.service.ts`, `jwt.strategy.ts`, `roles.guard.ts`
 
 **Verify:** OTP send/verify works, password login works, sessions persist, role-based guards block unauthorized access.
 
@@ -140,10 +140,13 @@ Source: `~/projects/hostel_old/repo/backend/src/auth/auth.service.ts`, `jwt.stra
 - `@Cron()` → API endpoint triggered by external cron
 
 Also create:
-- `src/lib/errors.ts` — AppError, NotFoundError, ForbiddenError, ValidationError
+- `src/lib/errors.ts` — Error class hierarchy (see `CLAUDE.md > Error Handling` for full spec):
+  - `AppError` (base) → `NotFoundError` (404), `ForbiddenError` (403), `UnauthorizedError` (401), `ValidationError` (400), `ConflictError` (409), `RateLimitError` (429)
+  - Services throw these errors; API routes catch and transform to JSON `{ error: { code, message, status, details? } }`
 - `src/lib/logger.ts` — Simple logger utility
+- `src/lib/api/error-handler.ts` — Shared API error response helper that catches AppError/ZodError and returns standardized JSON
 
-Source: `~/projects/hostel_old/repo/backend/src/` (all service files)
+Source: `/home/ubuntu/projects/hostel_old/repo/backend/src/` (all service files)
 
 ---
 
@@ -172,7 +175,7 @@ uploads/
 - `supabase.storage.from(bucket).remove()` → `fs.unlink(path)`
 - `supabase.storage.from(bucket).createSignedUrl()` → HMAC token with expiry
 
-Source: `~/projects/hostel_old/repo/backend/src/documents/documents.service.ts`
+Source: `/home/ubuntu/projects/hostel_old/repo/backend/src/documents/documents.service.ts`
 
 ---
 
@@ -216,7 +219,7 @@ Each route calls service functions from Phase 3, with auth/RBAC checks from Phas
 - Evaluate removing `react-router-dom` dependency (unusual in Next.js)
 - **All user-facing text must use `next-intl` translation keys** (see Phase 6A below)
 
-Source: `~/projects/hostel_old/repo/frontend/src/`
+Source: `/home/ubuntu/projects/hostel_old/repo/frontend/src/`
 
 ---
 
@@ -341,7 +344,7 @@ Bun supports all Node.js `crypto` APIs used:
 
 Replace `@nestjs/schedule` cron with `POST /api/admin/cron/data-retention/` endpoint protected by `CRON_SECRET` header, triggered externally.
 
-Source: `~/projects/hostel_old/repo/backend/src/compliance/crypto.service.ts`
+Source: `/home/ubuntu/projects/hostel_old/repo/backend/src/compliance/crypto.service.ts`
 
 ---
 
@@ -410,7 +413,7 @@ Phase 8 (Testing) ────────────────────�
 
 ## File Reuse Strategy
 
-Source: `~/projects/hostel_old/repo/`
+Source: `/home/ubuntu/projects/hostel_old/repo/`
 
 ### Category A — Direct copy (100% reusable, ~12 files)
 | Source File | Target | Notes |

@@ -96,7 +96,7 @@ cd /mnt/data/projects/devbox/hostel_pro && DATABASE_URL="postgresql://db_user1:R
 Compare exported functions between old and new:
 ```bash
 # Old service exports
-grep -n 'async\s\+\w\+\|export\s\+\(async\s\+\)\?function' ~/projects/hostel_old/repo/backend/src/<module>/<name>.service.ts
+grep -n 'async\s\+\w\+\|export\s\+\(async\s\+\)\?function' /home/ubuntu/projects/hostel_old/repo/backend/src/<module>/<name>.service.ts
 
 # New service exports
 grep -n 'async\s\+\w\+\|export\s\+\(async\s\+\)\?function' src/lib/services/<name>.ts

@@ -67,7 +67,7 @@ Skill definition: `.claude/skills/verify-migration/SKILL.md`
 - **State**: React hooks, context where needed
 
 ### Old Frontend
-Located at `~/projects/hostel_old/repo/frontend/src/`:
+Located at `/home/ubuntu/projects/hostel_old/repo/frontend/src/`:
 - `app/` — Pages and layouts
 - `components/` — ~280 React components
 - `types/api.ts` — 781 lines of interfaces/enums

@@ -80,7 +80,7 @@ Skill definition: `.claude/skills/verify-migration/SKILL.md`
 - Run queries via: `docker exec accounts-automation-aadb-euaozw.1.ipljay5ckkzaqt5eapiaruru6 psql -U db_user1 -d hostel_pro -c "<SQL>"`
 
 ### Old Codebase Reference
-Located at `~/projects/hostel_old/repo/`:
+Located at `/home/ubuntu/projects/hostel_old/repo/`:
 - Backend services: `backend/src/` (NestJS with Supabase)
 - SQL migrations: `backend/migrations/` (11 files, ~3910 lines)
 - Type definitions: `backend/src/*/types.ts`
