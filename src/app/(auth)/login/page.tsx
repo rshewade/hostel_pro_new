@@ -46,7 +46,7 @@ export default function LoginPage() {
           router.push(redirectPath);
         } else {
           // New user without profile — default to student dashboard
-          router.push('/dashboard/student');
+          router.push('/student');
         }
       } else {
         setError(responseBody.message || 'Invalid credentials or account not found');
@@ -61,15 +61,15 @@ export default function LoginPage() {
   const getRoleRedirectPath = (role: string): string => {
     switch (role.toUpperCase()) {
       case 'STUDENT':
-        return '/dashboard/student';
+        return '/student';
       case 'SUPERINTENDENT':
-        return '/dashboard/superintendent';
+        return '/superintendent';
       case 'TRUSTEE':
-        return '/dashboard/trustee';
+        return '/trustee';
       case 'ACCOUNTS':
-        return '/dashboard/accounts';
+        return '/accounts';
       case 'PARENT':
-        return '/dashboard/parent';
+        return '/parent';
       default:
         return '/';
     }

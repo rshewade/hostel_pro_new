@@ -113,18 +113,18 @@ function FirstTimeSetupContent() {
   };
 
   const getRoleRedirectPath = (role: string | undefined): string => {
-    if (!role) return '/dashboard/student'; // Default fallback
+    if (!role) return '/student'; // Default fallback
     switch (role.toUpperCase()) {
       case 'STUDENT':
-        return '/dashboard/student';
+        return '/student';
       case 'SUPERINTENDENT':
-        return '/dashboard/superintendent';
+        return '/superintendent';
       case 'TRUSTEE':
-        return '/dashboard/trustee';
+        return '/trustee';
       case 'ACCOUNTS':
-        return '/dashboard/accounts';
+        return '/accounts';
       case 'PARENT':
-        return '/dashboard/parent';
+        return '/parent';
       default:
         return '/';
     }

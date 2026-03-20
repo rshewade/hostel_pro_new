@@ -15,10 +15,6 @@ const publicPaths = [
   '/trustees',
   '/dpdp-policy',
   '/design-system',
-  '/demo',
-  '/communication-demo',
-  '/communication-advanced-demo',
-
   // Auth Pages
   '/login',
   '/verify',

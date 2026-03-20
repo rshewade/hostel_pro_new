@@ -10,7 +10,7 @@ import { OtpInput } from '@/components/forms/OtpInput';
 // 1. Enter registered mobile number
 // 2. OTP verification (POST /api/otp/send, POST /api/otp/verify)
 // 3. Session creation with parent role scope
-// 4. Redirect to /dashboard/parent with read-only permissions
+// 4. Redirect to /parent with read-only permissions
 // Note: Backend must verify mobile number is linked to a student application
 
 export default function ParentLoginPage() {
@@ -95,7 +95,7 @@ export default function ParentLoginPage() {
       if (response.ok) {
         const data = await response.json();
         // Pass sessionToken in URL for the dashboard to fetch student data
-        const redirectUrl = data.redirect || '/dashboard/parent';
+        const redirectUrl = data.redirect || '/parent';
         const separator = redirectUrl.includes('?') ? '&' : '?';
         window.location.href = `${redirectUrl}${separator}sessionToken=${encodeURIComponent(data.sessionToken)}`;
       } else {
