@@ -11,6 +11,11 @@ export const auth = betterAuth({
   database: pool,
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,
+  trustedOrigins: [
+    'http://localhost:3002',
+    'http://51.68.196.242:3002',
+    process.env.BETTER_AUTH_URL || '',
+  ].filter(Boolean),
   emailAndPassword: {
     enabled: true,
   },
