@@ -1,0 +1,81 @@
+import { pgTable, uuid, text, decimal, date, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
+import { exitRequestStatusEnum, clearanceStatusEnum, clearanceItemStatusEnum } from './enums';
+import { users } from './users';
+
+export const exitRequests = pgTable('exit_requests', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  studentUserId: uuid('student_user_id').notNull().references(() => users.id),
+  reason: text('reason').notNull(),
+  expectedExitDate: date('expected_exit_date').notNull(),
+  requestedDate: date('requested_date').notNull().defaultNow(),
+  actualExitDate: date('actual_exit_date'),
+  forwardingAddress: text('forwarding_address'),
+  bankAccountHolder: text('bank_account_holder'),
+  bankAccountNumber: text('bank_account_number'),
+  bankIfscCode: text('bank_ifsc_code'),
+  bankName: text('bank_name'),
+  status: exitRequestStatusEnum('status').notNull().default('PENDING'),
+  approvedBy: uuid('approved_by').references(() => users.id),
+  approvedAt: timestamp('approved_at', { withTimezone: true }),
+  notes: text('notes'),
+  metadata: jsonb('metadata').default({}),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_exit_requests_student').on(table.studentUserId),
+  index('idx_exit_requests_status').on(table.status),
+]);
+
+export const clearances = pgTable('clearances', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  exitRequestId: uuid('exit_request_id').notNull().references(() => exitRequests.id, { onDelete: 'cascade' }),
+  studentUserId: uuid('student_user_id').notNull().references(() => users.id),
+  status: clearanceStatusEnum('status').notNull().default('NOT_STARTED'),
+  initiatedDate: timestamp('initiated_date', { withTimezone: true }).defaultNow(),
+  expectedCompletion: date('expected_completion'),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
+  roomCleared: clearanceItemStatusEnum('room_cleared').default('PENDING'),
+  roomClearedBy: uuid('room_cleared_by').references(() => users.id),
+  roomClearedAt: timestamp('room_cleared_at', { withTimezone: true }),
+  roomRemarks: text('room_remarks'),
+  libraryCleared: clearanceItemStatusEnum('library_cleared').default('PENDING'),
+  libraryClearedBy: uuid('library_cleared_by').references(() => users.id),
+  libraryClearedAt: timestamp('library_cleared_at', { withTimezone: true }),
+  libraryRemarks: text('library_remarks'),
+  messCleared: clearanceItemStatusEnum('mess_cleared').default('PENDING'),
+  messClearedBy: uuid('mess_cleared_by').references(() => users.id),
+  messClearedAt: timestamp('mess_cleared_at', { withTimezone: true }),
+  messRemarks: text('mess_remarks'),
+  accountsCleared: clearanceItemStatusEnum('accounts_cleared').default('PENDING'),
+  accountsClearedBy: uuid('accounts_cleared_by').references(() => users.id),
+  accountsClearedAt: timestamp('accounts_cleared_at', { withTimezone: true }),
+  accountsRemarks: text('accounts_remarks'),
+  remarks: text('remarks'),
+  metadata: jsonb('metadata').default({}),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_clearances_exit_request').on(table.exitRequestId),
+  index('idx_clearances_student').on(table.studentUserId),
+  index('idx_clearances_status').on(table.status),
+]);
+
+export const clearanceItems = pgTable('clearance_items', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  clearanceId: uuid('clearance_id').notNull().references(() => clearances.id, { onDelete: 'cascade' }),
+  department: text('department').notNull(),
+  itemName: text('item_name').notNull(),
+  description: text('description'),
+  status: clearanceItemStatusEnum('status').notNull().default('PENDING'),
+  clearedBy: uuid('cleared_by').references(() => users.id),
+  clearedAt: timestamp('cleared_at', { withTimezone: true }),
+  remarks: text('remarks'),
+  amountDue: decimal('amount_due', { precision: 10, scale: 2 }).default('0'),
+  amountPaid: decimal('amount_paid', { precision: 10, scale: 2 }).default('0'),
+  metadata: jsonb('metadata').default({}),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index('idx_clearance_items_clearance').on(table.clearanceId),
+  index('idx_clearance_items_status').on(table.status),
+]);

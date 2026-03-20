@@ -1,3 +1,17 @@
-// Schema files will be added in Phase 1
-// Re-export all schemas from this file
-export {};
+export * from './enums';
+export * from './users';
+export * from './students';
+export * from './applications';
+export * from './documents';
+export * from './rooms';
+export * from './fees';
+export * from './leaves';
+export * from './renewals';
+export * from './interviews';
+export * from './audit';
+export * from './devices';
+export * from './notifications';
+export * from './exits';
+export * from './compliance';
+export * from './config';
+export * from './relations';
