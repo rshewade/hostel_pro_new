@@ -158,6 +158,15 @@ bun run test:coverage                 # Unit tests with coverage report
 
 ## Agents
 
+**Agent Teams is enabled** — teammates run concurrently with independent context windows and can message each other directly.
+
+```json
+// .claude/settings.local.json
+{ "env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1" } }
+```
+
+### Team Roster
+
 | Agent | Model | Primary Focus |
 |-------|-------|--------------|
 | `architect` | Opus | Architecture decisions, schema design, code review, phase planning |
@@ -166,6 +175,31 @@ bun run test:coverage                 # Unit tests with coverage report
 | `devops` | Sonnet | Docker, PostgreSQL ops, CI/CD, Devbox, deployment |
 | `qa-tester` | Sonnet | Vitest tests, migration verification, coverage |
 | `visual-tester` | Sonnet | Playwright visual testing, baselines, regression |
+
+### How Agent Teams Work
+
+Unlike basic subagents (one-shot, report to parent only), teammates:
+- **Run concurrently** — multiple agents work at the same time
+- **Message each other directly** — `backend-dev` can notify `qa-tester` when a service is ready
+- **Have independent context** — each agent maintains its own conversation history
+- **Share a task list** — self-coordinate work without a central coordinator
+- **Persist across turns** — teammates stay active within the session
+
+### Communication Patterns
+
+```
+architect ←→ backend-dev     Schema review, design decisions
+backend-dev → qa-tester      "users service ready for verification"
+qa-tester → backend-dev      "3 tests failing, see details"
+frontend-dev → visual-tester "dashboard page migrated, capture baselines"
+qa-tester → frontend-dev     "ApplicationCard missing i18n keys"
+devops ←→ backend-dev        DB issues, environment problems
+architect → all              Phase sign-off, convention changes
+```
+
+### Token Usage Note
+
+Agent Teams uses significantly more tokens than basic subagents since each teammate maintains its own context window. Use teammates for work that genuinely benefits from parallel execution and direct coordination. For simple one-off tasks, a regular subagent is more efficient.
 
 ## Agent Workflow
 
@@ -185,45 +219,62 @@ bun run test:coverage                 # Unit tests with coverage report
 | 8 — Testing | `qa-tester` | All devs | E2E tests, coverage gaps, full suite pass |
 | 9 — Docker | `devops` | `architect` (review) | Dockerfile, docker-compose, deployment |
 
-### How to Invoke Agents
+### Parallel Execution Strategy
 
-Agents are subprocesses with specific tools and context. Invoke via the Agent tool:
+Phases with independent work streams can run teammates concurrently:
 
 ```
-Use architect to review the Phase 1 schema design
-Use backend-dev to migrate the users service
-Use frontend-dev to migrate the ApplicationCard component
-Use qa-tester to verify the applications service migration
-Use visual-tester to capture baselines for the dashboard pages
-Use devops to set up the test database
+Phase 3 (Services) — parallel batches:
+  Batch 1: backend-dev migrates users + applications
+           qa-tester verifies completed services from prior batch
+  Batch 2: backend-dev migrates payments + rooms
+           qa-tester verifies users + applications
+  ...continues leapfrogging
+
+Phase 6 (Frontend) — parallel:
+  frontend-dev migrates components
+  visual-tester captures baselines for completed pages
+  qa-tester runs /verify-migration on completed components
+
+Phase 8 (Testing) — all agents active:
+  qa-tester writes E2E tests
+  visual-tester runs cross-browser + responsive baselines
+  backend-dev fixes issues flagged by qa-tester
+  frontend-dev fixes UI issues flagged by visual-tester
 ```
 
-### Workflow Per Service/Route Migration
+### Workflow Per Service/Route Migration (with Teams)
 
 ```
 1. backend-dev: reads old code → writes new service + tests
-2. qa-tester: runs /verify-migration <service> → reports pass/fail
-3. architect: reviews code if complex or cross-cutting
-4. Repeat until /verify-migration passes
-5. Move to next service
+2. backend-dev messages qa-tester: "users service ready for verification"
+3. qa-tester: runs /verify-migration users → reports pass/fail
+4. If issues: qa-tester messages backend-dev with findings
+5. backend-dev fixes → messages qa-tester to re-verify
+6. qa-tester confirms pass → messages architect for review (if complex)
+7. Move to next service
 ```
 
-### Workflow Per Frontend Component Migration
+### Workflow Per Frontend Component Migration (with Teams)
 
 ```
 1. frontend-dev: reads old component → migrates + adds i18n keys + writes test
-2. visual-tester: runs /visual-test responsive <page> → captures baselines
-3. qa-tester: runs /verify-migration <Component> → reports pass/fail
-4. Repeat until verification passes
+2. frontend-dev messages visual-tester: "dashboard page ready"
+3. visual-tester: runs /visual-test responsive dashboard → captures baselines
+4. frontend-dev messages qa-tester: "dashboard component ready for verification"
+5. qa-tester: runs /verify-migration Dashboard → reports pass/fail
+6. If i18n issues: qa-tester messages frontend-dev with missing keys
+7. Repeat until verification passes
 ```
 
 ### Escalation Rules
 
-- **Agent blocked?** → Escalate to `architect` for design guidance
-- **Schema question?** → `architect` decides, `backend-dev` implements
+- **Agent blocked?** → Message `architect` for design guidance
+- **Schema question?** → `architect` decides, messages `backend-dev` to implement
 - **Old code has a bug?** → Fix it in new code (don't perpetuate bugs)
 - **Old code missing a feature?** → Add it if it's in the migration plan, otherwise flag to user
-- **Test DB out of sync?** → Run `/testdb recreate`
+- **Test DB out of sync?** → `devops` runs `/testdb recreate`, messages affected agents
+- **Cross-cutting change?** → `architect` messages all affected agents with the update
 
 ## Testing Strategy
 
