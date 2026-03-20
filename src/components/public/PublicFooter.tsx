@@ -1,14 +1,19 @@
-import Link from "next/link";
+"use client";
 
-const quickLinks = [
-  { path: "/about", label: "About Us" },
-  { path: "/institutions/boys-hostel", label: "Boys' Hostel" },
-  { path: "/institutions/girls-hostel", label: "Girls' Hostel" },
-  { path: "/institutions/dharamshala", label: "Dharamshala" },
-  { path: "/donations", label: "Donate" },
-];
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+
+const quickLinkKeys = [
+  { path: "/about", key: "aboutUs" },
+  { path: "/institutions/boys-hostel", key: "boysHostel" },
+  { path: "/institutions/girls-hostel", key: "girlsHostel" },
+  { path: "/institutions/dharamshala", key: "dharamshala" },
+  { path: "/donations", key: "donate" },
+] as const;
 
 export default function PublicFooter() {
+  const t = useTranslations("Public.footer");
+
   return (
     <footer style={{ backgroundColor: "var(--bg-inverse)" }}>
       <div className="mx-auto max-w-6xl px-4 py-12">
@@ -32,10 +37,10 @@ export default function PublicFooter() {
                     fontFamily: "var(--font-serif)",
                   }}
                 >
-                  Seth Hirachand Gumanji
+                  {t("trustName")}
                 </h3>
                 <p className="text-sm" style={{ color: "var(--color-navy-300)" }}>
-                  Jain Trust, Mumbai
+                  {t("trustLocation")}
                 </p>
               </div>
             </div>
@@ -43,8 +48,7 @@ export default function PublicFooter() {
               className="text-sm leading-relaxed"
               style={{ color: "var(--color-navy-300)" }}
             >
-              Serving the Jain community through education, shelter, and
-              spiritual welfare since 1940.
+              {t("trustDescription")}
             </p>
           </div>
 
@@ -54,17 +58,17 @@ export default function PublicFooter() {
               className="font-semibold mb-4"
               style={{ color: "var(--text-inverse)" }}
             >
-              Quick Links
+              {t("quickLinks")}
             </h4>
             <ul className="space-y-2">
-              {quickLinks.map((link) => (
+              {quickLinkKeys.map((link) => (
                 <li key={link.path}>
                   <Link
                     href={link.path}
                     className="text-sm transition-colors hover:opacity-100"
                     style={{ color: "var(--color-navy-300)" }}
                   >
-                    {link.label}
+                    {t(link.key)}
                   </Link>
                 </li>
               ))}
@@ -77,7 +81,7 @@ export default function PublicFooter() {
               className="font-semibold mb-4"
               style={{ color: "var(--text-inverse)" }}
             >
-              Contact Us
+              {t("contactUs")}
             </h4>
             <ul className="space-y-3">
               <li
@@ -86,8 +90,7 @@ export default function PublicFooter() {
               >
                 <span className="mt-0.5 shrink-0">&#x1F4CD;</span>
                 <span>
-                  148, Lamington Road, Opp. Navjivan Society, Grant Road (E),
-                  Mumbai, Maharashtra – 400007
+                  {t("address")}
                 </span>
               </li>
               <li
@@ -95,14 +98,14 @@ export default function PublicFooter() {
                 style={{ color: "var(--color-navy-300)" }}
               >
                 <span className="shrink-0">&#x1F4DE;</span>
-                <span>+91 22 2414 1234</span>
+                <span>{t("phone")}</span>
               </li>
               <li
                 className="flex items-center gap-2 text-sm"
                 style={{ color: "var(--color-navy-300)" }}
               >
                 <span className="shrink-0">&#x2709;&#xFE0F;</span>
-                <span>info@shgjaintrust.org</span>
+                <span>{t("email")}</span>
               </li>
             </ul>
           </div>
@@ -113,14 +116,13 @@ export default function PublicFooter() {
               className="font-semibold mb-4"
               style={{ color: "var(--text-inverse)" }}
             >
-              Support Our Mission
+              {t("supportTitle")}
             </h4>
             <p
               className="text-sm mb-4"
               style={{ color: "var(--color-navy-300)" }}
             >
-              Your generous donations help us continue our service to the
-              community.
+              {t("supportDescription")}
             </p>
             <Link
               href="/donations"
@@ -130,7 +132,7 @@ export default function PublicFooter() {
                 color: "var(--text-on-accent)",
               }}
             >
-              Donate Now
+              {t("donateNow")}
             </Link>
           </div>
         </div>
@@ -141,8 +143,7 @@ export default function PublicFooter() {
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
             <p style={{ color: "var(--color-navy-300)" }}>
-              &copy; {new Date().getFullYear()} Seth Hirachand Gumanji Jain
-              Trust. All rights reserved.
+              &copy; {new Date().getFullYear()} {t("copyright")}
             </p>
             <div className="flex items-center gap-4">
               <Link
@@ -150,14 +151,14 @@ export default function PublicFooter() {
                 className="transition-colors hover:opacity-100"
                 style={{ color: "var(--color-navy-300)" }}
               >
-                FAQ
+                {t("faq")}
               </Link>
               <Link
                 href="/facilities"
                 className="transition-colors hover:opacity-100"
                 style={{ color: "var(--color-navy-300)" }}
               >
-                Rules &amp; Regulations
+                {t("rulesRegulations")}
               </Link>
             </div>
           </div>

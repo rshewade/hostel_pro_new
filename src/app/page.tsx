@@ -1,7 +1,19 @@
 import Link from "next/link";
 import PublicLayout from "@/components/public/PublicLayout";
+import { getTranslations } from "next-intl/server";
 
-export default function Home() {
+export default async function Home() {
+  const hero = await getTranslations("Public.hero");
+  const values = await getTranslations("Public.values");
+  const discipline = await getTranslations("Public.discipline");
+  const amenities = await getTranslations("Public.amenities");
+  const choose = await getTranslations("Public.choosePath");
+  const admission = await getTranslations("Public.admissionProcess");
+  const appProcess = await getTranslations("Public.applicationProcess");
+  const docs = await getTranslations("Public.requiredDocuments");
+  const announce = await getTranslations("Public.announcements");
+  const cta = await getTranslations("Public.cta");
+
   return (
     <PublicLayout>
       {/* Hero Section */}
@@ -39,26 +51,26 @@ export default function Home() {
               fontFamily: "var(--font-serif)",
             }}
           >
-            Welcome to Jain Hostel Management
+            {hero("title")}
           </h1>
           <p
             className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
             style={{ color: "var(--color-navy-200)" }}
           >
-            Providing quality accommodation and education support for the Jain community since 1940
+            {hero("subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/apply" className="btn-primary text-lg px-8 py-4 inline-flex items-center justify-center">
-              Apply Now
+              {hero("applyNow")}
             </Link>
             <Link href="/track" className="btn-secondary text-lg px-8 py-4 inline-flex items-center justify-center">
-              Check Status
+              {hero("checkStatus")}
             </Link>
             <Link href="/login" className="btn-primary text-lg px-8 py-4 inline-flex items-center justify-center" style={{ backgroundColor: "var(--color-gold-100)", color: "var(--color-gold-800)", borderColor: "transparent" }}>
-              Login
+              {hero("login")}
             </Link>
             <Link href="/login/parent" className="btn-primary text-lg px-8 py-4 inline-flex items-center justify-center" style={{ backgroundColor: "#2563eb", borderColor: "transparent" }}>
-              Parent
+              {hero("parent")}
             </Link>
           </div>
         </div>
@@ -69,10 +81,10 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-              Our Values &amp; Mission
+              {values("title")}
             </h2>
             <p className="text-lg" style={{ color: "var(--text-secondary)" }}>
-              Committed to providing safe, comfortable, and spiritually enriching accommodation
+              {values("subtitle")}
             </p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
@@ -85,8 +97,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Community First</h3>
-              <p style={{ color: "var(--text-secondary)" }}>Building a supportive Jain community through shared values and mutual respect</p>
+              <h3 className="text-xl font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{values("communityFirst")}</h3>
+              <p style={{ color: "var(--text-secondary)" }}>{values("communityFirstDesc")}</p>
             </div>
             <div className="text-center">
               <div
@@ -97,8 +109,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Educational Support</h3>
-              <p style={{ color: "var(--text-secondary)" }}>Fostering academic excellence with study facilities and mentorship programs</p>
+              <h3 className="text-xl font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{values("educationalSupport")}</h3>
+              <p style={{ color: "var(--text-secondary)" }}>{values("educationalSupportDesc")}</p>
             </div>
             <div className="text-center">
               <div
@@ -109,8 +121,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Cultural Values</h3>
-              <p style={{ color: "var(--text-secondary)" }}>Upholding Jain principles and traditions through daily practices and spiritual activities</p>
+              <h3 className="text-xl font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{values("culturalValues")}</h3>
+              <p style={{ color: "var(--text-secondary)" }}>{values("culturalValuesDesc")}</p>
             </div>
           </div>
         </div>
@@ -121,32 +133,32 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-              Discipline &amp; Safety
+              {discipline("title")}
             </h2>
             <p className="text-lg" style={{ color: "var(--text-secondary)" }}>
-              Maintaining high standards of conduct and safety for all residents
+              {discipline("subtitle")}
             </p>
           </div>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <div className="card p-6 text-center">
               <div className="text-3xl mb-3">&#x1F550;</div>
-              <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Timely Schedule</h3>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Fixed timings for meals, studies, and lights out</p>
+              <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{discipline("timelySchedule")}</h3>
+              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{discipline("timelyScheduleDesc")}</p>
             </div>
             <div className="card p-6 text-center">
               <div className="text-3xl mb-3">&#x1F46E;</div>
-              <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>24/7 Security</h3>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Professional security staff and CCTV monitoring</p>
+              <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{discipline("security")}</h3>
+              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{discipline("securityDesc")}</p>
             </div>
             <div className="card p-6 text-center">
               <div className="text-3xl mb-3">&#x1F4CB;</div>
-              <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Code of Conduct</h3>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Strict adherence to hostel rules and regulations</p>
+              <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{discipline("codeOfConduct")}</h3>
+              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{discipline("codeOfConductDesc")}</p>
             </div>
             <div className="card p-6 text-center">
               <div className="text-3xl mb-3">&#x1F3E5;</div>
-              <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Medical Care</h3>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>First-aid facilities and tie-ups with nearby hospitals</p>
+              <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{discipline("medicalCare")}</h3>
+              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{discipline("medicalCareDesc")}</p>
             </div>
           </div>
         </div>
@@ -157,10 +169,10 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-              Modern Amenities
+              {amenities("title")}
             </h2>
             <p className="text-lg" style={{ color: "var(--text-secondary)" }}>
-              Well-equipped facilities for comfortable living and holistic development
+              {amenities("subtitle")}
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -171,8 +183,8 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>Spacious Rooms</h3>
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Well-ventilated rooms with modern furniture</p>
+                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{amenities("spaciousRooms")}</h3>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{amenities("spaciousRoomsDesc")}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -182,8 +194,8 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>Library &amp; Study Hall</h3>
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Quiet study spaces with extensive book collection</p>
+                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{amenities("library")}</h3>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{amenities("libraryDesc")}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -193,8 +205,8 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>Recreation Room</h3>
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Indoor games and entertainment facilities</p>
+                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{amenities("recreation")}</h3>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{amenities("recreationDesc")}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -204,8 +216,8 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>Mess &amp; Dining</h3>
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Nutritious vegetarian meals with Jain dietary compliance</p>
+                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{amenities("messDining")}</h3>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{amenities("messDiningDesc")}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -215,8 +227,8 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>Laundry Service</h3>
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Regular laundry and ironing services</p>
+                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{amenities("laundry")}</h3>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{amenities("laundryDesc")}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
@@ -226,8 +238,8 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>Wi-Fi Internet</h3>
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>High-speed internet connectivity throughout the premises</p>
+                <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{amenities("wifi")}</h3>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{amenities("wifiDesc")}</p>
               </div>
             </div>
           </div>
@@ -239,10 +251,10 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-              Choose Your Path
+              {choose("title")}
             </h2>
             <p className="text-lg" style={{ color: "var(--text-secondary)" }}>
-              Select the accommodation type that best suits your needs
+              {choose("subtitle")}
             </p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
@@ -258,22 +270,22 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>Boys Hostel</h3>
+                  <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>{choose("boysHostel")}</h3>
                   <p className="mb-6" style={{ color: "var(--text-secondary)" }}>
-                    Modern accommodation for male students with focus on academic excellence and character building
+                    {choose("boysHostelDesc")}
                   </p>
                   <ul className="text-left mb-6 space-y-2" style={{ color: "var(--text-secondary)" }}>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500">&#x2713;</span> 2-3 person sharing rooms
+                      <span className="text-green-500">&#x2713;</span> {choose("boysHostelFeature1")}
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500">&#x2713;</span> Study hall and library
+                      <span className="text-green-500">&#x2713;</span> {choose("boysHostelFeature2")}
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500">&#x2713;</span> Sports and recreation
+                      <span className="text-green-500">&#x2713;</span> {choose("boysHostelFeature3")}
                     </li>
                   </ul>
-                  <span className="btn-primary w-full inline-flex items-center justify-center mt-auto">Apply to Boys Hostel</span>
+                  <span className="btn-primary w-full inline-flex items-center justify-center mt-auto">{choose("applyBoysHostel")}</span>
                 </div>
               </div>
             </Link>
@@ -290,22 +302,22 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>Girls Ashram</h3>
+                  <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>{choose("girlsAshram")}</h3>
                   <p className="mb-6" style={{ color: "var(--text-secondary)" }}>
-                    Safe and nurturing environment for female students with emphasis on holistic development
+                    {choose("girlsAshramDesc")}
                   </p>
                   <ul className="text-left mb-6 space-y-2" style={{ color: "var(--text-secondary)" }}>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500">&#x2713;</span> Enhanced security measures
+                      <span className="text-green-500">&#x2713;</span> {choose("girlsAshramFeature1")}
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500">&#x2713;</span> Women&apos;s study areas
+                      <span className="text-green-500">&#x2713;</span> {choose("girlsAshramFeature2")}
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500">&#x2713;</span> Cultural and spiritual activities
+                      <span className="text-green-500">&#x2713;</span> {choose("girlsAshramFeature3")}
                     </li>
                   </ul>
-                  <span className="btn-primary w-full inline-flex items-center justify-center mt-auto">Apply to Girls Ashram</span>
+                  <span className="btn-primary w-full inline-flex items-center justify-center mt-auto">{choose("applyGirlsAshram")}</span>
                 </div>
               </div>
             </Link>
@@ -322,22 +334,22 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>Dharamshala</h3>
+                  <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>{choose("dharamshala")}</h3>
                   <p className="mb-6" style={{ color: "var(--text-secondary)" }}>
-                    Spiritual retreat and temporary accommodation for pilgrims and visitors seeking peaceful stay
+                    {choose("dharamshalaDesc")}
                   </p>
                   <ul className="text-left mb-6 space-y-2" style={{ color: "var(--text-secondary)" }}>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500">&#x2713;</span> Prayer and meditation halls
+                      <span className="text-green-500">&#x2713;</span> {choose("dharamshalaFeature1")}
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500">&#x2713;</span> Simple, clean accommodation
+                      <span className="text-green-500">&#x2713;</span> {choose("dharamshalaFeature2")}
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500">&#x2713;</span> Community kitchen facilities
+                      <span className="text-green-500">&#x2713;</span> {choose("dharamshalaFeature3")}
                     </li>
                   </ul>
-                  <span className="btn-primary w-full inline-flex items-center justify-center mt-auto">Book Dharamshala</span>
+                  <span className="btn-primary w-full inline-flex items-center justify-center mt-auto">{choose("bookDharamshala")}</span>
                 </div>
               </div>
             </Link>
@@ -350,10 +362,10 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
-              Admission Process
+              {admission("title")}
             </h2>
             <p className="text-lg" style={{ color: "var(--text-secondary)" }}>
-              Simple and transparent admission journey from application to check-in
+              {admission("subtitle")}
             </p>
           </div>
 
@@ -362,15 +374,15 @@ export default function Home() {
             <div className="relative">
               <div className="absolute top-8 left-0 right-0 h-1" style={{ backgroundColor: "var(--border-primary)" }}></div>
               <div className="grid grid-cols-7 gap-4 relative">
-                {[
-                  { step: 1, title: "Apply", desc: "Submit online application" },
-                  { step: 2, title: "Verify", desc: "OTP verification" },
-                  { step: 3, title: "Interview", desc: "Personal interview" },
-                  { step: 4, title: "Approve", desc: "Final approval" },
-                  { step: 5, title: "Payment", desc: "Fee payment" },
-                  { step: 6, title: "Allocate", desc: "Room assignment" },
-                  { step: 7, title: "Check-in", desc: "Move in" }
-                ].map((item) => (
+                {([
+                  { step: 1, titleKey: "step1Title" as const, descKey: "step1Desc" as const },
+                  { step: 2, titleKey: "step2Title" as const, descKey: "step2Desc" as const },
+                  { step: 3, titleKey: "step3Title" as const, descKey: "step3Desc" as const },
+                  { step: 4, titleKey: "step4Title" as const, descKey: "step4Desc" as const },
+                  { step: 5, titleKey: "step5Title" as const, descKey: "step5Desc" as const },
+                  { step: 6, titleKey: "step6Title" as const, descKey: "step6Desc" as const },
+                  { step: 7, titleKey: "step7Title" as const, descKey: "step7Desc" as const },
+                ]).map((item) => (
                   <div key={item.step} className="text-center">
                     <div
                       className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-white font-bold text-lg"
@@ -378,8 +390,8 @@ export default function Home() {
                     >
                       {item.step}
                     </div>
-                    <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
-                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{item.desc}</p>
+                    <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>{admission(item.titleKey)}</h3>
+                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{admission(item.descKey)}</p>
                   </div>
                 ))}
               </div>
@@ -389,15 +401,15 @@ export default function Home() {
           {/* Mobile/Tablet: Vertical Timeline */}
           <div className="lg:hidden">
             <div className="space-y-6">
-              {[
-                { step: 1, title: "Apply", desc: "Submit online application with required documents" },
-                { step: 2, title: "Verify", desc: "OTP verification for mobile/email authentication" },
-                { step: 3, title: "Interview", desc: "Personal interview with superintendent/trustee" },
-                { step: 4, title: "Approve", desc: "Final approval by trustee committee" },
-                { step: 5, title: "Payment", desc: "Payment of fees and security deposit" },
-                { step: 6, title: "Allocate", desc: "Room allocation based on availability" },
-                { step: 7, title: "Check-in", desc: "Formal check-in and orientation" }
-              ].map((item) => (
+              {([
+                { step: 1, titleKey: "step1Title" as const, descKey: "step1DescLong" as const },
+                { step: 2, titleKey: "step2Title" as const, descKey: "step2DescLong" as const },
+                { step: 3, titleKey: "step3Title" as const, descKey: "step3DescLong" as const },
+                { step: 4, titleKey: "step4Title" as const, descKey: "step4DescLong" as const },
+                { step: 5, titleKey: "step5Title" as const, descKey: "step5DescLong" as const },
+                { step: 6, titleKey: "step6Title" as const, descKey: "step6DescLong" as const },
+                { step: 7, titleKey: "step7Title" as const, descKey: "step7DescLong" as const },
+              ]).map((item) => (
                 <div key={item.step} className="flex gap-4">
                   <div className="flex-shrink-0">
                     <div
@@ -408,8 +420,8 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex-grow">
-                    <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
-                    <p style={{ color: "var(--text-secondary)" }}>{item.desc}</p>
+                    <h3 className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>{admission(item.titleKey)}</h3>
+                    <p style={{ color: "var(--text-secondary)" }}>{admission(item.descKey)}</p>
                   </div>
                 </div>
               ))}
@@ -440,19 +452,13 @@ export default function Home() {
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                   />
                 </svg>
-                <h3 className="text-heading-4">Application Process</h3>
+                <h3 className="text-heading-4">{appProcess("title")}</h3>
               </div>
               <ul className="space-y-4">
-                {[
-                  "Check eligibility criteria",
-                  "Create account / Login",
-                  "Fill online application form",
-                  "Upload required documents",
-                  "Submit and track application",
-                ].map((step, index) => (
-                  <li key={step} className="flex items-center gap-3">
+                {(["step1", "step2", "step3", "step4", "step5"] as const).map((key, index) => (
+                  <li key={key} className="flex items-center gap-3">
                     <span className="number-badge">{index + 1}</span>
-                    <span className="text-body">{step}</span>
+                    <span className="text-body">{appProcess(key)}</span>
                   </li>
                 ))}
               </ul>
@@ -475,18 +481,11 @@ export default function Home() {
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
-                <h3 className="text-heading-4">Required Documents</h3>
+                <h3 className="text-heading-4">{docs("title")}</h3>
               </div>
               <ul className="space-y-4">
-                {[
-                  "Birth Certificate",
-                  "Caste Certificate (Jain Community)",
-                  "College Admission Letter",
-                  "Previous Academic Records",
-                  "Passport Size Photographs",
-                  "Recommendation Letter from Jain Sangh",
-                ].map((doc) => (
-                  <li key={doc} className="flex items-center gap-3">
+                {(["doc1", "doc2", "doc3", "doc4", "doc5", "doc6"] as const).map((key) => (
+                  <li key={key} className="flex items-center gap-3">
                     <svg
                       className="w-5 h-5 flex-shrink-0 check-icon"
                       fill="none"
@@ -500,7 +499,7 @@ export default function Home() {
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    <span className="text-body">{doc}</span>
+                    <span className="text-body">{docs(key)}</span>
                   </li>
                 ))}
               </ul>
@@ -510,20 +509,20 @@ export default function Home() {
           {/* Announcements & Notices */}
           <section className="mt-12">
             <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text-primary)" }}>
-              Announcements &amp; Notices
+              {announce("title")}
             </h3>
             <div className="space-y-4">
               <div className="card p-6 border-l-4" style={{ borderLeftColor: "var(--color-red-500)" }}>
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-2" style={{ backgroundColor: "var(--color-red-100)", color: "var(--color-red-700)" }}>
-                      URGENT
+                      {announce("urgent")}
                     </span>
                     <h4 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
-                      Last Date for Boys Hostel Applications Extended
+                      {announce("notice1Title")}
                     </h4>
                     <p style={{ color: "var(--text-secondary)" }}>
-                      Application deadline for Boys Hostel admissions extended to December 31, 2025. Apply now to secure your spot.
+                      {announce("notice1Desc")}
                     </p>
                   </div>
                   <div className="text-right ml-4">
@@ -536,13 +535,13 @@ export default function Home() {
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-2" style={{ backgroundColor: "var(--color-blue-100)", color: "var(--color-blue-700)" }}>
-                      ADMISSION
+                      {announce("admission")}
                     </span>
                     <h4 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
-                      Girls Ashram Interview Schedule
+                      {announce("notice2Title")}
                     </h4>
                     <p style={{ color: "var(--text-secondary)" }}>
-                      Shortlisted candidates for Girls Ashram will be interviewed from January 5-7, 2025. Check your application status for details.
+                      {announce("notice2Desc")}
                     </p>
                   </div>
                   <div className="text-right ml-4">
@@ -555,13 +554,13 @@ export default function Home() {
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-2" style={{ backgroundColor: "var(--color-green-100)", color: "var(--color-green-700)" }}>
-                      FACILITY
+                      {announce("facility")}
                     </span>
                     <h4 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
-                      New Library Opening Soon
+                      {announce("notice3Title")}
                     </h4>
                     <p style={{ color: "var(--text-secondary)" }}>
-                      Our expanded library facility with 24/7 study access will open from January 15, 2025 for all residents.
+                      {announce("notice3Desc")}
                     </p>
                   </div>
                   <div className="text-right ml-4">
@@ -574,13 +573,13 @@ export default function Home() {
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-2" style={{ backgroundColor: "var(--color-amber-100)", color: "var(--color-amber-700)" }}>
-                      HOLIDAY
+                      {announce("holiday")}
                     </span>
                     <h4 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
-                      Winter Vacation Schedule
+                      {announce("notice4Title")}
                     </h4>
                     <p style={{ color: "var(--text-secondary)" }}>
-                      Hostel will remain closed from December 25 to January 2, 2026. All residents must vacate by December 24.
+                      {announce("notice4Desc")}
                     </p>
                   </div>
                   <div className="text-right ml-4">
@@ -603,24 +602,24 @@ export default function Home() {
                 fontFamily: "var(--font-serif)",
               }}
             >
-              Begin Your Journey With Us
+              {cta("title")}
             </h3>
             <p
               className="text-lg mb-8"
               style={{ color: "var(--color-navy-200)" }}
             >
-              Join our community of learners and experience quality accommodation with spiritual growth
+              {cta("subtitle")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/apply" className="btn-primary text-lg px-8 py-4">Apply Now</Link>
-              <Link href="/track" className="btn-primary text-lg px-8 py-4" style={{ backgroundColor: "var(--color-navy-100)", color: "var(--color-navy-800)", border: "none" }}>Check Application Status</Link>
-              <Link href="/login" className="btn-primary text-lg px-8 py-4" style={{ backgroundColor: "var(--text-inverse)", color: "var(--color-navy-800)", border: "none" }}>Login</Link>
+              <Link href="/apply" className="btn-primary text-lg px-8 py-4">{cta("applyNow")}</Link>
+              <Link href="/track" className="btn-primary text-lg px-8 py-4" style={{ backgroundColor: "var(--color-navy-100)", color: "var(--color-navy-800)", border: "none" }}>{cta("checkApplicationStatus")}</Link>
+              <Link href="/login" className="btn-primary text-lg px-8 py-4" style={{ backgroundColor: "var(--text-inverse)", color: "var(--color-navy-800)", border: "none" }}>{cta("login")}</Link>
             </div>
             <p
               className="mt-6 text-sm"
               style={{ color: "var(--color-navy-300)" }}
             >
-              Need help? Contact our admissions team at +91 22 2414 1234
+              {cta("needHelp")}
             </p>
           </section>
         </div>

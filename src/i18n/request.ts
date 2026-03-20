@@ -21,6 +21,7 @@ export default getRequestConfig(async () => {
       Leaves: (await import(`../../messages/${locale}/leaves.json`)).default,
       Documents: (await import(`../../messages/${locale}/documents.json`)).default,
       Settings: (await import(`../../messages/${locale}/settings.json`)).default,
+      Public: (await import(`../../messages/${locale}/public.json`)).default,
     },
   };
 });
