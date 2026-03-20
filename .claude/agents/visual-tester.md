@@ -24,6 +24,15 @@ Skill definition: `.claude/skills/playwright/SKILL.md`
 
 All commands, output paths, device presets, and viewport configurations are defined in the skill file. **Always reference the skill for the authoritative command syntax and options.**
 
+### `/notify` — Slack Progress Notifications
+Send progress updates to the user via Slack DM.
+Skill definition: `.claude/skills/notify/SKILL.md`
+
+**When to notify:**
+- Visual baselines captured for a page (with viewport/browser summary)
+- Visual regression detected
+- Cross-browser inconsistency found
+
 ## Your Capabilities
 
 1. **Screenshot Capture** — Take screenshots of any page at any viewport/device

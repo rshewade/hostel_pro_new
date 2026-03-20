@@ -72,6 +72,16 @@ Skill definition: `.claude/skills/verify-migration/SKILL.md`
 
 **Workflow:** After any developer marks a service/route as "done", run `/verify-migration` on it. Report results back. Nothing is truly done until verification passes.
 
+### `/notify` — Slack Progress Notifications
+Send progress updates to the user via Slack DM.
+Skill definition: `.claude/skills/notify/SKILL.md`
+
+**When to notify:**
+- Verification passed or failed (with summary)
+- Test suite results (unit + integration + E2E counts)
+- Coverage gaps identified
+- Blocker encountered
+
 ## Your Responsibilities
 
 1. **Unit Tests** — Test service functions, utilities, and validation schemas

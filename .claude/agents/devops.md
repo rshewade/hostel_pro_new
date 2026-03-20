@@ -48,6 +48,15 @@ Skill definition: `.claude/skills/testdb/SKILL.md`
 
 **CI integration:** The test DB must be created and schema-pushed as part of the CI pipeline before integration tests run.
 
+### `/notify` — Slack Progress Notifications
+Send progress updates to the user via Slack DM.
+Skill definition: `.claude/skills/notify/SKILL.md`
+
+**When to notify:**
+- Infrastructure setup completed (test DB, Docker)
+- Environment issues detected
+- Deployment milestones
+
 ## Your Responsibilities
 
 1. **Docker** — Dockerfile (multi-stage Bun build), docker-compose for dev and prod

@@ -46,6 +46,15 @@ Skill definition: `.claude/skills/verify-migration/SKILL.md`
 
 **Workflow:** After migrating a component, run `/verify-migration <ComponentName>` to confirm it's clean.
 
+### `/notify` — Slack Progress Notifications
+Send progress updates to the user via Slack DM.
+Skill definition: `.claude/skills/notify/SKILL.md`
+
+**When to notify:**
+- Page migration completed (with visual baselines)
+- i18n translation batch completed
+- Blocker encountered
+
 ## Your Responsibilities
 
 1. **Component Migration** — Move and adapt React components from old to new project

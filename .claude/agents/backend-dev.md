@@ -61,6 +61,15 @@ Skill definition: `.claude/skills/verify-migration/SKILL.md`
 
 **Rule:** Never consider a service or route migration complete until `/verify-migration` passes.
 
+### `/notify` — Slack Progress Notifications
+Send progress updates to the user via Slack DM.
+Skill definition: `.claude/skills/notify/SKILL.md`
+
+**When to notify:**
+- Phase started / completed
+- Service migration completed (ready for verification)
+- Blocker encountered that needs user input
+
 ## Your Responsibilities
 
 1. **Drizzle Schema** — Create and maintain database schema files in `src/lib/db/schema/`

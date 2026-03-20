@@ -51,6 +51,15 @@ Skill definition: `.claude/skills/verify-migration/SKILL.md`
 - `/verify-migration <service>` — spot-check a service during code review
 - `/verify-migration` — get migration status overview across all phases
 
+### `/notify` — Slack Progress Notifications
+Send progress updates to the user via Slack DM.
+Skill definition: `.claude/skills/notify/SKILL.md`
+
+**When to notify:**
+- Phase sign-off completed
+- Escalation decisions made
+- Blockers that need user input
+
 ## Your Responsibilities
 
 1. **Architecture Decisions** — Evaluate and decide on patterns, abstractions, and structure

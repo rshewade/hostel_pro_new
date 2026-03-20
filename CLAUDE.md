@@ -155,6 +155,35 @@ bun run test:coverage                 # Unit tests with coverage report
 | Test DB | `/testdb` | Create, reset, seed, truncate test database |
 | Visual Test | `/visual-test` | Playwright screenshots, responsive, cross-browser |
 | Verify Migration | `/verify-migration` | Checklist verification for migrated code |
+| Notify | `/notify` | Send progress updates to user via Slack DM |
+
+## Notifications
+
+Progress updates are sent to the user via **Slack DM** (channel `D08FLCTGSQP`).
+
+### What Gets Notified
+
+| Event | Emoji | Example |
+|-------|-------|---------|
+| Phase started | 🚀 | `Phase 1 — Schema started` |
+| Phase completed | ✅ | `Phase 1 — Schema completed (14 files, 42 tests)` |
+| Verification passed | ✅ | `/verify-migration users — PASSED (10/10)` |
+| Verification failed | ❌ | `/verify-migration users — NEEDS WORK (2 failures)` |
+| Blocker | 🚧 | `backend-dev blocked on missing env var` |
+| Escalation | ⬆️ | `Escalation to architect — schema design question` |
+| Test results | 🧪 | `Unit: 48/48 | Integration: 12/12` |
+| Visual baselines | 📸 | `Dashboard baselines captured (3 viewports)` |
+
+### What Does NOT Get Notified
+
+- Routine file reads/writes
+- Individual test passes
+- Minor code fixes within a verification loop
+- Agent-to-agent coordination (handled by teams)
+
+### How to Send
+
+All agents have the `/notify` skill. To send manually: `/notify <message>`
 
 ## Agents
 
