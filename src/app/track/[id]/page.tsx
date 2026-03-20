@@ -384,7 +384,7 @@ export default function TrackingDetailPage() {
       <header className="px-6 py-4 border-b bg-white">
         <div className="mx-auto max-w-6xl flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="Hirachand Gumanji Family Charitable Trust" width={48} height={48} className="h-12 w-auto" />
+            <Image src="/logo.png" alt="Hirachand Gumanji Family Charitable Trust" width={48} height={48} className="h-12 w-auto" style={{ width: 'auto' }} />
             <div>
               <h1 className="text-lg font-semibold">Hirachand Gumanji Family</h1>
               <p className="text-caption">Charitable Trust</p>

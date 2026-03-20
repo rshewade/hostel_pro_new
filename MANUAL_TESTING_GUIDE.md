@@ -877,6 +877,222 @@ Test critical flows in:
 
 ---
 
+## 26. Accessibility Testing
+
+### 26.1 Keyboard Navigation
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 26.1.1 | Tab order | Tab through any page | Focus follows logical reading order |
+| 26.1.2 | Focus visible | Tab through interactive elements | Clear focus indicator on every element |
+| 26.1.3 | Skip to content | Press Tab on page load | "Skip to main content" link appears |
+| 26.1.4 | Form navigation | Tab through login form | Phone → OTP → Submit navigable by keyboard |
+| 26.1.5 | Modal trap | Open a modal → Tab | Focus stays within modal until closed |
+| 26.1.6 | Escape closes modal | Open modal → press Escape | Modal closes, focus returns to trigger |
+| 26.1.7 | Dropdown keyboard | Open dropdown → Arrow keys | Items navigable, Enter selects |
+| 26.1.8 | Button activation | Focus a button → press Enter or Space | Button activates |
+
+### 26.2 Screen Reader
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 26.2.1 | Page headings | Use heading navigation (H key in NVDA/VoiceOver) | Logical heading hierarchy (h1 → h2 → h3) |
+| 26.2.2 | Form labels | Navigate to form inputs | Every input has an associated label announced |
+| 26.2.3 | Image alt text | Navigate images | Meaningful alt text (not "image.png") |
+| 26.2.4 | Error announcements | Submit invalid form | Error message announced by screen reader |
+| 26.2.5 | Status updates | Approve a leave / mark notification read | Live region announces the change |
+| 26.2.6 | Table headers | Navigate data tables | Column/row headers announced for each cell |
+| 26.2.7 | Button purpose | Navigate buttons | "Approve Leave" not just "Button" |
+| 26.2.8 | Link purpose | Navigate links | Descriptive text, not "click here" |
+
+### 26.3 Visual Accessibility
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 26.3.1 | Color contrast | Check text against backgrounds (use axe-core or browser DevTools) | WCAG AA: 4.5:1 for normal text, 3:1 for large text |
+| 26.3.2 | Not color-only | Status indicators (APPROVED/REJECTED) | Info conveyed by text/icon, not just color |
+| 26.3.3 | Text resize | Zoom browser to 200% | Content reflows, nothing truncated or overlapping |
+| 26.3.4 | Motion sensitivity | Check for animations | No flashing >3 times/sec; respects `prefers-reduced-motion` |
+| 26.3.5 | Touch target size | Check mobile buttons | At least 44x44px target area |
+
+### 26.4 Automated Checks
+
+| # | Test | Tool | Expected |
+|---|------|------|----------|
+| 26.4.1 | axe-core scan | Browser extension or `@axe-core/playwright` | Zero critical/serious violations |
+| 26.4.2 | Lighthouse accessibility | Chrome DevTools → Lighthouse | Score > 90 |
+| 26.4.3 | WAVE scan | WAVE browser extension | No errors (warnings acceptable) |
+
+---
+
+## 27. Device Session Management
+
+### 27.1 Session Tracking
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 27.1.1 | Login creates session | Login → check device sessions | New session with deviceId, IP, userAgent |
+| 27.1.2 | Session updates on activity | Make API call → check session | `lastUsedAt` updated |
+| 27.1.3 | List active sessions | `getUserSessions(userId)` | Returns only active sessions, sorted by lastUsedAt desc |
+| 27.1.4 | Multiple devices | Login from two browsers | Two active sessions listed |
+
+### 27.2 Session Deactivation
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 27.2.1 | Deactivate single | Deactivate one session | That session becomes inactive, others remain |
+| 27.2.2 | Deactivate wrong user | Try to deactivate another user's session | 404 Not Found |
+| 27.2.3 | Deactivate all | Logout from all devices | All sessions become inactive |
+| 27.2.4 | Session not found | Deactivate non-existent session ID | 404 Not Found |
+
+### 27.3 Concurrent Login
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 27.3.1 | Same device re-login | Login again from same device | Session updated (upsert), not duplicated |
+| 27.3.2 | Different device new login | Login from phone after laptop | Both sessions active |
+| 27.3.3 | Session after deactivation | Deactivate session → try to use | API returns 401 |
+
+---
+
+## 28. Financial Reconciliation
+
+### 28.1 Reconciliation Report
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 28.1.1 | Basic reconciliation | Call `reconcile("2026-01-01", "2026-03-31")` | Returns totalFees, totalPayments, difference |
+| 28.1.2 | No data period | Reconcile a period with no fees/payments | All zeros, no errors |
+| 28.1.3 | All paid | Period where all fees are PAID | difference = 0, unmatchedFees = 0 |
+| 28.1.4 | Unpaid fees | Period with PENDING fees | unmatchedFees > 0, difference > 0 |
+| 28.1.5 | Mixed statuses | Fees: 3 PAID, 2 PENDING, 1 WAIVED | totalFees includes all, totalPayments only PAID status |
+| 28.1.6 | Period boundaries | Fee created at exactly start date | Included in results |
+| 28.1.7 | Period exclusion | Fee created 1 second before start | Not included |
+
+### 28.2 Accounts Workflow
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 28.2.1 | Monthly report | Reconcile current month | Dashboard shows matching numbers |
+| 28.2.2 | Quarterly report | Reconcile Q1 (Jan-Mar) | Aggregates across 3 months |
+| 28.2.3 | Difference investigation | When difference > 0 | unmatchedFees identifies pending items |
+| 28.2.4 | Receipt cross-check | Compare payment records with receipts | Receipt numbers match payment records |
+
+---
+
+## 29. Timezone & Date Handling
+
+### 29.1 Date Storage & Display
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 29.1.1 | Dates stored in UTC | Check DB directly for createdAt/updatedAt | All timestamps in UTC |
+| 29.1.2 | Display in IST | View leave request dates in UI | Shows IST (UTC+05:30) |
+| 29.1.3 | Leave start/end | Create leave with IST times | Stored correctly in UTC, displayed in IST |
+| 29.1.4 | Fee due dates | Create fee with due date | Date-only field (YYYY-MM-DD), no timezone shift |
+| 29.1.5 | Blackout dates | Create blackout date | Date-only, consistent across timezones |
+
+### 29.2 Edge Cases
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 29.2.1 | Midnight IST | Create leave starting at 00:00 IST (18:30 UTC prev day) | Correctly maps to IST |
+| 29.2.2 | Day boundary | Leave from March 31 23:00 IST to April 1 06:00 IST | Spans two days correctly |
+| 29.2.3 | Overdue calculation | Fee due "2026-03-20" checked at 23:59 IST on March 20 | NOT overdue (same day) |
+| 29.2.4 | Overdue next day | Same fee checked at 00:01 IST on March 21 | IS overdue |
+| 29.2.5 | Audit log timestamps | Create entity → check audit log | Timestamp matches creation time |
+| 29.2.6 | Session expiry | Session created 7 days ago + 1 second | Session should be expired |
+
+### 29.3 Date Formatting
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 29.3.1 | Short format | Date displayed in tables/lists | DD/MM/YYYY format (Indian convention) |
+| 29.3.2 | Long format | Date displayed in detail views | e.g., "20 March 2026" or "20 मार्च 2026" |
+| 29.3.3 | Relative format | Recent notifications | "Today", "Yesterday", "3 days ago" |
+| 29.3.4 | Hindi date format | Switch to Hindi → view dates | Month names in Hindi |
+
+---
+
+## 30. DPDP Compliance & Data Lifecycle
+
+### 30.1 Data Minimization
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 30.1.1 | Parent sees minimal data | Parent API responses | No sensitive fields: passwords, internal remarks, bank details |
+| 30.1.2 | Student sees own only | Student API responses | Cannot see other students' data |
+| 30.1.3 | API responses minimal | Check all list endpoints | No unnecessary fields (e.g., no authUserId in public responses) |
+| 30.1.4 | Log sanitization | Check server logs | No OTPs, passwords, tokens, Aadhaar numbers logged |
+
+### 30.2 Consent Management
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 30.2.1 | Consent before data collection | Application form | Consent checkbox required before submission |
+| 30.2.2 | Consent version tracked | Create consent log | consentVersion stored and queryable |
+| 30.2.3 | Consent with signature | Submit with digitalSignature | Signature stored |
+| 30.2.4 | IP tracking | Submit consent via API | IP from x-forwarded-for saved |
+| 30.2.5 | User-agent tracking | Submit consent | Browser user-agent saved |
+| 30.2.6 | Consent history | Query user's consents | All consents shown, sorted by date desc |
+| 30.2.7 | Duplicate consent check | `hasConsent(userId, type, version)` | Returns true if exists, false if not |
+
+### 30.3 Data Retention
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 30.3.1 | Auto-archive trigger | Run data retention cron | APPROVED/REJECTED apps >365 days → ARCHIVED |
+| 30.3.2 | Recent apps untouched | Apps <365 days old | Status unchanged |
+| 30.3.3 | DRAFT not archived | Draft app >365 days old | NOT archived (only APPROVED/REJECTED) |
+| 30.3.4 | Retention stats | `getRetentionStats()` | Shows count of apps pending archive |
+| 30.3.5 | Cron authentication | Cron endpoint without secret | 401 Unauthorized |
+
+### 30.4 Encryption
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 30.4.1 | Sensitive fields encrypted | Check DB for Aadhaar/bank details | Stored as encrypted string (not plaintext) |
+| 30.4.2 | Decryption works | Read encrypted field via API | Returns plaintext to authorized user |
+| 30.4.3 | Different ciphertext | Encrypt same value twice | Different ciphertext (random IV) |
+| 30.4.4 | Unicode encryption | Encrypt Hindi text (हिन्दी) | Encrypts and decrypts correctly |
+
+---
+
+## 31. Clearance Workflow (Detailed)
+
+### 31.1 Exit Request to Clearance
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 31.1.1 | Student submits exit | Fill reason, exit date, bank details → submit | Exit request with PENDING status |
+| 31.1.2 | Optional bank details | Submit without bank info | Accepted (fields nullable) |
+| 31.1.3 | Forwarding address | Include forwarding address | Stored correctly |
+| 31.1.4 | Withdraw request | Student withdraws pending request | Status → CANCELLED |
+| 31.1.5 | Cannot withdraw approved | Try to withdraw after approval | 404 (no pending request) |
+
+### 31.2 Clearance Process
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 31.2.1 | Room clearance | Superintendent marks room cleared | roomCleared status updated |
+| 31.2.2 | Library clearance | Check library return | libraryCleared status updated |
+| 31.2.3 | Mess clearance | Check mess dues | messCleared status updated |
+| 31.2.4 | Accounts clearance | Check fee balance | accountsCleared status updated |
+| 31.2.5 | All cleared | All departments marked clear | Overall clearance status → CLEARED |
+| 31.2.6 | Blocked clearance | One department has issues | Overall status stays PENDING, blocking item noted |
+
+### 31.3 Clearance Items
+
+| # | Test | Steps | Expected |
+|---|------|-------|----------|
+| 31.3.1 | Per-department items | List clearance items for an exit | Items grouped by department |
+| 31.3.2 | Amount due | Item with outstanding amount | amountDue shown, amountPaid tracked |
+| 31.3.3 | Item status workflow | PENDING → CLEARED | Status transitions correctly |
+| 31.3.4 | Not applicable | Mark item as NOT_APPLICABLE | Skipped in clearance check |
+| 31.3.5 | Blocked item | Mark item as BLOCKED with remarks | Prevents overall clearance |
+
+---
+
 ## Appendix: Test Execution Checklist
 
 Use this checklist to track testing progress:
@@ -909,6 +1125,12 @@ Pre-Release Testing Checklist
 [ ] 23. Responsive Testing (3 breakpoints)
 [ ] 24. Error Handling (10 tests)
 [ ] 25. Performance (baseline verified)
+[ ] 26. Accessibility Testing (keyboard, screen reader, contrast)
+[ ] 27. Device Session Management (multi-device, deactivation)
+[ ] 28. Financial Reconciliation (period reports, matching)
+[ ] 29. Timezone & Date Handling (UTC storage, IST display)
+[ ] 30. DPDP Compliance (minimization, consent, retention, encryption)
+[ ] 31. Clearance Workflow (department clearances, items)
 
 Sign-off: _________________ Date: _____________
 ```
