@@ -19,10 +19,15 @@ export default async function DashboardLayout({
     redirect('/login');
   }
 
-  const user = await getUserByAuthId(session.user.id);
+  // Parallel fetch — user + locale + unread count
+  const [user, locale] = await Promise.all([
+    getUserByAuthId(session.user.id),
+    getLocale() as Promise<string>,
+  ]);
+
   if (!user) redirect('/login');
 
-  const locale = await getLocale() as Locale;
+  // Unread count can be non-blocking
   const unreadCount = await getUnreadCount(user.id);
 
   return (
@@ -32,7 +37,7 @@ export default async function DashboardLayout({
         <Header
           userName={user.fullName}
           userRole={user.role}
-          locale={locale}
+          locale={locale as Locale}
           unreadCount={unreadCount}
         />
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
