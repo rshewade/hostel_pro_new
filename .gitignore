@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/
+
+# Next.js
+.next/
+out/
+
+# Build
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Uploads (user content)
+uploads/*
+!uploads/.gitkeep
+
+# Visual tests (current captures, not baselines)
+.visual-tests/screenshots/
+.visual-tests/cross-browser/
+.visual-tests/pdfs/
+
+# Devbox
+.devbox/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+
+# Bun
+bun.lock
+
+# Drizzle
+drizzle/meta/
+
+# Debug
+*.log
+npm-debug.log*

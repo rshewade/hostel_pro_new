@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun:*)",
+      "Bash(bunx:*)",
+      "Bash(npx:*)",
+      "Bash(git:*)",
+      "Bash(docker exec:*)",
+      "Bash(curl:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(diff:*)",
+      "Bash(cat:*)",
+      "Bash(npx playwright screenshot:*)",
+      "Bash(npx playwright pdf:*)",
+      "Bash(npx playwright test:*)",
+      "Read(/home/ubuntu/projects/hostel_old/**)",
+      "Read(/mnt/data/projects/devbox/**)"
+    ]
+  }
+}
