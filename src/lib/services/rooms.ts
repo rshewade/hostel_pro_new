@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { rooms, roomAllocations } from '@/lib/db/schema';
-import { eq, and, count, sql } from 'drizzle-orm';
+import { eq, and, count, sql, SQL } from 'drizzle-orm';
 import { NotFoundError, ValidationError, ConflictError } from '@/lib/errors';
 
 type RoomInsert = typeof rooms.$inferInsert;
@@ -31,7 +31,7 @@ export async function listRooms(filters: {
   limit?: number;
 }) {
   const { page = 1, limit = 20 } = filters;
-  const conditions = [];
+  const conditions: SQL[] = [];
 
   if (filters.vertical) conditions.push(sql`${rooms.vertical} = ${filters.vertical}`);
   if (filters.status) conditions.push(sql`${rooms.status} = ${filters.status}`);

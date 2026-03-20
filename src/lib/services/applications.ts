@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { applications } from '@/lib/db/schema';
-import { eq, and, desc, sql, count } from 'drizzle-orm';
+import { eq, and, desc, sql, count, SQL } from 'drizzle-orm';
 import { NotFoundError, ForbiddenError } from '@/lib/errors';
 
 type AppInsert = typeof applications.$inferInsert;
@@ -91,7 +91,7 @@ export async function listApplications(filters: {
   const { page = 1, limit = 20 } = filters;
   const offset = (page - 1) * limit;
 
-  const conditions = [];
+  const conditions: SQL[] = [];
 
   if (filters.userRole === 'STUDENT' && filters.userId) {
     conditions.push(eq(applications.studentUserId, filters.userId));
@@ -117,7 +117,7 @@ export async function listApplications(filters: {
 }
 
 export async function getApplicationStats(userRole: UserRole, userVertical?: string | null) {
-  const conditions = [];
+  const conditions: SQL[] = [];
   if (userRole === 'SUPERINTENDENT' && userVertical) {
     conditions.push(sql`${applications.vertical} = ${userVertical}`);
   }

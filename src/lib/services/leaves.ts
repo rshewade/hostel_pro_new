@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { leaveRequests } from '@/lib/db/schema';
-import { eq, and, desc, count, gte, lte, or, sql } from 'drizzle-orm';
+import { eq, and, desc, count, gte, lte, or, sql, SQL } from 'drizzle-orm';
 import { NotFoundError, ValidationError } from '@/lib/errors';
 
 type LeaveInsert = typeof leaveRequests.$inferInsert;
@@ -50,7 +50,7 @@ export async function listLeaves(filters: {
   limit?: number;
 }) {
   const { page = 1, limit = 20 } = filters;
-  const conditions = [];
+  const conditions: SQL[] = [];
 
   if (filters.studentUserId) conditions.push(eq(leaveRequests.studentUserId, filters.studentUserId));
   if (filters.status) conditions.push(sql`${leaveRequests.status} = ${filters.status}`);

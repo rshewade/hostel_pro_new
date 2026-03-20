@@ -52,7 +52,9 @@
       "Bash(git add:*)",
       "Bash(DATABASE_URL=\"postgresql://db_user1:Raju987.@localhost:5432/hostel_pro_test\" bunx drizzle-kit push --force)",
       "Bash(git commit:*)",
-      "Bash(Back\" heading, parent OTP login option, institutional branding:*)"
+      "Bash(Back\" heading, parent OTP login option, institutional branding:*)",
+      "Bash(DATABASE_URL=\"postgresql://db_user1:Raju987.@localhost:5432/hostel_pro\" bun run src/test/seed.ts 2>&1)",
+      "Bash(# Copy missing files\ncp /home/ubuntu/projects/hostel_old/repo/frontend/src/components/public/PageHero.tsx /mnt/data/projects/devbox/hostel_pro/src/components/public/PageHero.tsx && echo \"Copied PageHero\"\n\ncp /home/ubuntu/projects/hostel_old/repo/frontend/src/components/forms/index.ts /mnt/data/projects/devbox/hostel_pro/src/components/forms/index.ts && echo \"Copied forms/index\"\n\n# Copy trustee _components\nmkdir -p /mnt/data/projects/devbox/hostel_pro/src/app/\\\\\\(dashboard\\\\\\)/trustee/_components\ncp -r /home/ubuntu/projects/hostel_old/repo/frontend/src/app/dashboard/trustee/_components/* /mnt/data/projects/devbox/hostel_pro/src/app/\\\\\\(dashboard\\\\\\)/trustee/_components/ && echo \"Copied trustee _components\"\n\n# Copy any remaining receipt components from print\nls /home/ubuntu/projects/hostel_old/repo/frontend/src/components/print/)"
     ],
     "defaultMode": "bypassPermissions"
   }

@@ -51,5 +51,5 @@ export * from './layout/Grid';
 export * from './layout/Flex';
 export * from './layout/Spacer';
 
-// Print Components — TODO: migrate print components
-// export * from './print';
+// Print Components
+export * from './print';

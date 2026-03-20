@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { documents } from '@/lib/db/schema';
-import { eq, and, desc, count, sql } from 'drizzle-orm';
+import { eq, and, desc, count, sql, SQL } from 'drizzle-orm';
 import { NotFoundError, ValidationError } from '@/lib/errors';
 import { createHmac } from 'crypto';
 
@@ -54,7 +54,7 @@ export async function listDocuments(filters: {
   limit?: number;
 }) {
   const { page = 1, limit = 20 } = filters;
-  const conditions = [];
+  const conditions: SQL[] = [];
 
   if (filters.applicationId) conditions.push(eq(documents.applicationId, filters.applicationId));
   if (filters.studentUserId) conditions.push(eq(documents.studentUserId, filters.studentUserId));

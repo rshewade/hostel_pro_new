@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { fees, payments } from '@/lib/db/schema';
-import { eq, and, desc, count, sql } from 'drizzle-orm';
+import { eq, and, desc, count, sql, SQL } from 'drizzle-orm';
 import { NotFoundError, ValidationError } from '@/lib/errors';
 
 type FeeInsert = typeof fees.$inferInsert;
@@ -27,7 +27,7 @@ export async function listFees(filters: {
   limit?: number;
 }) {
   const { page = 1, limit = 20 } = filters;
-  const conditions = [];
+  const conditions: SQL[] = [];
 
   if (filters.studentUserId) conditions.push(eq(fees.studentUserId, filters.studentUserId));
   if (filters.status) conditions.push(sql`${fees.status} = ${filters.status}`);
