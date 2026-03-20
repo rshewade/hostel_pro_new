@@ -32,10 +32,13 @@ export interface RazorpayPayment {
 // ---------------------------------------------------------------------------
 // Mock implementation (RAZORPAY_MODE=mock)
 // ---------------------------------------------------------------------------
+let _mockCounter = 0;
+
 class MockPaymentGateway implements PaymentGateway {
   async createOrder(amount: number, currency: string, receipt: string): Promise<RazorpayOrder> {
+    _mockCounter++;
     const order: RazorpayOrder = {
-      id: `order_mock_${Date.now()}`,
+      id: `order_mock_${Date.now()}_${_mockCounter}`,
       amount: amount * 100, // paise
       currency,
       receipt,
