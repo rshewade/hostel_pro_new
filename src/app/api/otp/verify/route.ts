@@ -7,8 +7,9 @@ import { z } from 'zod';
 import crypto from 'crypto';
 
 const verifyOtpSchema = z.object({
-  phone: z.string().min(10).max(15),
+  phone: z.string().min(10).max(15).optional(),
   code: z.string().length(6),
+  token: z.string().optional(),
 });
 
 export async function POST(req: NextRequest) {

@@ -38,6 +38,9 @@ export default function LoginPage() {
       const responseBody = await response.json();
 
       if (response.ok && responseBody.user) {
+        // Small delay to ensure session cookie is set by the browser
+        await new Promise(resolve => setTimeout(resolve, 100));
+
         // Fetch user role from our app users table
         const profileRes = await fetch('/api/users/profile');
         if (profileRes.ok) {

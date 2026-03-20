@@ -85,10 +85,8 @@ export default function ParentLoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          phone: mobile,
           code: otpToVerify,
-          token: token,
-          attempts: attempts,
-          userAgent: navigator.userAgent
         })
       });
 
