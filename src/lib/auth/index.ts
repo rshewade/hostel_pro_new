@@ -1,13 +1,14 @@
 import { betterAuth } from 'better-auth';
-import { drizzleAdapter } from '@better-auth/drizzle-adapter';
+import { Pool } from 'pg';
 import { phoneNumber } from 'better-auth/plugins';
-import { db } from '@/lib/db';
 import { getSmsProvider } from './otp-provider';
 
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
 export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: 'pg',
-  }),
+  database: pool,
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL,
   emailAndPassword: {

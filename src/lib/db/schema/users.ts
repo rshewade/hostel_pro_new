@@ -3,7 +3,7 @@ import { userRoleEnum, verticalTypeEnum } from './enums';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
-  authUserId: uuid('auth_user_id').unique(),
+  authUserId: text('auth_user_id').unique(),
   role: userRoleEnum('role').notNull().default('STUDENT'),
   vertical: verticalTypeEnum('vertical'),
   fullName: text('full_name').notNull(),

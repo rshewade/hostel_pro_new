@@ -50,7 +50,9 @@
       "mcp__plugin_context7_context7__resolve-library-id",
       "mcp__plugin_context7_context7__query-docs",
       "Bash(git add:*)",
-      "Bash(DATABASE_URL=\"postgresql://db_user1:Raju987.@localhost:5432/hostel_pro_test\" bunx drizzle-kit push --force)"
+      "Bash(DATABASE_URL=\"postgresql://db_user1:Raju987.@localhost:5432/hostel_pro_test\" bunx drizzle-kit push --force)",
+      "Bash(git commit:*)",
+      "Bash(Back\" heading, parent OTP login option, institutional branding:*)"
     ],
     "defaultMode": "bypassPermissions"
   }

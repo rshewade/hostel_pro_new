@@ -25,37 +25,33 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Simulate API call - replace with actual API endpoint
-      const response = await fetch('/api/auth/login', {
+      // Sign in via Better Auth
+      const response = await fetch('/api/auth/sign-in/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          email: formData.username,
+          password: formData.password,
+        }),
       });
 
       const responseBody = await response.json();
 
-      if (response.ok) {
-        const { data } = responseBody;
-
-        // Store auth token in localStorage for API calls
-        if (data.token) {
-          localStorage.setItem('authToken', data.token);
-          localStorage.setItem('userRole', data.role);
-          localStorage.setItem('userId', data.userId);
-        }
-
-        // Check if first-time login
-        if (data.requiresPasswordChange) {
-          router.push(`/login/first-time-setup?token=${data.token}`);
-        } else {
-          // Role-based redirection
-          const redirectPath = getRoleRedirectPath(data.role);
+      if (response.ok && responseBody.user) {
+        // Fetch user role from our app users table
+        const profileRes = await fetch('/api/users/profile');
+        if (profileRes.ok) {
+          const profile = await profileRes.json();
+          const redirectPath = getRoleRedirectPath(profile?.role || 'STUDENT');
           router.push(redirectPath);
+        } else {
+          // New user without profile — default to student dashboard
+          router.push('/dashboard/student');
         }
       } else {
-        setError(responseBody.error || 'Invalid credentials or account not found');
+        setError(responseBody.message || 'Invalid credentials or account not found');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Unable to connect. Please try again later.');
     } finally {
       setLoading(false);
