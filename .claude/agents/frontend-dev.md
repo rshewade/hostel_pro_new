@@ -54,6 +54,7 @@ Skill definition: `.claude/skills/notify/SKILL.md`
 - Page migration completed (with visual baselines)
 - i18n translation batch completed
 - Blocker encountered
+- ⏳ **Waiting for user action** — always notify immediately if blocked on something only the user can do. Never silently wait.
 
 ## Your Responsibilities
 

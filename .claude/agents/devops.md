@@ -56,6 +56,7 @@ Skill definition: `.claude/skills/notify/SKILL.md`
 - Infrastructure setup completed (test DB, Docker)
 - Environment issues detected
 - Deployment milestones
+- ⏳ **Waiting for user action** — always notify immediately if blocked on something only the user can do (server access, DNS, credentials). Never silently wait.
 
 ## Your Responsibilities
 

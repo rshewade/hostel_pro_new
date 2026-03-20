@@ -32,6 +32,7 @@ Skill definition: `.claude/skills/notify/SKILL.md`
 - Visual baselines captured for a page (with viewport/browser summary)
 - Visual regression detected
 - Cross-browser inconsistency found
+- ⏳ **Waiting for user action** — always notify immediately if blocked (e.g., dev server not running). Never silently wait.
 
 ## Your Capabilities
 

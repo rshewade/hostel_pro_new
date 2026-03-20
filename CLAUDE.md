@@ -173,6 +173,9 @@ Progress updates are sent to the user via **Slack DM** (channel `D08FLCTGSQP`).
 | Escalation | ⬆️ | `Escalation to architect — schema design question` |
 | Test results | 🧪 | `Unit: 48/48 | Integration: 12/12` |
 | Visual baselines | 📸 | `Dashboard baselines captured (3 viewports)` |
+| **Waiting for user** | ⏳ | `ACTION NEEDED — provide RAZORPAY_KEY_ID env var` |
+
+**Critical rule**: If any agent is blocked and waiting for user action, it **must** send an ⏳ notification immediately. Never silently wait.
 
 ### What Does NOT Get Notified
 

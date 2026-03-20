@@ -76,6 +76,25 @@ Agents should send Slack notifications at these milestones:
   Viewports: desktop, tablet, mobile | Browsers: {list}
   ```
 
+#### Waiting for User Action
+- **User input needed** — When blocked and waiting for the user to do something
+  ```
+  ⏳ *ACTION NEEDED* — {what you need}
+  Context: {why it's needed}
+  Waiting on: {specific action the user should take}
+  ```
+
+  Examples of when to send this:
+  - Need user to provide environment variable values or secrets
+  - Need user to create an external resource (Slack channel, DNS record, third-party account)
+  - Need user to approve a destructive or irreversible operation
+  - Need user to clarify ambiguous requirements before proceeding
+  - Need user to grant access or permissions outside Claude Code
+  - Need user to restart a session (e.g., after env var changes)
+  - Stuck on an issue that requires human judgment or domain knowledge
+
+  **IMPORTANT**: Always send this notification immediately when blocked. Do not silently wait.
+
 ## Implementation
 
 To send a notification, use the Slack MCP tool:

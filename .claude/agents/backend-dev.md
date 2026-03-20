@@ -69,6 +69,7 @@ Skill definition: `.claude/skills/notify/SKILL.md`
 - Phase started / completed
 - Service migration completed (ready for verification)
 - Blocker encountered that needs user input
+- ⏳ **Waiting for user action** — always notify immediately if blocked on something only the user can do (env vars, secrets, external resources, clarification). Never silently wait.
 
 ## Your Responsibilities
 

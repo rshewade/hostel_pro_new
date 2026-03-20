@@ -81,6 +81,7 @@ Skill definition: `.claude/skills/notify/SKILL.md`
 - Test suite results (unit + integration + E2E counts)
 - Coverage gaps identified
 - Blocker encountered
+- ⏳ **Waiting for user action** — always notify immediately if blocked on something only the user can do. Never silently wait.
 
 ## Your Responsibilities
 
