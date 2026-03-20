@@ -1,11 +1,44 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// All public paths that do NOT require authentication
 const publicPaths = [
+  // Landing & Static Pages
   '/',
+  '/about',
+  '/contact',
+  '/faq',
+  '/donations',
+  '/facilities',
+  '/gallery',
+  '/news',
+  '/trustees',
+  '/dpdp-policy',
+  '/design-system',
+  '/demo',
+  '/communication-demo',
+  '/communication-advanced-demo',
+
+  // Auth Pages
   '/login',
   '/verify',
+
+  // Application Flow (public — anyone can apply)
+  '/apply',
+  '/track',
+  '/admissions',
+  '/institutions',
+
+  // Public API Routes
   '/api/auth',
+  '/api/health',
+  '/api/applications', // Public: create, track, list
+  '/api/otp',
+  '/api/config/leave-types',
+  '/api/config/notification-rules',
+  '/api/config/blackout-dates',
+  '/api/rooms', // Public: view room availability
+  '/api/fees', // Public: view fees (filtered by student_id param)
 ];
 
 function isPublicPath(pathname: string): boolean {
@@ -17,7 +50,7 @@ function isPublicPath(pathname: string): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public paths, static assets, and API auth routes
+  // Allow all public paths
   if (isPublicPath(pathname)) {
     return NextResponse.next();
   }
@@ -34,5 +67,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|api/auth).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|logo.png).*)'],
 };
