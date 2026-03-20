@@ -1,0 +1,29 @@
+{
+  "title": "Rooms",
+  "roomNumber": "Room Number",
+  "block": "Block",
+  "floor": "Floor",
+  "capacity": "Capacity",
+  "occupied": "Occupied",
+  "available": "Available",
+  "roomStatus": "Room Status",
+  "allocateRoom": "Allocate Room",
+  "endAllocation": "End Allocation",
+  "transfer": "Transfer",
+  "checkIn": "Check In",
+  "roomDetails": "Room Details",
+  "currentOccupants": "Current Occupants",
+  "noAllocation": "No room allocated",
+  "status": {
+    "AVAILABLE": "Available",
+    "OCCUPIED": "Occupied",
+    "MAINTENANCE": "Maintenance",
+    "RESERVED": "Reserved"
+  },
+  "allocation": {
+    "ACTIVE": "Active",
+    "CHECKED_OUT": "Checked Out",
+    "TRANSFERRED": "Transferred",
+    "CANCELLED": "Cancelled"
+  }
+}

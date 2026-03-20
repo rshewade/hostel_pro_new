@@ -1,0 +1,16 @@
+{
+  "title": "सेटिंग्स",
+  "profile": "प्रोफ़ाइल",
+  "personalInfo": "व्यक्तिगत जानकारी",
+  "changePassword": "पासवर्ड बदलें",
+  "notifications": "सूचना प्राथमिकताएं",
+  "language": "भाषा",
+  "theme": "थीम",
+  "devices": "डिवाइस सत्र",
+  "activeSessions": "सक्रिय सत्र",
+  "logoutAllDevices": "सभी डिवाइस से लॉगआउट",
+  "dataPrivacy": "डेटा गोपनीयता",
+  "consentHistory": "सहमति इतिहास",
+  "exportData": "मेरा डेटा निर्यात करें",
+  "deleteAccount": "खाता हटाएं"
+}

@@ -1,0 +1,42 @@
+{
+  "title": "Applications",
+  "newApplication": "New Application",
+  "trackingNumber": "Tracking Number",
+  "applicantName": "Applicant Name",
+  "applicantMobile": "Mobile Number",
+  "dateOfBirth": "Date of Birth",
+  "gender": "Gender",
+  "vertical": "Vertical",
+  "applicationStatus": "Application Status",
+  "submittedAt": "Submitted",
+  "type": "Type",
+  "new": "New",
+  "renewal": "Renewal",
+  "trackApplication": "Track Application",
+  "enterTrackingNumber": "Enter your tracking number",
+  "status": {
+    "DRAFT": "Draft",
+    "SUBMITTED": "Submitted",
+    "REVIEW": "Under Review",
+    "INTERVIEW": "Interview",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "ARCHIVED": "Archived"
+  },
+  "form": {
+    "personalDetails": "Personal Details",
+    "contactInfo": "Contact Information",
+    "documents": "Documents",
+    "review": "Review & Submit",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "course": "Course",
+    "yearOfStudy": "Year of Study",
+    "institution": "Institution",
+    "fatherName": "Father's Name",
+    "motherName": "Mother's Name",
+    "guardianName": "Guardian's Name",
+    "address": "Address",
+    "submitApplication": "Submit Application"
+  }
+}

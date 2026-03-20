@@ -1,0 +1,31 @@
+{
+  "title": "Leave Requests",
+  "applyLeave": "Apply for Leave",
+  "leaveType": "Leave Type",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "reason": "Reason",
+  "destination": "Destination",
+  "emergencyContact": "Emergency Contact",
+  "approve": "Approve",
+  "reject": "Reject",
+  "cancel": "Cancel Leave",
+  "rejectionReason": "Rejection Reason",
+  "parentNotified": "Parent Notified",
+  "checkOut": "Check Out",
+  "checkIn": "Check In",
+  "status": {
+    "PENDING": "Pending",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled",
+    "COMPLETED": "Completed"
+  },
+  "type": {
+    "HOME_VISIT": "Home Visit",
+    "SHORT_LEAVE": "Short Leave",
+    "MEDICAL": "Medical",
+    "EMERGENCY": "Emergency",
+    "OTHER": "Other"
+  }
+}

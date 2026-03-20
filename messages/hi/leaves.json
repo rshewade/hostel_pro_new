@@ -1,0 +1,31 @@
+{
+  "title": "छुट्टी अनुरोध",
+  "applyLeave": "छुट्टी के लिए आवेदन करें",
+  "leaveType": "छुट्टी का प्रकार",
+  "startDate": "प्रारंभ तिथि",
+  "endDate": "समाप्ति तिथि",
+  "reason": "कारण",
+  "destination": "गंतव्य",
+  "emergencyContact": "आपातकालीन संपर्क",
+  "approve": "स्वीकृत करें",
+  "reject": "अस्वीकार करें",
+  "cancel": "छुट्टी रद्द करें",
+  "rejectionReason": "अस्वीकृति का कारण",
+  "parentNotified": "अभिभावक को सूचित किया गया",
+  "checkOut": "चेक आउट",
+  "checkIn": "चेक इन",
+  "status": {
+    "PENDING": "लंबित",
+    "APPROVED": "स्वीकृत",
+    "REJECTED": "अस्वीकृत",
+    "CANCELLED": "रद्द",
+    "COMPLETED": "पूर्ण"
+  },
+  "type": {
+    "HOME_VISIT": "घर की यात्रा",
+    "SHORT_LEAVE": "अल्प अवकाश",
+    "MEDICAL": "चिकित्सा",
+    "EMERGENCY": "आपातकाल",
+    "OTHER": "अन्य"
+  }
+}

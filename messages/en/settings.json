@@ -1,0 +1,16 @@
+{
+  "title": "Settings",
+  "profile": "Profile",
+  "personalInfo": "Personal Information",
+  "changePassword": "Change Password",
+  "notifications": "Notification Preferences",
+  "language": "Language",
+  "theme": "Theme",
+  "devices": "Device Sessions",
+  "activeSessions": "Active Sessions",
+  "logoutAllDevices": "Logout All Devices",
+  "dataPrivacy": "Data Privacy",
+  "consentHistory": "Consent History",
+  "exportData": "Export My Data",
+  "deleteAccount": "Delete Account"
+}

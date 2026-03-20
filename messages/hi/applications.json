@@ -1,0 +1,42 @@
+{
+  "title": "आवेदन",
+  "newApplication": "नया आवेदन",
+  "trackingNumber": "ट्रैकिंग नंबर",
+  "applicantName": "आवेदक का नाम",
+  "applicantMobile": "मोबाइल नंबर",
+  "dateOfBirth": "जन्म तिथि",
+  "gender": "लिंग",
+  "vertical": "वर्टिकल",
+  "applicationStatus": "आवेदन स्थिति",
+  "submittedAt": "जमा किया गया",
+  "type": "प्रकार",
+  "new": "नया",
+  "renewal": "नवीनीकरण",
+  "trackApplication": "आवेदन ट्रैक करें",
+  "enterTrackingNumber": "अपना ट्रैकिंग नंबर दर्ज करें",
+  "status": {
+    "DRAFT": "मसौदा",
+    "SUBMITTED": "जमा",
+    "REVIEW": "समीक्षा में",
+    "INTERVIEW": "साक्षात्कार",
+    "APPROVED": "स्वीकृत",
+    "REJECTED": "अस्वीकृत",
+    "ARCHIVED": "संग्रहित"
+  },
+  "form": {
+    "personalDetails": "व्यक्तिगत विवरण",
+    "contactInfo": "संपर्क जानकारी",
+    "documents": "दस्तावेज़",
+    "review": "समीक्षा और जमा",
+    "fullName": "पूरा नाम",
+    "email": "ईमेल पता",
+    "course": "पाठ्यक्रम",
+    "yearOfStudy": "अध्ययन का वर्ष",
+    "institution": "संस्थान",
+    "fatherName": "पिता का नाम",
+    "motherName": "माता का नाम",
+    "guardianName": "अभिभावक का नाम",
+    "address": "पता",
+    "submitApplication": "आवेदन जमा करें"
+  }
+}

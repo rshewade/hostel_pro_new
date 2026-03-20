@@ -1,0 +1,32 @@
+{
+  "title": "Documents",
+  "uploadDocument": "Upload Document",
+  "documentType": "Document Type",
+  "fileName": "File Name",
+  "fileSize": "File Size",
+  "uploadedAt": "Uploaded",
+  "verifiedAt": "Verified",
+  "downloadDocument": "Download",
+  "verifyDocument": "Verify",
+  "rejectDocument": "Reject",
+  "bulkDownload": "Bulk Download",
+  "status": {
+    "UPLOADED": "Uploaded",
+    "VERIFIED": "Verified",
+    "REJECTED": "Rejected"
+  },
+  "type": {
+    "PHOTOGRAPH": "Photograph",
+    "AADHAAR_CARD": "Aadhaar Card",
+    "BIRTH_CERTIFICATE": "Birth Certificate",
+    "EDUCATION_CERTIFICATE": "Education Certificate",
+    "INCOME_CERTIFICATE": "Income Certificate",
+    "MEDICAL_CERTIFICATE": "Medical Certificate",
+    "POLICE_VERIFICATION": "Police Verification",
+    "UNDERTAKING": "Undertaking",
+    "RECEIPT": "Receipt",
+    "LEAVE_APPLICATION": "Leave Application",
+    "RENEWAL_FORM": "Renewal Form",
+    "OTHER": "Other"
+  }
+}

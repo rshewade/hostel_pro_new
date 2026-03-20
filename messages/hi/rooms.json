@@ -1,0 +1,29 @@
+{
+  "title": "कमरे",
+  "roomNumber": "कमरा नंबर",
+  "block": "ब्लॉक",
+  "floor": "मंज़िल",
+  "capacity": "क्षमता",
+  "occupied": "भरा हुआ",
+  "available": "उपलब्ध",
+  "roomStatus": "कमरे की स्थिति",
+  "allocateRoom": "कमरा आवंटित करें",
+  "endAllocation": "आवंटन समाप्त करें",
+  "transfer": "स्थानांतरण",
+  "checkIn": "चेक इन",
+  "roomDetails": "कमरे का विवरण",
+  "currentOccupants": "वर्तमान रहवासी",
+  "noAllocation": "कोई कमरा आवंटित नहीं",
+  "status": {
+    "AVAILABLE": "उपलब्ध",
+    "OCCUPIED": "भरा हुआ",
+    "MAINTENANCE": "रखरखाव",
+    "RESERVED": "आरक्षित"
+  },
+  "allocation": {
+    "ACTIVE": "सक्रिय",
+    "CHECKED_OUT": "चेक आउट",
+    "TRANSFERRED": "स्थानांतरित",
+    "CANCELLED": "रद्द"
+  }
+}

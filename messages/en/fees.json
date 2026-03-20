@@ -1,0 +1,39 @@
+{
+  "title": "Fees & Payments",
+  "feeDetails": "Fee Details",
+  "payNow": "Pay Now",
+  "feeHead": "Fee Head",
+  "amount": "Amount",
+  "dueDate": "Due Date",
+  "paidAt": "Paid On",
+  "receiptNumber": "Receipt Number",
+  "downloadReceipt": "Download Receipt",
+  "paymentHistory": "Payment History",
+  "paymentMethod": "Payment Method",
+  "transactionId": "Transaction ID",
+  "totalDue": "Total Due",
+  "totalPaid": "Total Paid",
+  "totalPending": "Total Pending",
+  "overdue": "Overdue",
+  "waived": "Waived",
+  "status": {
+    "PENDING": "Pending",
+    "PAID": "Paid",
+    "OVERDUE": "Overdue",
+    "WAIVED": "Waived",
+    "REFUNDED": "Refunded",
+    "CANCELLED": "Cancelled"
+  },
+  "head": {
+    "PROCESSING_FEE": "Processing Fee",
+    "SECURITY_DEPOSIT": "Security Deposit",
+    "HOSTEL_FEE": "Hostel Fee",
+    "MESS_FEE": "Mess Fee",
+    "MAINTENANCE_FEE": "Maintenance Fee",
+    "ELECTRICITY_FEE": "Electricity Fee",
+    "LAUNDRY_FEE": "Laundry Fee",
+    "LATE_FEE": "Late Fee",
+    "DAMAGE_CHARGE": "Damage Charge",
+    "OTHER": "Other"
+  }
+}

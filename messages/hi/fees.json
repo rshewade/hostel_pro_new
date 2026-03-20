@@ -1,0 +1,39 @@
+{
+  "title": "शुल्क और भुगतान",
+  "feeDetails": "शुल्क विवरण",
+  "payNow": "अभी भुगतान करें",
+  "feeHead": "शुल्क मद",
+  "amount": "राशि",
+  "dueDate": "देय तिथि",
+  "paidAt": "भुगतान तिथि",
+  "receiptNumber": "रसीद संख्या",
+  "downloadReceipt": "रसीद डाउनलोड करें",
+  "paymentHistory": "भुगतान इतिहास",
+  "paymentMethod": "भुगतान विधि",
+  "transactionId": "लेनदेन आईडी",
+  "totalDue": "कुल बकाया",
+  "totalPaid": "कुल भुगतान",
+  "totalPending": "कुल लंबित",
+  "overdue": "अतिदेय",
+  "waived": "माफ़",
+  "status": {
+    "PENDING": "लंबित",
+    "PAID": "भुगतान किया",
+    "OVERDUE": "अतिदेय",
+    "WAIVED": "माफ़",
+    "REFUNDED": "वापसी",
+    "CANCELLED": "रद्द"
+  },
+  "head": {
+    "PROCESSING_FEE": "प्रसंस्करण शुल्क",
+    "SECURITY_DEPOSIT": "सुरक्षा जमा",
+    "HOSTEL_FEE": "हॉस्टल शुल्क",
+    "MESS_FEE": "मेस शुल्क",
+    "MAINTENANCE_FEE": "रखरखाव शुल्क",
+    "ELECTRICITY_FEE": "बिजली शुल्क",
+    "LAUNDRY_FEE": "लॉन्ड्री शुल्क",
+    "LATE_FEE": "विलंब शुल्क",
+    "DAMAGE_CHARGE": "क्षति शुल्क",
+    "OTHER": "अन्य"
+  }
+}

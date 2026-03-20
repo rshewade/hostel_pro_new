@@ -12,8 +12,15 @@ export default getRequestConfig(async () => {
   return {
     locale,
     messages: {
-      ...(await import(`../../messages/${locale}/common.json`)).default,
-      ...(await import(`../../messages/${locale}/dashboard.json`)).default,
+      Common: (await import(`../../messages/${locale}/common.json`)).default,
+      Dashboard: (await import(`../../messages/${locale}/dashboard.json`)).default,
+      Auth: (await import(`../../messages/${locale}/auth.json`)).default,
+      Applications: (await import(`../../messages/${locale}/applications.json`)).default,
+      Rooms: (await import(`../../messages/${locale}/rooms.json`)).default,
+      Fees: (await import(`../../messages/${locale}/fees.json`)).default,
+      Leaves: (await import(`../../messages/${locale}/leaves.json`)).default,
+      Documents: (await import(`../../messages/${locale}/documents.json`)).default,
+      Settings: (await import(`../../messages/${locale}/settings.json`)).default,
     },
   };
 });

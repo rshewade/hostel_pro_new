@@ -1,0 +1,32 @@
+{
+  "title": "दस्तावेज़",
+  "uploadDocument": "दस्तावेज़ अपलोड करें",
+  "documentType": "दस्तावेज़ प्रकार",
+  "fileName": "फ़ाइल नाम",
+  "fileSize": "फ़ाइल आकार",
+  "uploadedAt": "अपलोड किया",
+  "verifiedAt": "सत्यापित",
+  "downloadDocument": "डाउनलोड",
+  "verifyDocument": "सत्यापित करें",
+  "rejectDocument": "अस्वीकार करें",
+  "bulkDownload": "बल्क डाउनलोड",
+  "status": {
+    "UPLOADED": "अपलोड किया गया",
+    "VERIFIED": "सत्यापित",
+    "REJECTED": "अस्वीकृत"
+  },
+  "type": {
+    "PHOTOGRAPH": "फोटो",
+    "AADHAAR_CARD": "आधार कार्ड",
+    "BIRTH_CERTIFICATE": "जन्म प्रमाणपत्र",
+    "EDUCATION_CERTIFICATE": "शिक्षा प्रमाणपत्र",
+    "INCOME_CERTIFICATE": "आय प्रमाणपत्र",
+    "MEDICAL_CERTIFICATE": "चिकित्सा प्रमाणपत्र",
+    "POLICE_VERIFICATION": "पुलिस सत्यापन",
+    "UNDERTAKING": "वचन पत्र",
+    "RECEIPT": "रसीद",
+    "LEAVE_APPLICATION": "छुट्टी आवेदन",
+    "RENEWAL_FORM": "नवीनीकरण फ़ॉर्म",
+    "OTHER": "अन्य"
+  }
+}
