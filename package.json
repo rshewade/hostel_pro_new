@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "bun --bun next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -17,12 +17,15 @@
     "test:e2e:ui": "npx playwright test --ui",
     "test:all": "bun run test:unit && bun run test:integration && bun run test:e2e",
     "test:coverage": "vitest run --coverage",
+    "phase:gate": "bash scripts/phase-gate.sh",
+    "hooks:install": "bash scripts/install-hooks.sh",
     "db:generate": "bunx drizzle-kit generate",
     "db:push": "bunx drizzle-kit push",
     "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.5.5",
+    "@sentry/nextjs": "10.45.0",
     "archiver": "^7.0.1",
     "better-auth": "^1.2.0",
     "clsx": "2.1.1",
